@@ -123,8 +123,11 @@ const Page = ({ tweaks }) => {
       <div className="ground">
       <section className="demo" id="terminal" data-screen-label="02 Terminal">
         <div className="section-eyebrow">The terminal</div>
-        <h2 className="section-title">A real shell. <em>A real agent.</em></h2>
-        <p className="section-sub">One window. No mode switch.</p>
+        <h2 className="section-title">
+          <span>Just a terminal that works,</span>
+          <em>until you ask for help.</em>
+        </h2>
+        <p className="section-sub">Then an agent that understands where you are.</p>
         <TerminalDemo tweaks={tweaks} />
       </section>
 
@@ -236,7 +239,7 @@ const InstallCard = ({ detected, osTab, setOsTab }) => {
 
 // Provider uses lobehub CDN icons
 const Provider = ({ id, label }) => (
-  <span className="provider">
+  <span className="provider" data-provider={id}>
     <img
       src={`https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${id}.svg`}
       onError={(e) => { const mono = id.replace(/-color$/, ''); if (e.currentTarget.src.includes(`${mono}.svg`)) return; e.currentTarget.src = `https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${mono}.svg`; }}
