@@ -12,6 +12,13 @@ const MODE_PLACEHOLDER = {
   agent: 'Ask claude-sonnet-4 anything…',
   shell: 'Run a command…',
 };
+const BASE_AGENT_MESSAGES = [
+  { kind: 'user', body: 'Find where we set max_tokens, bump it to 8192.' },
+  { kind: 'assistant', body: <>Reading <code>crates/con-core/src/config.rs</code>…</> },
+  { kind: 'tool-read' },
+  { kind: 'assistant', body: <>Line 47, currently <code>4096</code>. I'll patch it.</> },
+  { kind: 'tool-approval' },
+];
 
 const TerminalDemo = ({ tweaks }) => {
   const initialMode = (tweaks.controlMode === 'cmd') ? 'shell'
@@ -22,7 +29,12 @@ const TerminalDemo = ({ tweaks }) => {
   const [mode, setMode] = React.useState(initialMode);
   const [paneCount, setPaneCount] = React.useState(1);
   const [scope, setScope] = React.useState('all');
+  const [focusedPane, setFocusedPane] = React.useState(0);
   const [scopeOpen, setScopeOpen] = React.useState(false);
+  const [command, setCommand] = React.useState('');
+  const [paneLogs, setPaneLogs] = React.useState([[], []]);
+  const [paneDrafts, setPaneDrafts] = React.useState(['', '']);
+  const [agentMessages, setAgentMessages] = React.useState(BASE_AGENT_MESSAGES);
   const [tabs] = React.useState([{ id: 'zsh', title: 'zsh' }]);
 
   React.useEffect(() => { setShowAgent(tweaks.showAgent ?? true); }, [tweaks.showAgent]);
@@ -35,9 +47,106 @@ const TerminalDemo = ({ tweaks }) => {
   }, [tweaks.controlMode]);
 
   const cycleMode = () => setMode(m => MODES[(MODES.indexOf(m) + 1) % MODES.length]);
-  const toggleSplit = () => setPaneCount(c => (c === 1 ? 2 : 1));
+  const toggleSplit = () => {
+    setPaneCount(c => {
+      const next = c === 1 ? 2 : 1;
+      if (next === 1) setFocusedPane(0);
+      return next;
+    });
+  };
   const showBroadcast = mode === 'shell' && paneCount > 1;
   const showTabs = tabs.length > 1;
+  const appendToPanes = (paneIndexes, lines) => {
+    setPaneLogs(current => current.map((log, i) => (
+      paneIndexes.includes(i) ? [...log, ...lines] : log
+    )));
+  };
+  const appendAgentExchange = (text, source = 'agent') => {
+    const reply = buildAgentReply(text, source);
+    setAgentMessages(current => [
+      ...current,
+      { kind: 'user', body: text },
+      { kind: 'assistant', body: reply },
+    ]);
+  };
+  const runShellCommand = (raw) => {
+    const text = raw.trim();
+    if (!text) return;
+    const targets = paneCount > 1 && scope === 'all'
+      ? Array.from({ length: paneCount }, (_, i) => i)
+      : [focusedPane];
+    if (text === 'clear') {
+      setPaneLogs(current => current.map((log, i) => (targets.includes(i) ? [] : log)));
+      return;
+    }
+    appendToPanes(targets, buildShellLines(text, targets.length));
+  };
+  const runPaneCommand = (paneIndex) => {
+    const text = paneDrafts[paneIndex].trim();
+    if (!text) return;
+    if (text === 'clear') {
+      setPaneLogs(current => current.map((log, i) => (i === paneIndex ? [] : log)));
+    } else {
+      appendToPanes([paneIndex], buildShellLines(text, 1, 'typed in pane'));
+    }
+    setPaneDrafts(current => current.map((draft, i) => (i === paneIndex ? '' : draft)));
+  };
+  const handlePaneKeyDown = (paneIndex, e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      runPaneCommand(paneIndex);
+      return;
+    }
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      setPaneDrafts(current => current.map((draft, i) => (
+        i === paneIndex ? draft.slice(0, -1) : draft
+      )));
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setPaneDrafts(current => current.map((draft, i) => (i === paneIndex ? '' : draft)));
+      return;
+    }
+    if (e.key.length === 1) {
+      e.preventDefault();
+      setPaneDrafts(current => current.map((draft, i) => (
+        i === paneIndex ? draft + e.key : draft
+      )));
+    }
+  };
+  const handlePanePaste = (paneIndex, e) => {
+    const text = e.clipboardData?.getData('text');
+    if (!text) return;
+    e.preventDefault();
+    const oneLine = text.replace(/\r?\n/g, ' ');
+    setPaneDrafts(current => current.map((draft, i) => (
+      i === paneIndex ? draft + oneLine : draft
+    )));
+  };
+  const focusPane = (paneIndex, e) => {
+    setFocusedPane(paneIndex);
+    e.currentTarget.focus();
+  };
+  const submitCommand = () => {
+    const text = command.trim();
+    if (!text) return;
+    if (mode === 'shell') {
+      runShellCommand(text);
+    } else if (mode === 'agent') {
+      setShowAgent(true);
+      appendAgentExchange(text, 'bottom bar');
+    } else if (looksLikeShell(text)) {
+      runShellCommand(text);
+    } else {
+      setShowAgent(true);
+      appendAgentExchange(text, 'smart mode');
+    }
+    setCommand('');
+    setScopeOpen(false);
+  };
 
   return (
     <div className="con-window">
@@ -89,18 +198,44 @@ const TerminalDemo = ({ tweaks }) => {
       <div className={`con-body${showAgent ? '' : ' no-agent'}`}>
         <div className="con-main">
           <div className={`pane-grid${paneCount > 1 ? ' split' : ''}`}>
-            <div className={`pane${paneCount > 1 ? ' focused' : ''}`}>
-              <TerminalStreamA />
+            <div
+              className={`pane${focusedPane === 0 ? ' focused' : ''}`}
+              onClick={(e) => focusPane(0, e)}
+              onFocus={() => setFocusedPane(0)}
+              onKeyDown={(e) => handlePaneKeyDown(0, e)}
+              onPaste={(e) => handlePanePaste(0, e)}
+              tabIndex={0}
+              role="textbox"
+              aria-label="Terminal pane 1"
+              aria-multiline="true"
+            >
+              <TerminalStreamA entries={paneLogs[0]} draft={paneDrafts[0]} focused={focusedPane === 0} />
             </div>
             {paneCount > 1 && (
-              <div className="pane">
-                <TerminalStreamB />
+              <div
+                className={`pane${focusedPane === 1 ? ' focused' : ''}`}
+                onClick={(e) => focusPane(1, e)}
+                onFocus={() => setFocusedPane(1)}
+                onKeyDown={(e) => handlePaneKeyDown(1, e)}
+                onPaste={(e) => handlePanePaste(1, e)}
+                tabIndex={0}
+                role="textbox"
+                aria-label="Terminal pane 2"
+                aria-multiline="true"
+              >
+                <TerminalStreamB entries={paneLogs[1]} draft={paneDrafts[1]} focused={focusedPane === 1} />
               </div>
             )}
           </div>
         </div>
 
-        {showAgent && <AgentPanel showOwnInput={!showBottom} />}
+        {showAgent && (
+          <AgentPanel
+            showOwnInput={!showBottom}
+            messages={agentMessages}
+            onSubmit={(text) => appendAgentExchange(text, 'agent panel')}
+          />
+        )}
       </div>
 
       {/* Bottom bar */}
@@ -126,13 +261,15 @@ const TerminalDemo = ({ tweaks }) => {
                 title="Pane scope · ⌘'"
               >
                 <BroadcastGlyph/>
-                <span>{scope === 'all' ? 'All panes' : 'Focused'}</span>
+                <span>{scope === 'all' ? 'All panes' : `Pane ${focusedPane + 1}`}</span>
               </button>
               {scopeOpen && (
                 <PaneScopePopover
                   scope={scope}
                   setScope={setScope}
                   paneCount={paneCount}
+                  focusedPane={focusedPane}
+                  setFocusedPane={setFocusedPane}
                   onClose={() => setScopeOpen(false)}
                 />
               )}
@@ -143,10 +280,13 @@ const TerminalDemo = ({ tweaks }) => {
             <input
               className={`bb-input mode-${mode}`}
               placeholder={MODE_PLACEHOLDER[mode]}
+              value={command}
+              onChange={(e) => setCommand(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') submitCommand(); }}
             />
           </div>
 
-          <button className="bb-send" aria-label="Send"><ArrowUpGlyph/></button>
+          <button className="bb-send" aria-label="Send" onClick={submitCommand}><ArrowUpGlyph/></button>
         </div>
       )}
     </div>
@@ -154,7 +294,7 @@ const TerminalDemo = ({ tweaks }) => {
 };
 
 // ---------- pane scope popover ----------
-const PaneScopePopover = ({ scope, setScope, paneCount, onClose }) => {
+const PaneScopePopover = ({ scope, setScope, paneCount, focusedPane, setFocusedPane, onClose }) => {
   const ref = React.useRef(null);
   React.useEffect(() => {
     const onDoc = (e) => {
@@ -185,19 +325,61 @@ const PaneScopePopover = ({ scope, setScope, paneCount, onClose }) => {
       </div>
       <div className="ps-minimap">
         {Array.from({ length: paneCount }).map((_, i) => (
-          <div key={i} className={`ps-pane${(scope === 'focused' && i === 0) || scope === 'all' ? ' on' : ''}`}>
+          <button
+            key={i}
+            className={`ps-pane${(scope === 'focused' && i === focusedPane) || scope === 'all' ? ' on' : ''}`}
+            onClick={() => { setFocusedPane(i); setScope('focused'); }}
+            type="button"
+          >
             <span className="ps-dot" />
             <span className="ps-tilde">~</span>
             <span className="ps-num">{i + 1}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>
   );
 };
 
+const looksLikeShell = (text) => /^(cd|clear|curl|git|kubectl|ls|npm|pnpm|pwd|ssh|vim|yarn)(\s|$)/.test(text.trim());
+
+const buildShellLines = (text, targetCount, suffixOverride) => {
+  const suffix = suffixOverride || (targetCount > 1 ? `broadcast to ${targetCount} panes` : 'sent to focused pane');
+  const canned = shellOutputFor(text);
+  return [
+    { type: 'prompt', text },
+    ...canned.map(line => ({ type: line.dim ? 'dim' : 'output', text: line.text })),
+    { type: 'dim', text: `# ${suffix}` },
+  ];
+};
+
+const shellOutputFor = (text) => {
+  if (text === 'pwd') return [{ text: '/Users/weyl/dev/con' }];
+  if (text === 'ls') return [{ text: 'Cargo.toml  crates  docs  package.json  README.md' }];
+  if (text.startsWith('git status')) return [{ text: 'On branch main' }, { text: 'nothing to commit, working tree clean' }];
+  if (text.startsWith('kubectl')) return [
+    { text: 'NAME                       READY   STATUS    RESTARTS   AGE', dim: true },
+    { text: 'api-7c4b9d8f5-rxqv         1/1     Running   0          4d' },
+    { text: 'worker-9f2c1b6e4-xj4kl      1/1     Running   1          2d' },
+  ];
+  return [{ text: `ran: ${text}` }];
+};
+
+const buildAgentReply = (text, source) => {
+  const lower = text.toLowerCase();
+  if (lower.includes('max_tokens') || lower.includes('token')) {
+    return <>I found the config path and would update <code>max_tokens</code> before asking for approval.</>;
+  }
+  if (looksLikeShell(text)) {
+    return source === 'smart mode'
+      ? <>That looks like shell input, so smart mode routed it to the focused pane.</>
+      : <>That looks like shell input. Switch to shell or smart mode to route it to a pane, or keep discussing it here.</>;
+  }
+  return <>Queued from {source}. I can inspect files, propose a patch, or run a shell command from here.</>;
+};
+
 // --------- terminal streams ----------
-const TerminalStreamA = () => (
+const TerminalStreamA = ({ entries, draft, focused }) => (
   <pre className="ts">
     <Line dim>Last login: Thu Apr 23 14:02 on ttys004</Line>
     <Line/>
@@ -235,11 +417,12 @@ kMMMMMMMMMMMMMMMMMMMMMMMMWd.
       </div>
     </div>
     <Line/>
-    <Line prompt><CursorBlink/></Line>
+    <TerminalEntries entries={entries} />
+    <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
   </pre>
 );
 
-const TerminalStreamB = () => (
+const TerminalStreamB = ({ entries, draft, focused }) => (
   <pre className="ts">
     <Line dim>Last login: Thu Apr 23 14:08 on ttys005</Line>
     <Line/>
@@ -249,8 +432,19 @@ const TerminalStreamB = () => (
     <Line>api-7c4b9d8f5-h8mpz         1/1     Running   0          4d</Line>
     <Line>worker-9f2c1b6e4-xj4kl      1/1     Running   1          2d</Line>
     <Line/>
-    <Line prompt><CursorBlink/></Line>
+    <TerminalEntries entries={entries} />
+    <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
   </pre>
+);
+
+const TerminalEntries = ({ entries }) => (
+  <>
+    {entries.map((entry, i) => (
+      <Line key={i} prompt={entry.type === 'prompt'} dim={entry.type === 'dim'}>
+        {entry.text}
+      </Line>
+    ))}
+  </>
 );
 
 const Line = ({ prompt, dim, children }) => (
@@ -262,28 +456,49 @@ const Line = ({ prompt, dim, children }) => (
 const CursorBlink = () => <span className="tl-cursor" />;
 
 // --------- agent side panel ----------
-const AgentPanel = ({ showOwnInput }) => (
-  <aside className="agent">
-    <div className="agent-head">
-      <div className="agent-head-left">
-        <button className="icon-btn" title="New chat"><PlusGlyph/></button>
-        <button className="icon-btn" title="History"><HistoryGlyph/></button>
+const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
+  const [draft, setDraft] = React.useState('');
+  const send = () => {
+    const text = draft.trim();
+    if (!text) return;
+    onSubmit(text);
+    setDraft('');
+  };
+  return (
+    <aside className={`agent${showOwnInput ? ' with-own-input' : ''}`}>
+      <div className="agent-head">
+        <div className="agent-head-left">
+          <button className="icon-btn" title="New chat"><PlusGlyph/></button>
+          <button className="icon-btn" title="History"><HistoryGlyph/></button>
+        </div>
+        <div className="agent-head-right">
+          <Dropdown label="Anthropic" />
+          <Dropdown label="claude-sonnet-4" />
+        </div>
       </div>
-      <div className="agent-head-right">
-        <Dropdown label="Anthropic" />
-        <Dropdown label="claude-sonnet-4" />
-      </div>
-    </div>
 
-    <div className="agent-messages">
-      <div className="ag-msg user">
-        <div className="ag-body">Find where we set max_tokens, bump it to 8192.</div>
+      <div className="agent-messages">
+        {messages.map((message, i) => <AgentMessage key={i} message={message} />)}
       </div>
 
-      <div className="ag-msg assistant">
-        <div className="ag-body">Reading <code>crates/con-core/src/config.rs</code>…</div>
-      </div>
+      {showOwnInput && (
+        <div className="agent-input">
+          <input
+            placeholder="Ask anything…"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') send(); }}
+          />
+          <button className="send" onClick={send} aria-label="Send to agent"><ArrowUpGlyph/></button>
+        </div>
+      )}
+    </aside>
+  );
+};
 
+const AgentMessage = ({ message }) => {
+  if (message.kind === 'tool-read') {
+    return (
       <div className="tool-card done">
         <div className="tool-head">
           <FileGlyph/>
@@ -292,13 +507,10 @@ const AgentPanel = ({ showOwnInput }) => (
           <span className="tool-ok">✓</span>
         </div>
       </div>
-
-      <div className="ag-msg assistant">
-        <div className="ag-body">
-          Line 47, currently <code>4096</code>. I'll patch it.
-        </div>
-      </div>
-
+    );
+  }
+  if (message.kind === 'tool-approval') {
+    return (
       <div className="tool-card approval">
         <div className="tool-head">
           <EditGlyph/>
@@ -314,16 +526,14 @@ const AgentPanel = ({ showOwnInput }) => (
           <button className="allow">Allow</button>
         </div>
       </div>
+    );
+  }
+  return (
+    <div className={`ag-msg ${message.kind}`}>
+      <div className="ag-body">{message.body}</div>
     </div>
-
-    {showOwnInput && (
-      <div className="agent-input">
-        <input placeholder="Ask anything…" />
-        <button className="send"><ArrowUpGlyph/></button>
-      </div>
-    )}
-  </aside>
-);
+  );
+};
 
 // --------- small bits ----------
 const Dropdown = ({ label }) => (
