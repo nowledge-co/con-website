@@ -9,7 +9,7 @@ const MODES = ['smart', 'agent', 'shell'];
 const MODE_LABEL = { smart: 'Smart mode', agent: 'Agent mode', shell: 'Shell mode' };
 const MODE_PLACEHOLDER = {
   smart: 'Type a command or ask AI…',
-  agent: 'Ask claude-sonnet-4 anything…',
+  agent: 'Ask anything…',
   shell: 'Run a command…',
 };
 const BASE_AGENT_MESSAGES = [
@@ -473,7 +473,7 @@ const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
         </div>
         <div className="agent-head-right">
           <Dropdown label="Anthropic" />
-          <Dropdown label="claude-sonnet-4" />
+          <Dropdown label="Claude Haiku 4.5" />
         </div>
       </div>
 
