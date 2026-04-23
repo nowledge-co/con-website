@@ -131,7 +131,7 @@ const Page = ({ tweaks }) => {
         <TerminalDemo tweaks={tweaks} />
       </section>
 
-      <footer className="site-foot">
+      <footer className="site-foot" id="footer">
         <div className="foot-inner">
           <div className="foot-brand">
             <div className="foot-brand-row">
@@ -163,18 +163,24 @@ const Page = ({ tweaks }) => {
               <a href={`https://github.com/${REPO}/blob/main/LICENSE`} target="_blank" rel="noreferrer">License</a>
             </div>
             <div className="foot-col">
-              <div className="foot-col-label">nowledge-labs</div>
+              <div className="foot-col-label">Nowledge Labs</div>
               <a href="https://nowledge-labs.ai" target="_blank" rel="noreferrer">Homepage</a>
               <a href="https://nowledge-labs.ai/blog" target="_blank" rel="noreferrer">Blog</a>
-              <a href="https://mem.nowledge.co/" target="_blank" rel="noreferrer" style={{fontWeight: 600}}>Nowledge Mem</a>
+              <a href="https://mem.nowledge.co/" target="_blank" rel="noreferrer" className="foot-link-strong">Nowledge Mem</a>
               <a href="https://x.com/nowledgelabs" target="_blank" rel="noreferrer">X / Twitter</a>
             </div>
           </div>
         </div>
         <div className="foot-legal">
-          <span>© 2026 nowledge-labs.ai</span>
-          <span className="foot-dot" />
-          <span>Built with <em>care</em> in the open</span>
+          <a className="foot-maker" href="https://nowledge-labs.ai" target="_blank" rel="noreferrer">
+            <img src="assets/nowledge-labs-icon.png" alt="" className="foot-maker-icon" />
+            <span className="foot-maker-copy">
+              <span className="foot-maker-name">Nowledge Labs</span>
+              <span className="foot-maker-slogan">we build the knowledge layer.</span>
+            </span>
+          </a>
+          <span>© 2026</span>
+          <span>Built in the open</span>
         </div>
       </footer>
       </div>{/* /ground */}
