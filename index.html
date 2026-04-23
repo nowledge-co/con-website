@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>con — terminal with AI harness</title>
+<meta name="description" content="A fast, humane terminal for the agent era. GPU-accelerated, open source, built in Rust."/>
+<meta property="og:title" content="con — terminal with AI harness"/>
+<meta property="og:description" content="A fast, humane terminal for the agent era. GPU-accelerated, open source, built in Rust."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/marked@12.0.2/marked.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script type="text/babel" src="components/DocsOverlay.jsx"></script>
+<script type="text/babel" src="components/TerminalDemo.jsx"></script>
+<script type="text/babel" src="components/Hero.jsx"></script>
+<script type="text/babel">
+const CONFIG = {
+  headline: "GPU fast.||Agent || built in||.",
+  bgImage: "assets/bg-with-coon.png",
+  showAgent: true,
+  controlMode: "agent",
+};
+
+ReactDOM.createRoot(document.getElementById('app')).render(<Page tweaks={CONFIG}/>);
+</script>
+</body>
+</html>
