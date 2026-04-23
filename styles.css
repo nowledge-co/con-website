@@ -1447,7 +1447,7 @@ footer.site-foot {
   }
   .foot-col a,
   .foot-col .foot-link-btn {
-    min-height: 34px;
+    min-height: 30px;
     display: inline-flex;
     align-items: center;
   }
@@ -1548,7 +1548,7 @@ footer.site-foot {
     padding: 6px;
   }
   .con-body {
-    grid-template-columns: minmax(0, 1fr) minmax(126px, 42%);
+    grid-template-columns: minmax(0, 1fr) minmax(126px, 40%);
     height: 430px;
   }
   .con-body.no-agent {
@@ -1557,6 +1557,19 @@ footer.site-foot {
   .pane,
   .pane-grid.split .pane {
     padding: 12px;
+  }
+  .ts,
+  .pane-grid.split .ts {
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+  .fetch,
+  .pane-grid.split .fetch {
+    font-size: 9.8px;
+  }
+  .swatch-row span {
+    width: 16px;
+    height: 9px;
   }
   .ascii {
     display: none;
@@ -1571,15 +1584,18 @@ footer.site-foot {
     display: none;
   }
   .agent-head-right {
-    justify-content: space-between;
+    justify-content: flex-end;
+  }
+  .dd:first-child {
+    display: none;
   }
   .dd {
-    max-width: 50%;
+    max-width: 100%;
     font-size: 11px;
   }
   .agent-messages {
     padding: 10px 8px;
-    font-size: 11.5px;
+    font-size: 10.8px;
   }
   .ag-msg.user .ag-body {
     max-width: 100%;
@@ -1596,12 +1612,16 @@ footer.site-foot {
     font-size: 10px;
   }
   .tool-actions {
-    gap: 6px;
-    padding: 9px 10px;
+    gap: 5px;
+    padding: 8px 9px;
+  }
+  .tool-actions button {
+    padding: 7px 4px;
+    font-size: 10.8px;
   }
   .diff {
-    font-size: 10px;
-    padding: 9px 10px;
+    font-size: 9.6px;
+    padding: 8px 9px;
     overflow: hidden;
   }
   .d-line {
@@ -1609,7 +1629,7 @@ footer.site-foot {
   }
   .ag-msg code {
     display: inline-block;
-    max-width: min(220px, 58vw);
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: bottom;
@@ -1666,11 +1686,21 @@ footer.site-foot {
     text-align: left;
   }
   .foot-cols {
-    grid-template-columns: 1fr;
-    gap: 28px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px 28px;
   }
   .foot-col {
     width: 100%;
+    gap: 7px;
+  }
+  .foot-col:nth-child(3) {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+  }
+  .foot-col:nth-child(3) .foot-col-label {
+    grid-column: 1 / -1;
   }
   .foot-badges {
     gap: 7px;
@@ -1694,6 +1724,7 @@ footer.site-foot {
   .foot-col a,
   .foot-col .foot-link-btn {
     width: 100%;
+    min-height: 28px;
   }
 }
 
@@ -1717,11 +1748,8 @@ footer.site-foot {
     padding-inline: 8px;
   }
   .con-body {
-    grid-template-columns: minmax(0, 1fr) minmax(112px, 42%);
+    grid-template-columns: minmax(0, 1fr) minmax(108px, 40%);
     height: 420px;
-  }
-  .dd:first-child {
-    display: none;
   }
   .dd {
     max-width: 100%;
@@ -1735,6 +1763,7 @@ footer.site-foot {
   }
   .agent-messages {
     padding-inline: 7px;
+    font-size: 10.2px;
   }
   .ag-msg.assistant .ag-body {
     overflow: hidden;
@@ -1743,6 +1772,6 @@ footer.site-foot {
     color: transparent;
   }
   .foot-cols {
-    gap: 22px;
+    gap: 24px 22px;
   }
 }
