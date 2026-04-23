@@ -2,9 +2,9 @@
 
 const REPO = 'nowledge-co/con-terminal';
 const INSTALL_CMDS = {
-  macOS:   'brew install --cask nowledge-co/tap/con',
-  Windows: 'irm https://con-releases.nowledge.co/install.ps1 | iex',
-  Linux:   'curl -fsSL https://con-releases.nowledge.co/install.sh | sh',
+  macOS:   'curl -fsSL https://nowled.ge/con-sh | sh',
+  Windows: 'irm https://nowled.ge/con-ps1 | iex',
+  Linux:   'curl -fsSL https://nowled.ge/con-sh | sh',
 };
 const OS_STATUS = {
   macOS:   { chip: null,    label: 'Apple Silicon · Intel Metal' },
