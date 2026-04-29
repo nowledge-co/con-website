@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1200,initial-scale=1"/>
+<title>con OG image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; }
+html,
+body {
+  margin: 0;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background: #09090b;
+}
+body {
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: #f8f1e8;
+}
+.og {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  background: #0b0c0e;
+  isolation: isolate;
+}
+.og::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(7, 7, 9, 0.94) 0%, rgba(7, 7, 9, 0.84) 34%, rgba(7, 7, 9, 0.34) 66%, rgba(7, 7, 9, 0.18) 100%),
+    linear-gradient(180deg, rgba(17, 21, 31, 0.08) 0%, rgba(8, 8, 10, 0.22) 52%, rgba(4, 4, 6, 0.86) 100%),
+    url("../assets/bg-with-coon.png");
+  background-size: cover;
+  background-position: center 49%;
+  transform: scale(1.01);
+  z-index: -3;
+}
+.og::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 82% 26%, rgba(246, 190, 116, 0.22), transparent 28%),
+    radial-gradient(circle at 35% 8%, rgba(104, 133, 194, 0.18), transparent 34%),
+    linear-gradient(180deg, transparent 0%, rgba(2, 2, 4, 0.62) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  z-index: -2;
+}
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 4px);
+  opacity: 0.44;
+  z-index: -1;
+}
+.content {
+  position: absolute;
+  inset: 72px 76px 54px;
+  display: flex;
+  flex-direction: column;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 42px;
+}
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.42);
+}
+.brand-name {
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.brand-kicker {
+  font-size: 18px;
+  color: rgba(248, 241, 232, 0.62);
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+.headline {
+  margin: 44px 0 0;
+  max-width: 630px;
+  font-size: 82px;
+  line-height: 0.96;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.headline span {
+  display: block;
+}
+.headline em {
+  display: inline-block;
+  margin-left: 4px;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 94px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+  color: #fff5e9;
+}
+.subhead {
+  margin: 28px 0 0;
+  max-width: 560px;
+  color: rgba(248, 241, 232, 0.78);
+  font-size: 26px;
+  line-height: 1.34;
+  letter-spacing: 0;
+}
+.terminal {
+  position: absolute;
+  right: 78px;
+  bottom: 72px;
+  width: 398px;
+  border-radius: 22px;
+  background: rgba(11, 11, 13, 0.72);
+  box-shadow:
+    0 32px 84px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(24px) saturate(1.22);
+}
+.terminal-top {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 24px;
+  background: rgba(22, 21, 20, 0.82);
+}
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+}
+.red { background: #ff6c60; }
+.amber { background: #ffc34e; }
+.green { background: #78d878; }
+.path {
+  margin-left: 16px;
+  padding: 6px 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(248, 241, 232, 0.48);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+.terminal-body {
+  padding: 24px 30px 28px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(248, 241, 232, 0.86);
+}
+.prompt { color: #9b8dff; }
+.ok { color: #82d991; }
+.dim { color: rgba(248, 241, 232, 0.46); }
+.agent {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.065);
+  font-family: "Geist", ui-sans-serif, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+.agent strong {
+  color: #fff6ea;
+  font-weight: 700;
+}
+.foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: rgba(248, 241, 232, 0.56);
+  font-size: 18px;
+  letter-spacing: 0;
+}
+.foot img {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+}
+.foot strong {
+  color: rgba(248, 241, 232, 0.9);
+  font-weight: 700;
+}
+.spark {
+  position: absolute;
+  right: 410px;
+  top: 93px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #fff0d7;
+  box-shadow: 0 0 24px rgba(255, 228, 187, 0.9);
+}
+</style>
+</head>
+<body>
+  <main class="og" aria-label="con social preview">
+    <div class="grain"></div>
+    <div class="spark"></div>
+    <section class="content">
+      <div class="brand">
+        <img src="../assets/icon_con_black.png" alt=""/>
+        <div class="brand-name">con</div>
+        <div class="brand-kicker">terminal with AI harness</div>
+      </div>
+      <h1 class="headline">
+        <span>GPU fast.</span>
+        <span><em>Agent</em> built in.</span>
+      </h1>
+      <p class="subhead">A fast, humane terminal for SSH, tmux, and agent-native workflows.</p>
+      <div class="foot">
+        <img src="../assets/nowledge-labs-icon.png" alt=""/>
+        <strong>Nowledge Labs</strong>
+        <span>we build the knowledge layer.</span>
+      </div>
+    </section>
+    <aside class="terminal" aria-hidden="true">
+      <div class="terminal-top">
+        <span class="dot red"></span>
+        <span class="dot amber"></span>
+        <span class="dot green"></span>
+        <span class="path">~/nowledge/con</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="prompt">›</span> con ask fix deploy</div>
+        <div><span class="dim">context</span> pane, shell, git</div>
+        <div><span class="dim">status</span> <span class="ok">ready</span></div>
+        <div class="agent"><strong>Agent</strong> reads context, asks first, works in view.</div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>
