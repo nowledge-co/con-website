@@ -520,13 +520,13 @@ body {
 }
 .providers-row {
   display: flex;
-  gap: 28px;
+  gap: 18px;
   align-items: center;
   flex-wrap: wrap;
   font-size: 13.5px;
   color: rgba(247,241,234,0.82);
   font-weight: 500;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
 .provider {
   display: inline-flex;
