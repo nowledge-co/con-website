@@ -9,6 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
+const CSS_VERSION = '20260505';
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');
@@ -457,26 +458,25 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/styles.css"/>
+<link rel="stylesheet" href="/styles.css?v=${CSS_VERSION}"/>
 <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
 <body class="${bodyClass}">
 <header class="static-docs-top">
-  <a class="static-docs-brand" href="/">
-    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
-    <span>con</span>
-  </a>
-  <div class="static-docs-actions">
-    <button class="docs-command-trigger" type="button" data-docs-command-open aria-label="Search docs and changelog">
-      <span>Search</span>
-      <kbd>⌘K</kbd>
-    </button>
+  <div class="static-docs-nav">
+    <a class="static-docs-brand" href="/">
+      <img src="/assets/icon_con_black.png" alt="" width="24" height="24"/>
+      <span>con</span>
+    </a>
     <nav class="static-docs-top-links" aria-label="Primary">
-      <a href="/">Product</a>
       <a href="/docs/"${docsCurrent}>Docs</a>
       <a href="/changelog/"${changelogCurrent}>Changelog</a>
       <a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">GitHub</a>
     </nav>
+    <button class="docs-command-trigger" type="button" data-docs-command-open aria-label="Search docs and changelog">
+      <span>Search</span>
+      <kbd>⌘K</kbd>
+    </button>
   </div>
 </header>
 ${renderCommandPalette()}
