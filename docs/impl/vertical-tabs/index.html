@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vertical Tabs | con docs</title>
+<meta name="description" content="A Chrome style vertical tab strip for the workspace, gated behind a single config flag so horizontal tabs remain the default for every shipped beta."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/vertical-tabs/"/>
+<meta property="og:title" content="Vertical Tabs | con docs"/>
+<meta property="og:description" content="A Chrome style vertical tab strip for the workspace, gated behind a single config flag so horizontal tabs remain the default for every shipped beta."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/vertical-tabs/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Vertical Tabs | con docs"/>
+<meta name="twitter:description" content="A Chrome style vertical tab strip for the workspace, gated behind a single config flag so horizontal tabs remain the default for every shipped beta."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Vertical Tabs","description":"A Chrome style vertical tab strip for the workspace, gated behind a single config flag so horizontal tabs remain the default for every shipped beta.","url":"https://con.nowledge.co/docs/impl/vertical-tabs/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item active" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/vertical-tabs.md" target="_blank" rel="noreferrer">docs/impl/vertical-tabs.md</a>
+    </div>
+    <h1 id="vertical-tabs">Vertical Tabs<a class="heading-anchor" href="#vertical-tabs" aria-hidden="true" aria-label="Link to Vertical Tabs"></a></h1><p>Issue: <a href="https://github.com/nowledge-co/con-terminal/issues/66" target="_blank" rel="noreferrer">#66</a> — <code>feat: Vertical Tabs</code>.</p>
+<p>A Chrome-style vertical tab strip for the workspace, gated behind a
+single config flag so horizontal tabs remain the default for every
+shipped beta.</p>
+<h2 id="feature-surface">Feature surface<a class="heading-anchor" href="#feature-surface" aria-hidden="true" aria-label="Link to Feature surface"></a></h2><table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Trigger</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Toggle orientation</td>
+<td><em>Settings → Appearance → Tabs → Vertical Tabs</em>, top-bar sidebar button, Command Palette, or shortcut</td>
+<td>Live; no restart. Shortcut defaults to Cmd+B on macOS and Ctrl+Shift+B on Windows/Linux.</td>
+</tr>
+<tr>
+<td>Collapsed icon rail</td>
+<td>default in vertical mode</td>
+<td>Smart icon per tab.</td>
+</tr>
+<tr>
+<td>Floating hover card</td>
+<td>cursor over rail icon</td>
+<td>Anchored to cursor; shows name + subtitle + pane count + SSH/unread badges. <strong>Does not displace</strong> rail or terminal pane.</td>
+</tr>
+<tr>
+<td>Pinned panel</td>
+<td>click sidebar-toggle in rail or header</td>
+<td>Width tweens 220 ms; pin state persists across restart.</td>
+</tr>
+<tr>
+<td>Resize pinned panel</td>
+<td>drag the right edge of the pinned panel</td>
+<td>Width clamps to 184–360 px and persists across restart.</td>
+</tr>
+<tr>
+<td>Activate tab</td>
+<td>left-click row</td>
+<td></td>
+</tr>
+<tr>
+<td>Close tab</td>
+<td>middle-click row, or hover-X (pinned mode)</td>
+<td></td>
+</tr>
+<tr>
+<td>New tab</td>
+<td><code>+</code> in rail or panel header</td>
+<td></td>
+</tr>
+<tr>
+<td>AI label + icon</td>
+<td>auto when <code>agent.suggestion_model.enabled</code></td>
+<td>Same model the inline shell completions use. SSH tabs short-circuit (no LLM). Per-tab cache + 5 s budget. Bad output is dropped; heuristic takes over.</td>
+</tr>
+<tr>
+<td>Smart name (heuristic / fallback)</td>
+<td>auto from OSC title / SSH host / cwd</td>
+<td>Bare shells fall through to cwd basename.</td>
+</tr>
+<tr>
+<td>Smart icon (heuristic / fallback)</td>
+<td>auto from process kind</td>
+<td>terminal / globe / code / pulse / book-open / file-code</td>
+</tr>
+<tr>
+<td>Rename tab</td>
+<td>double-click label, or context menu</td>
+<td>Enter commits, Esc cancels.</td>
+</tr>
+<tr>
+<td>Reset name</td>
+<td>context menu</td>
+<td>Clears <code>user_label</code> so smart auto-naming resumes.</td>
+</tr>
+<tr>
+<td>Reorder tab</td>
+<td>drag (rail or pinned), or context menu Move Up / Down</td>
+<td>Drop indicator: pinned-mode uses a 2-px line above the target row; rail mode uses a hover-bg pill.</td>
+</tr>
+<tr>
+<td>Duplicate tab</td>
+<td>context menu</td>
+<td>New tab in same cwd as source.</td>
+</tr>
+<tr>
+<td>Close other tabs</td>
+<td>context menu</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="why-a-hover-card-instead-of-an-auto-expanding-overlay">Why a hover card instead of an auto-expanding overlay<a class="heading-anchor" href="#why-a-hover-card-instead-of-an-auto-expanding-overlay" aria-hidden="true" aria-label="Link to Why a hover card instead of an auto-expanding overlay"></a></h2><p>The first vertical-tabs landing auto-expanded a full panel on hover (Microsoft Edge style). It read as aggressive — <em>passive intent</em> (just trying to remember what tab 3 is) was taking over the workspace. It also broke drag-from-collapsed: the user clicks an icon to drag, the cursor leaves the icon to start the drag, the overlay folds, the drop zones disappear.</p>
+<p>Apple&#39;s pattern (Finder sidebar item names, Safari tab thumbnails, Mail mailbox tooltips) is a <strong>tooltip-style card</strong> that appears next to the icon without taking over layout. We do that. The card is anchored vertically to the cursor (its row IS the icon under the cursor by construction), 240 px wide, opaque, with a 3-px primary-color stripe on its leading edge to anchor it visually to the rail.</p>
+<h2 id="ai-tab-summarization">AI tab summarization<a class="heading-anchor" href="#ai-tab-summarization" aria-hidden="true" aria-label="Link to AI tab summarization"></a></h2><p>Naming priority becomes:</p>
+<ol>
+<li><code>user_label</code> — explicit override; user always wins.</li>
+<li><code>ai_label</code> + <code>ai_icon</code> — when the suggestion model is enabled and has produced one.</li>
+<li>SSH host short name (no LLM needed; engine short-circuits).</li>
+<li><code>parse_focused_process()</code> heuristic.</li>
+<li>cwd basename.</li>
+<li>shell name / <code>Tab N</code>.</li>
+</ol>
+<p>The engine lives in <code>con-core::tab_summary</code> and is constructed via <code>AgentHarness::tab_summary_engine()</code> — same <code>suggestion_agent_config()</code> the inline shell completions use, gated by the same <code>agent.suggestion_model.enabled</code> toggle. Users who turned suggestions off get <strong>no extra LLM traffic</strong> for tab labels.</p>
+<p><strong>Prompt contract.</strong> The model is told to return a JSON object like <code>{&quot;label&quot;:&quot;...&quot;,&quot;icon&quot;:&quot;...&quot;}</code> where <code>label</code> is 1–3 words Title Case (no emoji, no quotes, no &quot;tab&quot; in the name) and <code>icon</code> is one of the six closed-set keywords: <code>terminal | code | pulse | book-open | file-code | globe</code>. A tolerant bracket-balanced JSON extractor recovers fenced or prose-wrapped answers. Anything that doesn&#39;t parse cleanly is dropped — the row falls back to the heuristic name and we never silently render garbage.</p>
+<p><strong>Throttling.</strong> Per-tab cache keyed on <code>(cwd, top-3-recent-commands, title)</code> so we don&#39;t re-ask while context hasn&#39;t moved. At most one in-flight request per tab. At most one request per 5 s per tab as a budget guard against chatty PROMPT_COMMAND cwd updates.</p>
+<p><strong>Triggers.</strong> A summary request fans out from:</p>
+<ul>
+<li><code>from_session</code> (initial seed from restored tab titles).</li>
+<li><code>on_terminal_title_changed</code> (OSC title change — strongest signal a tab&#39;s purpose just shifted).</li>
+<li><code>activate_tab</code> (the user is paying attention to this one — catch up if context moved).</li>
+<li><code>record_shell_command</code> (new command in history captured by Con).</li>
+<li><code>on_settings_saved</code> (model changed — clear cache, re-ask).</li>
+<li><code>pump_ghostty_views</code> returning <code>true</code> (any output churn on any pane). The engine&#39;s per-tab 5 s budget + context-hash dedupe makes this safe to fire on every frame; in steady state it drops 100% of these calls.</li>
+</ul>
+<p><strong>Why use <code>recent_output</code> instead of just <code>recent_commands</code>.</strong> Earlier versions only fed the model commands explicitly captured by Con (via the input bar or control socket). That missed the most common case: the user typing directly in the terminal pane. Now the request also includes the last ~24 lines of visible scrollback (via <code>TerminalPane::recent_lines</code>), which is the strongest signal we have for &quot;what is this tab actually doing&quot;, and works regardless of input source.</p>
+<p><strong>Closure.</strong> When a tab closes, the workspace calls <code>engine.forget(summary_id)</code> so future tabs can reuse cache slots without inheriting stale state.</p>
+<h2 id="visual-rules">Visual rules<a class="heading-anchor" href="#visual-rules" aria-hidden="true" aria-label="Link to Visual rules"></a></h2><ul>
+<li><strong>Single selection signal.</strong> Active row uses the elevated pill bg + foreground text + medium font weight. <strong>No accent bar.</strong> A single unambiguous cue is enough; doubling it (pill + bar + bold + accent color) is decorative chrome.</li>
+<li><strong>Quiet by default.</strong> Action affordances (rename pencil, close X) are hover-only on every row, including the active one. Reveal on intent.</li>
+<li><strong>Surface separation via opacity.</strong> <code>surface_tone()</code> blends a desaturated extreme-luminance overlay into <code>theme.background</code> at 0.10 (rail), 0.18 (panel body), 0.22 (hover card), 0.32 (card edge stripe). No borders, no shadows. On macOS, the workspace gives the sidebar an opaque terminal-colored backing first, so those translucent surfaces visually blend over the terminal instead of over the desktop through the transparent root window.</li>
+<li><strong>Mono font for technical detail only.</strong> Tab names use <code>theme.font_family</code> (system) — tabs are named <em>things</em>. Subtitles (<code>~/proj/path</code>, <code>user@host</code>) use <code>theme.mono_font_family</code>.</li>
+</ul>
+<h2 id="user-visible-surface">User-visible surface<a class="heading-anchor" href="#user-visible-surface" aria-hidden="true" aria-label="Link to User-visible surface"></a></h2><ul>
+<li><strong>Setting:</strong> <em>Settings → Appearance → Tabs → Vertical Tabs</em>. Backed
+by <code>appearance.tabs_orientation</code> in <code>~/.config/con/config.toml</code>
+(<code>&quot;horizontal&quot;</code> | <code>&quot;vertical&quot;</code>).</li>
+<li><strong>Switching is live:</strong> flipping the toggle re-renders immediately;
+no restart needed. The horizontal tab strip motion target collapses
+to 0 in vertical mode so the top bar shrinks back to the compact
+one-tab form.</li>
+<li><strong>Three states</strong> in vertical mode:<ul>
+<li><strong>Collapsed (default).</strong> Narrow icon rail (~44 px). Per-tab
+terminal-prompt icon stacked vertically, active pill highlighted
+with an opacity-based elevated fill, needs-attention dot in the
+corner. A <code>caret-line-right</code> unfold control and <code>+</code> button sit at
+the top.</li>
+<li><strong>Hover card.</strong> When the cursor enters a rail icon in collapsed
+mode, a compact card (~240 px) floats beside the rail as an
+absolute overlay ABOVE the terminal pane. Mouse leave returns to
+the rail. <strong>The card does not displace the terminal area</strong> —
+terminal columns don&#39;t reflow when the user is just glancing at tab
+titles.</li>
+<li><strong>Pinned.</strong> Click the unfold control in the rail or the
+sidebar-toggle in the panel header (top-right) to pin the panel
+open. The panel stops floating and starts taking user-resizable
+width out of the terminal area&#39;s flex row. Pinned state persists
+across restarts via <code>vertical_tabs_pinned</code>; resized width persists
+via <code>vertical_tabs_width</code> in <code>~/.local/share/con/session.json</code>.</li>
+</ul>
+</li>
+<li><strong>Interactions:</strong> click activates a tab; middle-click closes it;
+pinned-mode rows expose a hover-only <code>X</code> close affordance. The <code>+</code>
+button always spawns a new tab.</li>
+<li><strong>Quick switch:</strong> the top-bar sidebar button, Command Palette action,
+and <code>keybindings.toggle_vertical_tabs</code> flip between horizontal and
+vertical orientations. The action persists <code>appearance.tabs_orientation</code>
+immediately so Settings stays in sync and the next launch restores the
+selected orientation.</li>
+</ul>
+<h2 id="code-map">Code map<a class="heading-anchor" href="#code-map" aria-hidden="true" aria-label="Link to Code map"></a></h2><pre><code class="language-text">crates/con-core/src/config.rs
+  + TabsOrientation enum (Horizontal | Vertical) on AppearanceConfig
+  + keybindings.toggle_vertical_tabs (Cmd+B on macOS, Ctrl+Shift+B on
+    Windows/Linux by default)
+
+crates/con-core/src/session.rs
+  + Session.vertical_tabs_pinned: bool (persists pin state)
+  + Session.vertical_tabs_width: Option&lt;f32&gt; (persists user-resized width)
+
+crates/con-app/src/sidebar.rs       (renamed conceptually: VerticalTabsPanel)
+  - SessionEntry { id, name, subtitle, icon, needs_attention, pane_count }
+  - SessionSidebar with PanelMode = Collapsed | Pinned + cursor-anchored hover card
+  - Pinned panel width clamps to 184–360 px; collapsed rail width stays fixed
+  - render() returns the in-flow piece (rail or pinned body)
+  - render_hover_card_overlay(window, cx) returns Option&lt;AnyElement&gt;
+    for the floating card element (used only in collapsed-with-hover state)
+  + SidebarCloseTab event (per-tab close from the panel)
+  + surface_tone(theme, intensity) helper — blends a desaturated
+    extreme-luminance overlay into theme.background so the panel
+    surface reads on both light and dark themes regardless of which
+    palette tokens the theme author picked
+
+crates/con-app/src/workspace.rs
+  - tabs_orientation: TabsOrientation field on ConWorkspace
+  - horizontal_tabs_visible() / vertical_tabs_active() helpers
+  - sync_tab_strip_motion now respects orientation (horizontal strip
+    collapses in vertical mode regardless of tab count)
+  - main_area is .relative(); vertical-tabs sidebar prepended; hover
+    card appended last so it stacks above the terminal pane
+  - workspace owns the pinned-panel resize gesture because it already
+    knows the terminal-area min width and the agent-panel width
+  - on_tabs_orientation_changed propagates orientation changes; observe(sidebar)
+    saves session whenever pin state changes
+  - ToggleVerticalTabs action persists config, updates Settings when open,
+    and is exposed through the top bar and Command Palette
+  - sync_sidebar now forwards needs_attention
+  - Pane drag-resize math subtracts the vertical-tabs panel width
+    from horizontal split totals so resize handles stay aligned
+
+crates/con-app/src/settings_panel.rs
+  + &quot;Tabs&quot; group in Appearance section with the Vertical Tabs Switch
+</code></pre>
+<h2 id="stacking-gotcha-peek-overlay">Stacking gotcha (peek overlay)<a class="heading-anchor" href="#stacking-gotcha-peek-overlay" aria-hidden="true" aria-label="Link to Stacking gotcha (peek overlay)"></a></h2><p>The peek overlay must NOT live inside the sidebar entity&#39;s render
+subtree. If it does, GPUI paints it as an absolute child of a
+44-px-wide parent, then paints the terminal pane sibling on top with
+<code>theme.background.opacity(terminal_opacity)</code> — the overlay reads at
+~30% effective alpha through the translucent terminal bg, looking
+washed out.</p>
+<p>Instead the overlay is built by <code>SessionSidebar::render_hover_card_overlay()</code>
+and appended by the workspace as the last child of <code>main_area</code> (which
+is <code>.relative()</code>). That makes it a sibling of the terminal pane and
+the agent panel, painted strictly after both, and therefore stacked
+above both.</p>
+<p>See <code>postmortem/2026-04-24-vertical-tabs-overlay-stacking.md</code> for the
+full debug story.</p>
+<h2 id="visual-design-language">Visual design language<a class="heading-anchor" href="#visual-design-language" aria-hidden="true" aria-label="Link to Visual design language"></a></h2><p>Follows <code>docs/design/con-design-language.md</code> and <code>CLAUDE.md</code>:</p>
+<ul>
+<li><strong>No borders.</strong> Surface separation comes from theme-derived
+opacity fills, including the user-configured UI opacity. The 1-px
+strip on the panel&#39;s right edge is itself an opacity-based fill, not
+a CSS border.</li>
+<li><strong>No shadows.</strong> Same opacity-based approach.</li>
+<li><strong>System font</strong> for tab labels; mono font is reserved for technical
+subtitles like <code>~/proj/path</code> and <code>user@host</code>.</li>
+<li><strong>Phosphor icons only.</strong> Used: <code>terminal.svg</code> (active tab pill),
+<code>globe.svg</code> (SSH session pill), <code>plus.svg</code> (new tab),
+<code>caret-line-right.svg</code> (rail unfold), <code>sidebar-simple.svg</code>
+(panel collapse), <code>x.svg</code> (close).</li>
+<li><strong>Mono-by-context.</strong> Terminal-path and remote-host details use the
+mono font; settings panel, agent panel, and tab names remain on the
+system UI font.</li>
+</ul>
+<h2 id="validation">Validation<a class="heading-anchor" href="#validation" aria-hidden="true" aria-label="Link to Validation"></a></h2><ul>
+<li><code>cargo check --workspace --all-targets</code> clean (including
+<code>RUSTFLAGS=&quot;-D warnings&quot;</code>).</li>
+<li><code>cargo test --workspace</code> passes, including the <code>con-core::tab_summary</code>
+parser/cache/reorder coverage.</li>
+<li>Visual proof on Linux (XFCE / X11 / <code>llvmpipe</code> Vulkan): captured
+during development but not committed — <code>docs/**/*.png</code> is
+gitignored. Screenshots live in PR comments instead so they don&#39;t
+bloat the repo.</li>
+<li>macOS / Windows: not yet smoke-tested in this PR. The render path
+is identical across platforms (panel is plain GPUI), so behavior
+should match. The macOS top bar still reserves 78 px for traffic
+lights since the vertical panel sits BELOW the top bar (no
+collision); the Windows / Linux caption-button cluster stays in
+the top bar&#39;s right edge for the same reason.</li>
+</ul>
+<h2 id="not-in-scope-follow-ups">Not in scope (follow-ups)<a class="heading-anchor" href="#not-in-scope-follow-ups" aria-hidden="true" aria-label="Link to Not in scope (follow-ups)"></a></h2><ul>
+<li>Drag-to-reorder for the horizontal tab strip. Vertical rail and
+pinned-panel reordering ship in this PR.</li>
+<li>Tab groups / collapsed groups / pinned tabs (Chrome&#39;s other
+vertical-tabs features).</li>
+<li>Hover-peek on the right side for a future vertical agent-panel
+mode.</li>
+<li>Migration of the horizontal strip to share <code>surface_tone()</code> for
+visual coherence on themes whose <code>theme.title_bar</code> collapses into
+<code>theme.background</code>.</li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#feature-surface">Feature surface</a>
+      
+        <a class="docs-toc-item depth-2" href="#why-a-hover-card-instead-of-an-auto-expanding-overlay">Why a hover card instead of an auto-expanding overlay</a>
+      
+        <a class="docs-toc-item depth-2" href="#ai-tab-summarization">AI tab summarization</a>
+      
+        <a class="docs-toc-item depth-2" href="#visual-rules">Visual rules</a>
+      
+        <a class="docs-toc-item depth-2" href="#user-visible-surface">User-visible surface</a>
+      
+        <a class="docs-toc-item depth-2" href="#code-map">Code map</a>
+      
+        <a class="docs-toc-item depth-2" href="#stacking-gotcha-peek-overlay">Stacking gotcha (peek overlay)</a>
+      
+        <a class="docs-toc-item depth-2" href="#visual-design-language">Visual design language</a>
+      
+        <a class="docs-toc-item depth-2" href="#validation">Validation</a>
+      
+        <a class="docs-toc-item depth-2" href="#not-in-scope-follow-ups">Not in scope (follow-ups)</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

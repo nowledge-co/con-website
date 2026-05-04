@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Implementation: Build System | con docs</title>
+<meta name="description" content="Implementation: Build System Overview con is a Cargo workspace with platform terminal backends: macOS embeds full Ghostty with Metal rendering."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/build-system/"/>
+<meta property="og:title" content="Implementation: Build System | con docs"/>
+<meta property="og:description" content="Implementation: Build System Overview con is a Cargo workspace with platform terminal backends: macOS embeds full Ghostty with Metal rendering."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/build-system/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Implementation: Build System | con docs"/>
+<meta name="twitter:description" content="Implementation: Build System Overview con is a Cargo workspace with platform terminal backends: macOS embeds full Ghostty with Metal rendering."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Implementation: Build System","description":"Implementation: Build System Overview con is a Cargo workspace with platform terminal backends: macOS embeds full Ghostty with Metal rendering.","url":"https://con.nowledge.co/docs/impl/build-system/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item active" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/build-system.md" target="_blank" rel="noreferrer">docs/impl/build-system.md</a>
+    </div>
+    <h1 id="implementation-build-system">Implementation: Build System<a class="heading-anchor" href="#implementation-build-system" aria-hidden="true" aria-label="Link to Implementation: Build System"></a></h1><h2 id="overview">Overview<a class="heading-anchor" href="#overview" aria-hidden="true" aria-label="Link to Overview"></a></h2><p>con is a Cargo workspace with platform terminal backends:</p>
+<ul>
+<li>macOS embeds full Ghostty with Metal rendering.</li>
+<li>Windows uses ConPTY plus <code>libghostty-vt</code> and a D3D11/DirectWrite renderer.</li>
+<li>Linux uses a Unix PTY plus <code>libghostty-vt</code> and the preview GPUI paint path.</li>
+</ul>
+<p>The build no longer includes the old <code>vte</code> and <code>portable-pty</code> pipeline.</p>
+<h2 id="build-commands">Build commands<a class="heading-anchor" href="#build-commands" aria-hidden="true" aria-label="Link to Build commands"></a></h2><pre><code class="language-bash">cargo build
+cargo build --release
+cargo run -p con
+cargo test --workspace
+</code></pre>
+<h2 id="workspace-shape">Workspace shape<a class="heading-anchor" href="#workspace-shape" aria-hidden="true" aria-label="Link to Workspace shape"></a></h2><pre><code class="language-toml">[workspace]
+members = [
+    &quot;crates/con-app&quot;,
+    &quot;crates/con-core&quot;,
+    &quot;crates/con-paths&quot;,
+    &quot;crates/con-terminal&quot;,
+    &quot;crates/con-ghostty&quot;,
+    &quot;crates/con-agent&quot;,
+    &quot;crates/con-cli&quot;,
+]
+</code></pre>
+<h2 id="key-crates">Key crates<a class="heading-anchor" href="#key-crates" aria-hidden="true" aria-label="Link to Key crates"></a></h2><table>
+<thead>
+<tr>
+<th>Crate</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>con</code></td>
+<td>GPUI app shell, tabs, splits, settings, agent panel</td>
+</tr>
+<tr>
+<td><code>con-core</code></td>
+<td>harness, config, session persistence</td>
+</tr>
+<tr>
+<td><code>con-paths</code></td>
+<td>shared platform-safe per-user app directories</td>
+</tr>
+<tr>
+<td><code>con-ghostty</code></td>
+<td>Rust wrapper around libghostty C API</td>
+</tr>
+<tr>
+<td><code>con-terminal</code></td>
+<td>terminal theme data and Ghostty palette translation helpers</td>
+</tr>
+<tr>
+<td><code>con-agent</code></td>
+<td>built-in AI harness and tools</td>
+</tr>
+</tbody></table>
+<h2 id="key-dependencies">Key dependencies<a class="heading-anchor" href="#key-dependencies" aria-hidden="true" aria-label="Link to Key dependencies"></a></h2><table>
+<thead>
+<tr>
+<th>Dependency</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gpui</code></td>
+<td>native GPU UI framework (upstream Zed git source)</td>
+</tr>
+<tr>
+<td><code>gpui-component</code></td>
+<td>reusable UI controls (upstream Longbridge git source)</td>
+</tr>
+<tr>
+<td><code>rig-core</code></td>
+<td>multi-provider agent runtime (pinned fork revision)</td>
+</tr>
+<tr>
+<td><code>tokio</code></td>
+<td>async runtime for agent work</td>
+</tr>
+<tr>
+<td><code>crossbeam-channel</code></td>
+<td>UI and harness event routing</td>
+</tr>
+<tr>
+<td><code>reqwest</code></td>
+<td>live model list fetch from models.dev</td>
+</tr>
+</tbody></table>
+<h2 id="dependency-sourcing">Dependency sourcing<a class="heading-anchor" href="#dependency-sourcing" aria-hidden="true" aria-label="Link to Dependency sourcing"></a></h2><p><code>con</code> does not build against live sources in <code>3pp/</code>.</p>
+<ul>
+<li><code>3pp/</code> is read-only reference material only.</li>
+<li>Cargo dependencies resolve from crates.io or explicit git sources in the workspace manifest.</li>
+<li>Ghostty source is fetched by <code>con-ghostty/build.rs</code> when needed, unless an override source directory is provided for local development.</li>
+</ul>
+<h2 id="platform-boundary">Platform boundary<a class="heading-anchor" href="#platform-boundary" aria-hidden="true" aria-label="Link to Platform boundary"></a></h2><p>The <code>con</code> UI binary builds on macOS, Windows, and Linux. Platform-specific
+runtime code is <code>cfg</code>-gated:</p>
+<ul>
+<li>macOS uses the embedded libghostty surface.</li>
+<li>Windows uses the <code>con-app.exe</code> binary name because <code>CON</code> is a reserved DOS
+device name.</li>
+<li>Linux keeps the normal <code>con</code> binary name.</li>
+</ul>
+<h2 id="per-user-app-paths">Per-user app paths<a class="heading-anchor" href="#per-user-app-paths" aria-hidden="true" aria-label="Link to Per-user app paths"></a></h2><p>Use <code>con-paths</code> for all user config, data, auth, theme, and skill storage paths.
+Windows cannot safely use a bare <code>con</code> path segment, so <code>con-paths</code> maps the app
+directory to <code>con-terminal</code> on Windows while preserving <code>con</code> on macOS and Linux.</p>
+<h2 id="ghostty-build-boundary">Ghostty build boundary<a class="heading-anchor" href="#ghostty-build-boundary" aria-hidden="true" aria-label="Link to Ghostty build boundary"></a></h2><p><code>con-ghostty</code> is intentionally thin:</p>
+<ul>
+<li>FFI bindings live in <code>ffi.rs</code></li>
+<li>surface/app lifecycle lives in <code>terminal.rs</code></li>
+<li>product logic stays out of the wrapper</li>
+</ul>
+<h2 id="ghostty-resources">Ghostty resources<a class="heading-anchor" href="#ghostty-resources" aria-hidden="true" aria-label="Link to Ghostty resources"></a></h2><p>Ghostty&#39;s runtime is not just the static library. The child shell environment also depends on the bundled Ghostty resources payload, especially:</p>
+<ul>
+<li><code>terminfo/xterm-ghostty</code></li>
+<li>shell integration scripts</li>
+<li>supporting share files under <code>Resources/ghostty</code></li>
+</ul>
+<p>Con now handles this in two places:</p>
+<ul>
+<li><code>cargo run -p con</code> debug runs: <code>con-ghostty</code> seeds <code>GHOSTTY_RESOURCES_DIR</code> from the built Ghostty <code>zig-out/share/ghostty</code> directory when that directory exists locally.</li>
+<li>macOS app bundles: <code>scripts/macos/build-app.sh</code> copies Ghostty&#39;s built <code>share/ghostty</code> tree into <code>Contents/Resources/ghostty</code>.</li>
+</ul>
+<p>Without that payload, Ghostty falls back to <code>TERM=xterm-256color</code> and disables parts of shell integration. That changes the behavior child processes see and can invalidate product comparisons against standalone Ghostty.</p>
+<p>If we need stronger pane observability in the future, the preferred path is to upstream or expose new libghostty C API surface area instead of growing another terminal runtime in this repo.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#overview">Overview</a>
+      
+        <a class="docs-toc-item depth-2" href="#build-commands">Build commands</a>
+      
+        <a class="docs-toc-item depth-2" href="#workspace-shape">Workspace shape</a>
+      
+        <a class="docs-toc-item depth-2" href="#key-crates">Key crates</a>
+      
+        <a class="docs-toc-item depth-2" href="#key-dependencies">Key dependencies</a>
+      
+        <a class="docs-toc-item depth-2" href="#dependency-sourcing">Dependency sourcing</a>
+      
+        <a class="docs-toc-item depth-2" href="#platform-boundary">Platform boundary</a>
+      
+        <a class="docs-toc-item depth-2" href="#per-user-app-paths">Per-user app paths</a>
+      
+        <a class="docs-toc-item depth-2" href="#ghostty-build-boundary">Ghostty build boundary</a>
+      
+        <a class="docs-toc-item depth-2" href="#ghostty-resources">Ghostty resources</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

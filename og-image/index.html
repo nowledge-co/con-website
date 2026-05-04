@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=1200,initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
 <title>con OG image</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -124,9 +125,9 @@ body {
 }
 .terminal {
   position: absolute;
-  right: 62px;
-  bottom: 72px;
-  width: 466px;
+  right: 48px;
+  bottom: 68px;
+  width: 504px;
   border-radius: 22px;
   background: rgba(11, 11, 13, 0.72);
   box-shadow:
@@ -162,7 +163,7 @@ body {
 }
 .terminal-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 176px;
+  grid-template-columns: minmax(0, 1fr) 198px;
   gap: 16px;
   padding: 18px;
   font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -207,6 +208,9 @@ body {
   font-size: 13px;
   line-height: 1.38;
   letter-spacing: 0;
+}
+.agent-message.user {
+  background: rgba(255, 245, 232, 0.1);
 }
 .agent-message strong {
   color: #fff6ea;
@@ -274,19 +278,19 @@ body {
         <span class="dot red"></span>
         <span class="dot amber"></span>
         <span class="dot green"></span>
-        <span class="path">~/con-terminal</span>
+        <span class="path">~/project</span>
       </div>
       <div class="terminal-body">
         <div class="shell-pane">
-          <div><span class="prompt">›</span> cargo test -p con-core</div>
-          <div><span class="dim">tests</span> <span class="ok">312 passed</span></div>
-          <div><span class="prompt">›</span> git status --short</div>
-          <div><span class="muted">M crates/con-core/src/config.rs</span></div>
+          <div><span class="prompt">›</span> cargo bench -p con-bench</div>
+          <div><span class="dim">render p95</span> <span class="ok">4.8ms</span></div>
+          <div><span class="dim">scroll</span> <span class="ok">144 fps</span></div>
+          <div><span class="prompt">›</span> git diff --stat</div>
         </div>
         <div class="agent-panel">
-          <div class="agent-title">Agent panel</div>
-          <div class="agent-message"><strong>Find max_tokens</strong><br/>bump it to 8192.</div>
-          <div class="agent-note">Reads panes, asks first, works in view.</div>
+          <div class="agent-title">AI side panel</div>
+          <div class="agent-message user"><strong>What changed?</strong><br/>use pane context.</div>
+          <div class="agent-message">Reads shell, tmux, and git before suggesting edits.</div>
         </div>
       </div>
     </aside>

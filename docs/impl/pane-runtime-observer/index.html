@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pane Runtime Observer | con docs</title>
+<meta name="description" content="Pane Runtime Observer This document keeps the original name, but the current implementation direction in con is a reducer backed pane runtime tracker."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/pane-runtime-observer/"/>
+<meta property="og:title" content="Pane Runtime Observer | con docs"/>
+<meta property="og:description" content="Pane Runtime Observer This document keeps the original name, but the current implementation direction in con is a reducer backed pane runtime tracker."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/pane-runtime-observer/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Pane Runtime Observer | con docs"/>
+<meta name="twitter:description" content="Pane Runtime Observer This document keeps the original name, but the current implementation direction in con is a reducer backed pane runtime tracker."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pane Runtime Observer","description":"Pane Runtime Observer This document keeps the original name, but the current implementation direction in con is a reducer backed pane runtime tracker.","url":"https://con.nowledge.co/docs/impl/pane-runtime-observer/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item active" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/pane-runtime-observer.md" target="_blank" rel="noreferrer">docs/impl/pane-runtime-observer.md</a>
+    </div>
+    <h1 id="pane-runtime-observer">Pane Runtime Observer<a class="heading-anchor" href="#pane-runtime-observer" aria-hidden="true" aria-label="Link to Pane Runtime Observer"></a></h1><p>This document keeps the original name, but the current implementation direction in con is a reducer-backed pane runtime tracker.</p>
+<h2 id="why-this-exists">Why this exists<a class="heading-anchor" href="#why-this-exists" aria-hidden="true" aria-label="Link to Why this exists"></a></h2><p>A terminal pane is not a single process.</p>
+<p>For serious workflows, the visible runtime is usually a stack:</p>
+<ol>
+<li>local login shell</li>
+<li>ssh client</li>
+<li>remote shell</li>
+<li>tmux or zellij</li>
+<li>another shell</li>
+<li>an agent CLI, vim, htop, less, or a long-running program</li>
+</ol>
+<p>The current agent context model is still mostly a snapshot:</p>
+<ul>
+<li>title</li>
+<li>cwd</li>
+<li>recent output</li>
+<li>last command</li>
+<li>PTY input generation</li>
+<li>last completed command boundary</li>
+<li>a small amount of pane-mode inference</li>
+</ul>
+<p>That is enough to avoid some bad mistakes, but it is not enough to answer the real question:</p>
+<p><code>what is this pane actually running right now, and how certain are we?</code></p>
+<p>This document defines the long-term architecture for that answer.</p>
+<h2 id="design-goals">Design goals<a class="heading-anchor" href="#design-goals" aria-hidden="true" aria-label="Link to Design goals"></a></h2><ul>
+<li>Model the visible runtime of a pane, not just shell metadata.</li>
+<li>Separate backend facts from product inferences.</li>
+<li>Represent nested scopes explicitly.</li>
+<li>Preserve confidence and freshness with every claim.</li>
+<li>Work from Ghostty facts without rebuilding another terminal engine.</li>
+<li>Support external agent CLIs without hijacking them.</li>
+<li>Degrade honestly when the platform cannot provide strong evidence.</li>
+</ul>
+<h2 id="non-goals">Non-goals<a class="heading-anchor" href="#non-goals" aria-hidden="true" aria-label="Link to Non-goals"></a></h2><ul>
+<li>Perfect remote introspection without cooperation from the remote machine.</li>
+<li>Regex-based certainty about every TUI.</li>
+<li>Ghostty-specific hacks that pretend the C API exposes more than it really does.</li>
+<li>Hiding uncertainty from the user or the agent.</li>
+</ul>
+<h2 id="core-rule">Core rule<a class="heading-anchor" href="#core-rule" aria-hidden="true" aria-label="Link to Core rule"></a></h2><p>The system must never present shell-derived metadata as if it were the visible foreground runtime unless the evidence says that is still true.</p>
+<h2 id="architecture">Architecture<a class="heading-anchor" href="#architecture" aria-hidden="true" aria-label="Link to Architecture"></a></h2><p>The design is a three-layer model.</p>
+<h3 id="layer-1-backend-facts">Layer 1: Backend facts<a class="heading-anchor" href="#layer-1-backend-facts" aria-hidden="true" aria-label="Link to Layer 1: Backend facts"></a></h3><p>These are raw observations with minimal interpretation.</p>
+<p>Examples:</p>
+<ul>
+<li>terminal title</li>
+<li>OSC 7 pwd</li>
+<li>shell integration presence</li>
+<li>alternate-screen state</li>
+<li>command-finished events</li>
+<li>visible screen text</li>
+<li>future libghostty foreground-process exports</li>
+</ul>
+<p>This layer answers:</p>
+<p><code>what did the backend actually observe?</code></p>
+<p>It does not answer:</p>
+<p><code>what app is definitely running?</code></p>
+<h3 id="layer-2-pane-runtime-tracker">Layer 2: Pane runtime tracker<a class="heading-anchor" href="#layer-2-pane-runtime-tracker" aria-hidden="true" aria-label="Link to Layer 2: Pane runtime tracker"></a></h3><p>This is a stateful reducer that consumes facts and actions over time and produces a runtime model.</p>
+<p>It is responsible for:</p>
+<ul>
+<li>evidence aggregation</li>
+<li>action-history aggregation</li>
+<li>freshness tracking</li>
+<li>scope detection</li>
+<li>conflict resolution</li>
+<li>confidence scoring</li>
+<li>invalidation when the foreground runtime changes</li>
+</ul>
+<p>This layer answers:</p>
+<p><code>given all recent facts, what runtime stack is most defensible?</code></p>
+<h3 id="layer-3-consumers">Layer 3: Consumers<a class="heading-anchor" href="#layer-3-consumers" aria-hidden="true" aria-label="Link to Layer 3: Consumers"></a></h3><p>Consumers include:</p>
+<ul>
+<li>the built-in agent prompt</li>
+<li><code>list_panes</code></li>
+<li>tab and sidebar labels</li>
+<li>notifications</li>
+<li>approval UI</li>
+<li>future session restore and resume surfaces</li>
+</ul>
+<p>Consumers must receive structured runtime state, not re-run their own heuristics on raw text.</p>
+<h2 id="data-model">Data model<a class="heading-anchor" href="#data-model" aria-hidden="true" aria-label="Link to Data model"></a></h2><h3 id="paneobservationframe"><code>PaneObservationFrame</code><a class="heading-anchor" href="#paneobservationframe" aria-hidden="true" aria-label="Link to PaneObservationFrame"></a></h3><p>An immutable observation snapshot emitted by a backend adapter.</p>
+<p>Current implementation in con:</p>
+<ul>
+<li><code>title</code></li>
+<li><code>cwd</code></li>
+<li><code>recent_output</code></li>
+<li><code>last_command</code></li>
+<li><code>last_exit_code</code></li>
+<li><code>last_command_duration_secs</code></li>
+<li><code>support</code></li>
+<li><code>has_shell_integration</code></li>
+<li><code>is_alt_screen</code></li>
+<li><code>is_busy</code></li>
+<li><code>input_generation</code></li>
+<li><code>last_command_finished_input_generation</code></li>
+</ul>
+<p>Suggested fields:</p>
+<ul>
+<li><code>pane_id</code></li>
+<li><code>observed_at</code></li>
+<li><code>backend</code></li>
+<li><code>pty_child_pid</code></li>
+<li><code>pty_foreground_pgid</code></li>
+<li><code>title</code></li>
+<li><code>pwd</code></li>
+<li><code>shell_integration</code></li>
+<li><code>command_finished</code></li>
+<li><code>alt_screen</code></li>
+<li><code>screen_excerpt</code></li>
+<li><code>screen_hash</code></li>
+<li><code>size</code></li>
+</ul>
+<h3 id="evidence"><code>Evidence</code><a class="heading-anchor" href="#evidence" aria-hidden="true" aria-label="Link to Evidence"></a></h3><p>Every non-trivial claim must carry evidence.</p>
+<p>Suggested fields:</p>
+<ul>
+<li><code>source</code></li>
+<li><code>observed_at</code></li>
+<li><code>strength</code></li>
+<li><code>freshness</code></li>
+<li><code>value</code></li>
+<li><code>note</code></li>
+</ul>
+<p>Suggested sources:</p>
+<ul>
+<li><code>pty_foreground</code></li>
+<li><code>pty_child</code></li>
+<li><code>shell_integration</code></li>
+<li><code>command_line</code></li>
+<li><code>surface_state</code></li>
+<li><code>ghostty_action</code></li>
+<li><code>cwd_artifact</code></li>
+<li><code>user_label</code></li>
+<li><code>manual_override</code></li>
+</ul>
+<h3 id="paneruntimestate"><code>PaneRuntimeState</code><a class="heading-anchor" href="#paneruntimestate" aria-hidden="true" aria-label="Link to PaneRuntimeState"></a></h3><p>The durable observer output for one pane.</p>
+<p>Current implementation in con:</p>
+<ul>
+<li><code>front_state</code></li>
+<li><code>mode</code></li>
+<li><code>shell_metadata_fresh</code></li>
+<li><code>remote_host</code></li>
+<li><code>agent_cli</code></li>
+<li><code>tmux_session</code></li>
+<li><code>last_verified_scope_stack</code></li>
+<li><code>last_verified_tmux_session</code></li>
+<li><code>shell_context</code></li>
+<li><code>shell_context_fresh</code></li>
+<li><code>active_scope</code></li>
+<li><code>evidence</code></li>
+<li><code>scope_stack</code></li>
+<li><code>recent_actions</code></li>
+<li><code>warnings</code></li>
+</ul>
+<h3 id="scopestack"><code>ScopeStack</code><a class="heading-anchor" href="#scopestack" aria-hidden="true" aria-label="Link to ScopeStack"></a></h3><p>A pane should expose nested scopes instead of a single label.</p>
+<p>In the shipped reducer, there are now two scope stacks with different meaning:</p>
+<ul>
+<li><code>scope_stack</code>: current verified foreground stack only</li>
+<li><code>last_verified_scope_stack</code>: last shell frame con verified through a typed shell probe</li>
+</ul>
+<p>This is intentional.</p>
+<p><code>last_verified_scope_stack</code> is historical orientation, not live foreground truth.</p>
+<h2 id="shipped-tmux-attachment">Shipped tmux attachment<a class="heading-anchor" href="#shipped-tmux-attachment" aria-hidden="true" aria-label="Link to Shipped tmux attachment"></a></h2><p>con now uses that distinction to unlock the first native tmux control path safely.</p>
+<p>When all of these are true:</p>
+<ul>
+<li>the current front state is a proven shell prompt</li>
+<li>the shell context is fresh</li>
+<li>the shell probe confirms tmux in that shell frame</li>
+</ul>
+<p>con can treat tmux as a native protocol attachment instead of a raw visible TUI.</p>
+<p>That allows:</p>
+<ul>
+<li>listing tmux panes and windows</li>
+<li>capturing a chosen tmux pane by target id</li>
+<li>sending tmux-native keys to a chosen tmux pane</li>
+</ul>
+<p>This is materially different from outer-pane <code>send_keys</code>.</p>
+<p>Suggested scope kinds:</p>
+<ul>
+<li><code>LocalShell</code></li>
+<li><code>SshConnection</code></li>
+<li><code>RemoteShell</code></li>
+<li><code>Multiplexer</code></li>
+<li><code>Shell</code></li>
+<li><code>InteractiveApp</code></li>
+<li><code>AgentCli</code></li>
+</ul>
+<p>Suggested app kinds:</p>
+<ul>
+<li><code>Tmux</code></li>
+<li><code>Zellij</code></li>
+<li><code>Vim</code></li>
+<li><code>Neovim</code></li>
+<li><code>Less</code></li>
+<li><code>Htop</code></li>
+<li><code>Top</code></li>
+<li><code>Unknown</code></li>
+</ul>
+<p>Suggested agent CLI kinds:</p>
+<ul>
+<li><code>KnownAgent</code></li>
+<li><code>Unknown</code></li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-text">[
+  LocalShell(zsh),
+  SshConnection(host=prod-2),
+  RemoteShell(zsh),
+  Multiplexer(kind=tmux, session=deploy),
+  Shell(bash),
+  AgentCli(kind=KnownAgent)
+]
+</code></pre>
+<p>That is the abstraction the product actually needs.</p>
+<h2 id="strong-signals-vs-raw-observations">Strong signals vs raw observations<a class="heading-anchor" href="#strong-signals-vs-raw-observations" aria-hidden="true" aria-label="Link to Strong signals vs raw observations"></a></h2><h3 id="strong-signals">Strong signals<a class="heading-anchor" href="#strong-signals" aria-hidden="true" aria-label="Link to Strong signals"></a></h3><p>These can justify high-confidence claims.</p>
+<h4 id="ghostty-action-and-screen-facts">Ghostty action and screen facts<a class="heading-anchor" href="#ghostty-action-and-screen-facts" aria-hidden="true" aria-label="Link to Ghostty action and screen facts"></a></h4><p>The public libghostty C API already gives us strong pane facts:</p>
+<ul>
+<li>title</li>
+<li>working directory</li>
+<li>command-finished events</li>
+<li>process-exited state</li>
+<li>visible text</li>
+<li>scrollback text</li>
+</ul>
+<p>These are strong facts about terminal state.
+They are not direct foreground-process identity.</p>
+<h4 id="upstreamable-runtime-facts">Upstreamable runtime facts<a class="heading-anchor" href="#upstreamable-runtime-facts" aria-hidden="true" aria-label="Link to Upstreamable runtime facts"></a></h4><p>Ghostty clearly owns the PTY and process group internally.
+If con needs high-confidence local foreground-app identity, the durable path is to expose that through libghostty instead of rebuilding a parallel PTY stack in this repo.</p>
+<p>That should be treated as an upstream API contract project, not a local shortcut.</p>
+<h4 id="shell-integration-events">Shell integration events<a class="heading-anchor" href="#shell-integration-events" aria-hidden="true" aria-label="Link to Shell integration events"></a></h4><p>OSC 133 provides prompt and command lifecycle semantics.</p>
+<p>Useful facts:</p>
+<ul>
+<li>whether the shell is active</li>
+<li>when a command started</li>
+<li>when it finished</li>
+<li>whether command metadata belongs to the visible runtime</li>
+</ul>
+<p>This is strong for shell state, but it is not sufficient to identify the full nested scope stack by itself.</p>
+<h4 id="alternate-screen">Alternate screen<a class="heading-anchor" href="#alternate-screen" aria-hidden="true" aria-label="Link to Alternate screen"></a></h4><p>Alternate-screen entry is a strong signal that the visible runtime is no longer an ordinary shell prompt.</p>
+<p>It should invalidate shell-metadata freshness for visible-app claims.</p>
+<p>Current embedded Ghostty note:</p>
+<p>the runtime model is ready for this signal, but the public embedded surface API does not export it yet. con therefore treats alternate-screen support as an explicit backend capability, and it is currently false on Ghostty panes.</p>
+<h3 id="raw-observations">Raw observations<a class="heading-anchor" href="#raw-observations" aria-hidden="true" aria-label="Link to Raw observations"></a></h3><p>These remain valuable to the model, but con does not promote them into typed runtime state.</p>
+<h4 id="screen-text-and-structure">Screen text and structure<a class="heading-anchor" href="#screen-text-and-structure" aria-hidden="true" aria-label="Link to Screen text and structure"></a></h4><p>Examples:</p>
+<ul>
+<li>tmux status bars</li>
+<li>boxed layouts</li>
+<li>agent CLI banners</li>
+<li>vim-like rulers</li>
+</ul>
+<p>These stay in <code>read_pane</code> / prompt output as raw observations. They do not create <code>PaneRuntimeState</code> facts.</p>
+<h4 id="title">Title<a class="heading-anchor" href="#title" aria-hidden="true" aria-label="Link to Title"></a></h4><p>Titles are useful for human inspection, but they are not authoritative foreground-runtime identity.</p>
+<h4 id="filesystem-artifacts">Filesystem artifacts<a class="heading-anchor" href="#filesystem-artifacts" aria-hidden="true" aria-label="Link to Filesystem artifacts"></a></h4><p>Examples:</p>
+<ul>
+<li>agent-specific local metadata</li>
+<li>agent-specific workspace metadata</li>
+<li><code>AGENTS.md</code></li>
+</ul>
+<p>These can explain why a tool might be in use, but they do not prove the pane is running it.</p>
+<h2 id="backend-adapters">Backend adapters<a class="heading-anchor" href="#backend-adapters" aria-hidden="true" aria-label="Link to Backend adapters"></a></h2><h2 id="ghostty-backend">Ghostty backend<a class="heading-anchor" href="#ghostty-backend" aria-hidden="true" aria-label="Link to Ghostty backend"></a></h2><p>Ghostty currently gives us:</p>
+<ul>
+<li>title via action callback</li>
+<li>pwd via action callback</li>
+<li>command-finished via action callback</li>
+<li>visible and scrollback text via <code>ghostty_surface_read_text</code></li>
+<li>selection access</li>
+<li>inspector handle</li>
+</ul>
+<p>Important limit:</p>
+<p>the embedded C API does not currently expose the same rich semantic prompt and runtime internals that Ghostty uses internally.</p>
+<p>More concretely, the current embedded path does not export:</p>
+<ul>
+<li>authoritative foreground command text</li>
+<li>authoritative alternate-screen state</li>
+<li>authoritative remote-host identity</li>
+<li>foreground process or process-group identity</li>
+</ul>
+<p>Important consequence:</p>
+<p>we should not design the pane-runtime system around assumptions that Ghostty will tell us the exact foreground app or nested scope stack today.</p>
+<p>Ghostty should feed Layer 1 facts. Layer 2 should remain a con-owned observer that merges those facts into a defensible runtime model.</p>
+<h2 id="ghostty-specific-observations">Ghostty-specific observations<a class="heading-anchor" href="#ghostty-specific-observations" aria-hidden="true" aria-label="Link to Ghostty-specific observations"></a></h2><p>Upstream Ghostty clearly maintains richer prompt semantics internally:</p>
+<ul>
+<li>semantic prompt state in <code>Screen.zig</code></li>
+<li>prompt/output selection boundaries</li>
+<li>prompt-click movement</li>
+<li>command lifecycle handling in <code>stream_handler.zig</code></li>
+</ul>
+<p>But those semantics are not fully exported through the embedded C API today.</p>
+<p>Also, Ghostty&#39;s OSC 7 handling validates the reported hostname against the local system before surfacing it as <code>PWD</code> state. That means <code>PWD</code> is not a durable source of remote host identity for embedded consumers.</p>
+<p>This matters because a product design that depends on remote hostname coming from Ghostty <code>PWD</code> is structurally unsound.</p>
+<p>Current con behavior reflects that limit:</p>
+<ul>
+<li>remote host identity is left <code>unknown</code> unless con has a stronger backend fact</li>
+<li>tmux and agent-CLI identity only enter typed runtime state through authoritative command-line or surface-state evidence</li>
+<li>pane titles and screen structure remain raw observations for the model, not runtime facts</li>
+<li>prompt and <code>list_panes</code> expose backend-support flags so the model can see when Ghostty cannot prove command text, alternate-screen state, or remote-host identity</li>
+<li>each tab now owns per-pane runtime observers that persist defensible facts across sparse frames and feed every consumer from the same state</li>
+</ul>
+<h2 id="probe-design">Probe design<a class="heading-anchor" href="#probe-design" aria-hidden="true" aria-label="Link to Probe design"></a></h2><p>The observer should run probes independently and merge their evidence.</p>
+<h3 id="ghosttyobservationprobe"><code>GhosttyObservationProbe</code><a class="heading-anchor" href="#ghosttyobservationprobe" aria-hidden="true" aria-label="Link to GhosttyObservationProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>build <code>PaneObservationFrame</code> from the embedded Ghostty surface</li>
+<li>keep title, cwd, command-finished, and screen excerpts synchronized</li>
+<li>expose only facts that libghostty actually exports today</li>
+</ul>
+<h3 id="shellintegrationprobe"><code>ShellIntegrationProbe</code><a class="heading-anchor" href="#shellintegrationprobe" aria-hidden="true" aria-label="Link to ShellIntegrationProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>track prompt-oriented metadata that Ghostty exposes indirectly today</li>
+<li>mark shell metadata freshness</li>
+<li>detect transitions back to the shell when strong shell evidence returns</li>
+</ul>
+<h3 id="terminalsemanticprobe"><code>TerminalSemanticProbe</code><a class="heading-anchor" href="#terminalsemanticprobe" aria-hidden="true" aria-label="Link to TerminalSemanticProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>consume backend-native signals such as command-finished, title updates, and future Ghostty semantic exports</li>
+</ul>
+<h3 id="screenstructureprobe"><code>ScreenStructureProbe</code><a class="heading-anchor" href="#screenstructureprobe" aria-hidden="true" aria-label="Link to ScreenStructureProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>expose screen text and layout as raw observations for the model and the user</li>
+</ul>
+<p>Constraint:</p>
+<p>this probe does not create typed runtime facts.</p>
+<h3 id="remotecontextprobe"><code>RemoteContextProbe</code><a class="heading-anchor" href="#remotecontextprobe" aria-hidden="true" aria-label="Link to RemoteContextProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>accept only explicit remote-runtime contracts when they exist</li>
+</ul>
+<p>Likely evidence:</p>
+<ul>
+<li>persistent SSH target</li>
+<li>user-confirmed labels</li>
+<li>future explicit integration markers</li>
+</ul>
+<h3 id="manuallabelprobe"><code>ManualLabelProbe</code><a class="heading-anchor" href="#manuallabelprobe" aria-hidden="true" aria-label="Link to ManualLabelProbe"></a></h3><p>Purpose:</p>
+<ul>
+<li>allow the user to name or confirm a scope when the platform cannot prove it</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li>&quot;prod deploy tmux&quot;</li>
+<li>&quot;agent task on staging&quot;</li>
+<li>&quot;logs tail pane&quot;</li>
+</ul>
+<p>Manual labels should never overwrite facts. They should layer on top of them.</p>
+<h3 id="ghosttyobservabilitycontract"><code>GhosttyObservabilityContract</code><a class="heading-anchor" href="#ghosttyobservabilitycontract" aria-hidden="true" aria-label="Link to GhosttyObservabilityContract"></a></h3><p>Purpose:</p>
+<ul>
+<li>define the next upstream libghostty exports con actually needs</li>
+<li>avoid rebuilding a parallel PTY/process introspection stack beside Ghostty</li>
+</ul>
+<p>High-value future exports:</p>
+<ul>
+<li>foreground process identity</li>
+<li>alternate-screen state</li>
+<li>richer semantic prompt lifecycle</li>
+<li>explicit remote/runtime markers for embedded hosts</li>
+</ul>
+<h2 id="freshness-and-invalidation">Freshness and invalidation<a class="heading-anchor" href="#freshness-and-invalidation" aria-hidden="true" aria-label="Link to Freshness and invalidation"></a></h2><p>This is the part cheap designs usually miss.</p>
+<p>The observer must invalidate stale metadata aggressively.</p>
+<p>Examples:</p>
+<ul>
+<li>When a pane enters alternate screen, shell cwd and last command stop being trusted for visible-app claims.</li>
+<li>When the foreground process group changes from <code>zsh</code> to <code>tmux</code>, shell prompt assumptions must be downgraded immediately.</li>
+<li>When the foreground process group returns to a shell and OSC 133 prompt markers resume, shell metadata can become fresh again.</li>
+<li>When the pane is inside <code>ssh</code>, remote runtime identity must stay <code>unknown</code> unless supported by stronger evidence.</li>
+</ul>
+<h2 id="agent-facing-contract">Agent-facing contract<a class="heading-anchor" href="#agent-facing-contract" aria-hidden="true" aria-label="Link to Agent-facing contract"></a></h2><p>The built-in agent should not reason directly from raw title, cwd, and output.</p>
+<p>It should receive a structured summary such as:</p>
+<ul>
+<li><code>scope_stack</code></li>
+<li><code>active_scope_kind</code></li>
+<li><code>remote_host</code></li>
+<li><code>multiplexer_session</code></li>
+<li><code>agent_cli_kind</code></li>
+<li><code>shell_metadata_fresh</code></li>
+<li><code>screen_mode</code></li>
+<li><code>confidence</code></li>
+<li><code>warnings</code></li>
+</ul>
+<p>Example warning:</p>
+<p><code>Visible pane appears to be inside tmux. cwd and last_command may describe the underlying shell, not the visible program. Inspect the pane before making claims.</code></p>
+<h2 id="product-implications">Product implications<a class="heading-anchor" href="#product-implications" aria-hidden="true" aria-label="Link to Product implications"></a></h2><p>This architecture is not only for prompts.</p>
+<p>It also enables better product surfaces:</p>
+<ul>
+<li>clearer pane badges</li>
+<li>better sidebar names</li>
+<li>safer approval copy for remote operations</li>
+<li>accurate notifications from external agent CLIs</li>
+<li>reliable resume state when returning to a workspace</li>
+</ul>
+<h2 id="implementation-plan">Implementation plan<a class="heading-anchor" href="#implementation-plan" aria-hidden="true" aria-label="Link to Implementation plan"></a></h2><h3 id="phase-1">Phase 1<a class="heading-anchor" href="#phase-1" aria-hidden="true" aria-label="Link to Phase 1"></a></h3><p>Shipped in con:</p>
+<ul>
+<li><code>PaneObservationFrame</code>, <code>PaneEvidence</code>, <code>PaneRuntimeState</code>, and <code>PaneRuntimeObserver</code></li>
+<li>per-tab observer maps keyed by <code>PaneId</code></li>
+<li>shared observer output consumed by agent context, <code>list_panes</code>, sidebar naming, and smart-input remote classification</li>
+<li>Ghostty command-boundary tracking (<code>input_generation</code> vs <code>last_command_finished_input_generation</code>) for shell freshness</li>
+<li>explicit observation-support flags surfaced to the prompt and <code>list_panes</code></li>
+<li>stateful retention for authoritative tmux and external agent CLI identity, with explicit invalidation when a fresh shell returns</li>
+<li>no title- or screen-pattern heuristics promoted into typed runtime state</li>
+</ul>
+<p>Current Ghostty embedded status:</p>
+<ul>
+<li><code>support.foreground_command = false</code></li>
+<li><code>support.alternate_screen = false</code></li>
+<li><code>support.remote_host_identity = false</code></li>
+</ul>
+<h3 id="phase-2">Phase 2<a class="heading-anchor" href="#phase-2" aria-hidden="true" aria-label="Link to Phase 2"></a></h3><ul>
+<li>upstream or expose stronger libghostty runtime facts when needed</li>
+<li>record executable identity only from explicit backend contracts</li>
+<li>avoid shelling out in the hot path for pane identity</li>
+</ul>
+<h3 id="phase-3">Phase 3<a class="heading-anchor" href="#phase-3" aria-hidden="true" aria-label="Link to Phase 3"></a></h3><ul>
+<li>integrate backend adapters:<ul>
+<li>Ghostty surface adapter</li>
+</ul>
+</li>
+<li>unify freshness rules across all Ghostty fact streams</li>
+</ul>
+<h3 id="phase-4">Phase 4<a class="heading-anchor" href="#phase-4" aria-hidden="true" aria-label="Link to Phase 4"></a></h3><ul>
+<li>add external-agent CLI classifiers based only on explicit backend evidence</li>
+<li>expose runtime summaries in <code>list_panes</code> and agent context</li>
+</ul>
+<h3 id="phase-5">Phase 5<a class="heading-anchor" href="#phase-5" aria-hidden="true" aria-label="Link to Phase 5"></a></h3><ul>
+<li>add user-visible scope badges and manual labels</li>
+<li>use runtime scopes in approvals and notifications</li>
+</ul>
+<h2 id="testing-strategy">Testing strategy<a class="heading-anchor" href="#testing-strategy" aria-hidden="true" aria-label="Link to Testing strategy"></a></h2><ul>
+<li>unit tests for evidence merge rules</li>
+<li>unit tests for freshness invalidation</li>
+<li>fixture-based tests for common scope stacks</li>
+<li>integration tests for:<ul>
+<li>local shell -&gt; tmux</li>
+<li>local shell -&gt; ssh</li>
+<li>local shell -&gt; ssh -&gt; tmux</li>
+<li>local shell -&gt; agent CLI</li>
+<li>local shell -&gt; ssh -&gt; tmux -&gt; agent CLI</li>
+</ul>
+</li>
+</ul>
+<h2 id="what-this-avoids">What this avoids<a class="heading-anchor" href="#what-this-avoids" aria-hidden="true" aria-label="Link to What this avoids"></a></h2><p>This design avoids three long-term failures:</p>
+<ol>
+<li>believing process-wide environment variables describe the focused pane</li>
+<li>over-trusting shell metadata when a TUI has taken over the screen</li>
+<li>scattering app-specific heuristics across prompts, tools, and UI labels</li>
+</ol>
+<p>That is the standard required if con wants real credibility in SSH, tmux, and external-agent workflows.</p>
+<p>The next paired layer is the control plane: how con safely acts on those observed runtimes without confusing con panes, tmux panes, shell execution, and TUI input. con now ships the first typed <code>PaneControlState</code> layer on top of the observer, and the longer-term design remains in <code>docs/impl/agent-runtime-control-plane.md</code>.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#why-this-exists">Why this exists</a>
+      
+        <a class="docs-toc-item depth-2" href="#design-goals">Design goals</a>
+      
+        <a class="docs-toc-item depth-2" href="#non-goals">Non-goals</a>
+      
+        <a class="docs-toc-item depth-2" href="#core-rule">Core rule</a>
+      
+        <a class="docs-toc-item depth-2" href="#architecture">Architecture</a>
+      
+        <a class="docs-toc-item depth-3" href="#layer-1-backend-facts">Layer 1: Backend facts</a>
+      
+        <a class="docs-toc-item depth-3" href="#layer-2-pane-runtime-tracker">Layer 2: Pane runtime tracker</a>
+      
+        <a class="docs-toc-item depth-3" href="#layer-3-consumers">Layer 3: Consumers</a>
+      
+        <a class="docs-toc-item depth-2" href="#data-model">Data model</a>
+      
+        <a class="docs-toc-item depth-3" href="#paneobservationframe">PaneObservationFrame</a>
+      
+        <a class="docs-toc-item depth-3" href="#evidence">Evidence</a>
+      
+        <a class="docs-toc-item depth-3" href="#paneruntimestate">PaneRuntimeState</a>
+      
+        <a class="docs-toc-item depth-3" href="#scopestack">ScopeStack</a>
+      
+        <a class="docs-toc-item depth-2" href="#shipped-tmux-attachment">Shipped tmux attachment</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

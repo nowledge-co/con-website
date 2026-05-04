@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pane Surfaces | con docs</title>
+<meta name="description" content="Pane Surfaces Summary Con's public pane model now has two layers: Pane : a visible split rectangle in a tab."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/pane-surfaces/"/>
+<meta property="og:title" content="Pane Surfaces | con docs"/>
+<meta property="og:description" content="Pane Surfaces Summary Con's public pane model now has two layers: Pane : a visible split rectangle in a tab."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/pane-surfaces/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Pane Surfaces | con docs"/>
+<meta name="twitter:description" content="Pane Surfaces Summary Con's public pane model now has two layers: Pane : a visible split rectangle in a tab."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pane Surfaces","description":"Pane Surfaces Summary Con's public pane model now has two layers: Pane : a visible split rectangle in a tab.","url":"https://con.nowledge.co/docs/impl/pane-surfaces/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item active" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/pane-surfaces.md" target="_blank" rel="noreferrer">docs/impl/pane-surfaces.md</a>
+    </div>
+    <h1 id="pane-surfaces">Pane Surfaces<a class="heading-anchor" href="#pane-surfaces" aria-hidden="true" aria-label="Link to Pane Surfaces"></a></h1><h2 id="summary">Summary<a class="heading-anchor" href="#summary" aria-hidden="true" aria-label="Link to Summary"></a></h2><p>Con&#39;s public pane model now has two layers:</p>
+<ul>
+<li><strong>Pane</strong>: a visible split rectangle in a tab.</li>
+<li><strong>Surface</strong>: a live terminal session hosted by a pane.</li>
+</ul>
+<p>Every pane always has one active surface. A pane may also host additional
+inactive surfaces, which behave like pane-local terminal tabs. The existing
+pane APIs, built-in agent tools, and terminal-agent benchmarks continue to see
+only the active surface of each pane.</p>
+<p>This is an additive control-plane feature for external orchestrators that need
+interactive subagent patterns without creating unbounded visible splits.</p>
+<h2 id="why-this-exists">Why This Exists<a class="heading-anchor" href="#why-this-exists" aria-hidden="true" aria-label="Link to Why This Exists"></a></h2><p>Interactive subagent tools often want this lifecycle:</p>
+<ol>
+<li>First worker gets a visible split, usually to the right of the caller.</li>
+<li>Later workers join that same worker pane as tabs.</li>
+<li>The orchestrator can read, send keys, focus, rename, and close those tabs.</li>
+<li>When the last owned worker tab exits, the worker pane can be closed.</li>
+</ol>
+<p>cmux calls the inner unit a <code>surface</code>, so Con uses the same word for the
+control-plane concept. In product terms, a surface is simply a terminal session
+inside a pane.</p>
+<p>This is distinct from the lower-level Ghostty/native rendering surface used by
+the terminal backend. In this document, &quot;surface&quot; always means the
+control-plane terminal session inside a pane.</p>
+<h2 id="compatibility-contract">Compatibility Contract<a class="heading-anchor" href="#compatibility-contract" aria-hidden="true" aria-label="Link to Compatibility Contract"></a></h2><p>The compatibility rule is strict:</p>
+<ul>
+<li><code>panes.*</code> targets panes and operates on the active surface only.</li>
+<li>The built-in agent prompt/tool set keeps the existing pane model.</li>
+<li>Existing benchmark fixtures should keep using <code>panes.*</code> unless a test is
+explicitly about pane-local surfaces.</li>
+<li>Surface APIs are opt-in under <code>surfaces.*</code>.</li>
+</ul>
+<p>This prevents a new abstraction from changing the behavior of Con&#39;s benchmarked
+agent harness or the user-facing pane picker.</p>
+<h2 id="control-api">Control API<a class="heading-anchor" href="#control-api" aria-hidden="true" aria-label="Link to Control API"></a></h2><p>The JSON-RPC methods are:</p>
+<ul>
+<li><code>tree.get</code>: returns tabs, panes, and pane-local surfaces.</li>
+<li><code>surfaces.list</code>: lists surfaces in a tab, optionally scoped to one pane.</li>
+<li><code>surfaces.create</code>: creates a new surface inside an existing pane.</li>
+<li><code>surfaces.split</code>: creates a split pane with an initial surface.</li>
+<li><code>surfaces.focus</code>: activates a surface in its pane.</li>
+<li><code>surfaces.rename</code>: updates the surface title shown in the pane-local strip.</li>
+<li><code>surfaces.close</code>: closes a surface; it refuses to close the last surface in a
+pane unless the caller opts into closing an owned ephemeral pane.</li>
+<li><code>surfaces.read</code>: reads recent terminal content from a surface.</li>
+<li><code>surfaces.send_text</code>: writes literal text bytes to a surface.</li>
+<li><code>surfaces.send_key</code>: sends a small named key set (<code>escape</code>, <code>enter</code>, <code>tab</code>,
+<code>backspace</code>, <code>ctrl-c</code>, <code>ctrl-d</code>) to a surface.</li>
+<li><code>surfaces.wait_ready</code>: waits until the surface has a live terminal session
+with shell integration or the timeout expires, then returns readiness
+metadata.</li>
+</ul>
+<p>Surface targeting accepts:</p>
+<ul>
+<li><code>surface_id</code>: stable within the tab for the lifetime of the surface.</li>
+<li><code>pane_id</code>: stable within the tab for the lifetime of the pane.</li>
+<li><code>pane_index</code>: current visible pane position, useful for humans but not ideal
+for follow-up automation.</li>
+</ul>
+<p>Prefer <code>surface_id</code> for follow-up automation.</p>
+<h2 id="human-entry-points">Human Entry Points<a class="heading-anchor" href="#human-entry-points" aria-hidden="true" aria-label="Link to Human Entry Points"></a></h2><p>Surface control is also available from Command Palette and the terminal
+right-click menu so humans can discover and exercise the same pane-local model
+without using <code>con-cli</code>.</p>
+<p>The visual rule is intentionally scoped:</p>
+<ul>
+<li><p>A <strong>pane</strong> is the visible split region.</p>
+</li>
+<li><p>A <strong>surface</strong> is a tab-like terminal session selected inside one pane.</p>
+</li>
+<li><p>Ordinary one-surface panes show no surface chrome.</p>
+</li>
+<li><p>Panes with multiple surfaces, an orchestrator owner, or an explicit surface
+title show a compact in-pane surface rail. This rail is intentionally inset
+and pill-sized rather than full-width: pane dividers own layout structure,
+while surface chrome only identifies terminal sessions inside that pane. The
+rail is local to that pane; it never switches surfaces in sibling panes.</p>
+</li>
+<li><p><code>New Surface Tab</code>: creates a new terminal session inside the focused
+pane, gives it the next stable <code>Surface N</code> label, and focuses it.</p>
+</li>
+<li><p><code>New Surface Pane Right</code>: creates a new right split from the focused pane,
+then initializes that visible pane with its first <code>Surface 1</code> tab.</p>
+</li>
+<li><p><code>New Surface Pane Down</code>: creates a new down split from the focused pane,
+then initializes that visible pane with its first <code>Surface 1</code> tab.</p>
+</li>
+<li><p><code>Next Surface Tab</code>: cycles forward through surfaces hosted by the
+focused pane.</p>
+</li>
+<li><p><code>Previous Surface Tab</code>: cycles backward through surfaces hosted by the
+focused pane.</p>
+</li>
+<li><p><code>Rename Current Surface</code>: starts inline rename for the active
+surface in the focused pane. The same rename action is available from the app
+menu, terminal context menu, and by double-clicking a surface tab in the
+pane-local strip.</p>
+</li>
+<li><p><code>Close Current Surface</code>: closes the active surface when the focused pane has
+more than one surface. If the surface was created as an owned palette split,
+closing that last surface also closes the worker pane. It intentionally does
+nothing for the last non-owned surface in a pane; ordinary pane closing
+remains the pane-level command.</p>
+</li>
+</ul>
+<p>Surface tabs support direct manipulation:</p>
+<ul>
+<li>Click a surface tab to focus that surface in its pane.</li>
+<li>Double-click a surface tab to rename it inline. Press Enter to commit or
+Escape to cancel.</li>
+<li>Right-click a surface tab for Rename / Close.</li>
+<li>Use the close glyph on a closable surface tab to remove that surface without
+opening the full terminal context menu.</li>
+</ul>
+<p>Default surface shortcuts are configurable in Settings -&gt; Keyboard Shortcuts:</p>
+<ul>
+<li>macOS: Cmd-Option-T creates a surface in the focused pane; Cmd-Option-D /
+Cmd-Option-Shift-D create surface splits; Cmd-Option-[ and Cmd-Option-]
+cycle; Cmd-Option-R renames; Cmd-Option-Shift-W closes.</li>
+<li>Windows/Linux: Alt-Shift-T creates a surface in the focused pane;
+Alt-Shift-Right / Alt-Shift-Down create surface splits; Alt-Shift-[ and
+Alt-Shift-] cycle; Alt-Shift-R renames; Alt-Shift-X closes.</li>
+</ul>
+<p>These palette actions are deliberately pane-local. They do not change the
+existing <code>panes.*</code> control-plane contract, the built-in agent harness target
+model, or terminal-agent benchmark assumptions.</p>
+<p>The terminal context menu uses the same GPUI actions as the Command Palette and
+app menu instead of custom callbacks. That keeps right-click behavior aligned
+with keyboard and automation entry points: the menu first restores focus to the
+clicked terminal, then dispatches the selected action through the normal window
+action path.</p>
+<p>This mirrors the interactive-subagent flow: create the first worker as a
+visible split, then add later workers as surfaces inside that worker pane so
+parallel agents do not keep shrinking the main terminal layout.</p>
+<h2 id="pi-interactive-subagents-readiness">pi-interactive-subagents Readiness<a class="heading-anchor" href="#pi-interactive-subagents-readiness" aria-hidden="true" aria-label="Link to pi-interactive-subagents Readiness"></a></h2><p>Con is API-ready for the pi-interactive-subagents pattern, but it is not a
+byte-for-byte cmux CLI clone. The preferred integration is a Con-specific
+backend that uses <code>con-cli --json</code> instead of parsing cmux text handles:</p>
+<ul>
+<li>First worker: <code>con-cli --json surfaces split --location right --title &lt;name&gt; --owner pi-interactive-subagents</code></li>
+<li>Remember the returned <code>pane_id</code> and <code>surface_id</code>.</li>
+<li>Later workers: <code>con-cli --json surfaces create --pane-id &lt;worker_pane_id&gt; --title &lt;name&gt; --owner pi-interactive-subagents</code></li>
+<li>Drive workers with <code>surfaces wait-ready</code>, <code>surfaces send-text</code>,
+<code>surfaces send-key</code>, and <code>surfaces read</code>.</li>
+<li>Clean up with <code>surfaces close --surface-id &lt;surface_id&gt; --close-empty-owned-pane</code>.</li>
+</ul>
+<p>This avoids cmux&#39;s <code>identify --surface</code> round trip because Con returns the
+worker pane id directly from <code>surfaces split</code>.</p>
+<p>Release artifacts now include <code>con-cli</code> as part of the core install. Homebrew
+and the one-line installers expose it on PATH, so an orchestrator adapter can
+depend on <code>con-cli</code> being present after a normal Con install instead of asking
+users to build the workspace from source.</p>
+<h2 id="cli-examples">CLI Examples<a class="heading-anchor" href="#cli-examples" aria-hidden="true" aria-label="Link to CLI Examples"></a></h2><p>First create a visible worker pane:</p>
+<pre><code class="language-bash">con-cli --json surfaces split \
+  --tab 1 \
+  --pane-id 0 \
+  --location right \
+  --title worker-1 \
+  --owner pi-interactive-subagents \
+  --command &quot;codex&quot;
+</code></pre>
+<p>Then create more worker sessions inside the same pane:</p>
+<pre><code class="language-bash">con-cli --json surfaces create \
+  --tab 1 \
+  --pane-id &lt;worker_pane_id&gt; \
+  --title worker-2 \
+  --owner pi-interactive-subagents \
+  --command &quot;codex&quot;
+</code></pre>
+<p>Wait for the worker before driving it:</p>
+<pre><code class="language-bash">con-cli --json surfaces wait-ready --surface-id &lt;surface_id&gt; --timeout 10
+</code></pre>
+<p>Drive a worker:</p>
+<pre><code class="language-bash">con-cli --json surfaces send-text --surface-id &lt;surface_id&gt; &quot;explain this repo&quot;
+con-cli --json surfaces send-key --surface-id &lt;surface_id&gt; enter
+con-cli --json surfaces read --surface-id &lt;surface_id&gt; --lines 120
+</code></pre>
+<p>Close a worker surface:</p>
+<pre><code class="language-bash">con-cli --json surfaces close --surface-id &lt;surface_id&gt;
+</code></pre>
+<p>Close the last surface and its owned worker pane:</p>
+<pre><code class="language-bash">con-cli --json surfaces close \
+  --surface-id &lt;surface_id&gt; \
+  --close-empty-owned-pane
+</code></pre>
+<p><code>surfaces split</code> marks its initial pane as closeable by default. Use
+<code>--keep-pane-when-last</code> when the pane should survive after its last surface
+closes.</p>
+<h2 id="lifecycle-rules">Lifecycle Rules<a class="heading-anchor" href="#lifecycle-rules" aria-hidden="true" aria-label="Link to Lifecycle Rules"></a></h2><ul>
+<li>Only active surfaces are visible.</li>
+<li>Hidden surfaces keep running and continue receiving terminal output.</li>
+<li>Hidden surfaces keep the same PTY/grid size as their host pane. Con resizes
+inactive surfaces to the visible terminal host bounds even while they are not
+rendered, so TUI agents that start in background surfaces see the correct
+rows and columns before focus moves to them.</li>
+<li>Tab, pane, window, and app close paths tear down every surface, not just the
+active surface.</li>
+<li>If a non-last surface exits, Con removes only that surface.</li>
+<li>If the last surface in a pane exits, Con follows the existing pane close
+escalation: close pane, then close tab, then close the workspace window.</li>
+</ul>
+<h2 id="current-limit">Current Limit<a class="heading-anchor" href="#current-limit" aria-hidden="true" aria-label="Link to Current Limit"></a></h2><p>Session restore persists the split layout and active surface cwd, matching the
+existing terminal-session restore behavior. It does not yet restore multiple
+live pane-local surfaces because terminal processes themselves are not restored.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#summary">Summary</a>
+      
+        <a class="docs-toc-item depth-2" href="#why-this-exists">Why This Exists</a>
+      
+        <a class="docs-toc-item depth-2" href="#compatibility-contract">Compatibility Contract</a>
+      
+        <a class="docs-toc-item depth-2" href="#control-api">Control API</a>
+      
+        <a class="docs-toc-item depth-2" href="#human-entry-points">Human Entry Points</a>
+      
+        <a class="docs-toc-item depth-2" href="#pi-interactive-subagents-readiness">pi-interactive-subagents Readiness</a>
+      
+        <a class="docs-toc-item depth-2" href="#cli-examples">CLI Examples</a>
+      
+        <a class="docs-toc-item depth-2" href="#lifecycle-rules">Lifecycle Rules</a>
+      
+        <a class="docs-toc-item depth-2" href="#current-limit">Current Limit</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

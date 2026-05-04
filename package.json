@@ -1,0 +1,29 @@
+{
+  "name": "con-website",
+  "version": "1.0.0",
+  "description": "Static website for con, the terminal emulator with AI harness.",
+  "scripts": {
+    "build": "node scripts/build-docs.mjs",
+    "check": "npm run build && npm run check:docs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "dev": "python3 -m http.server 4173"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nowledge-co/con-website.git"
+  },
+  "keywords": [
+    "terminal",
+    "AI",
+    "docs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nowledge-co/con-website/issues"
+  },
+  "homepage": "https://github.com/nowledge-co/con-website#readme",
+  "dependencies": {
+    "marked": "12.0.2"
+  }
+}

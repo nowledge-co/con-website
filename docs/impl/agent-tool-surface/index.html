@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Agent Tool Surface — Design | con docs</title>
+<meta name="description" content="Agent Tool Surface — Design Mental Model The agent is an orchestrator , not a keyboard user."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/agent-tool-surface/"/>
+<meta property="og:title" content="Agent Tool Surface — Design | con docs"/>
+<meta property="og:description" content="Agent Tool Surface — Design Mental Model The agent is an orchestrator , not a keyboard user."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/agent-tool-surface/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Agent Tool Surface — Design | con docs"/>
+<meta name="twitter:description" content="Agent Tool Surface — Design Mental Model The agent is an orchestrator , not a keyboard user."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Agent Tool Surface — Design","description":"Agent Tool Surface — Design Mental Model The agent is an orchestrator , not a keyboard user.","url":"https://con.nowledge.co/docs/impl/agent-tool-surface/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item active" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/agent-tool-surface.md" target="_blank" rel="noreferrer">docs/impl/agent-tool-surface.md</a>
+    </div>
+    <h1 id="agent-tool-surface-design">Agent Tool Surface — Design<a class="heading-anchor" href="#agent-tool-surface-design" aria-hidden="true" aria-label="Link to Agent Tool Surface — Design"></a></h1><h2 id="mental-model">Mental Model<a class="heading-anchor" href="#mental-model" aria-hidden="true" aria-label="Link to Mental Model"></a></h2><p>The agent is an <strong>orchestrator</strong>, not a keyboard user. It has direct API access to terminal management, command execution, and content observation. It should never simulate human application shortcuts (Cmd+T, Cmd+W) — if a capability isn&#39;t exposed as a tool, it doesn&#39;t exist for the agent.</p>
+<h3 id="keystroke-categories">Keystroke categories<a class="heading-anchor" href="#keystroke-categories" aria-hidden="true" aria-label="Link to Keystroke categories"></a></h3><p>The agent must distinguish three types of keystrokes:</p>
+<ol>
+<li><strong>con application shortcuts</strong> (Cmd+T, Cmd+W, Cmd+N): Control the con app. The agent CANNOT send these. Use tools instead.</li>
+<li><strong>Terminal protocol sequences</strong> (\x02c for tmux prefix+c, \x1b for Escape, \x03 for Ctrl-C): Travel through the PTY to the remote program. send_keys is the correct tool for these.</li>
+<li><strong>Shell commands</strong> (ls, apt update, git status): Use terminal_exec when exec_visible_shell is available. Otherwise, send_keys to type the command + Enter in a shell prompt.</li>
+</ol>
+<h2 id="three-abstraction-levels">Three Abstraction Levels<a class="heading-anchor" href="#three-abstraction-levels" aria-hidden="true" aria-label="Link to Three Abstraction Levels"></a></h2><pre><code>Level 1: Terminal Management          create_pane
+         (orchestrator)               The agent controls the terminal layout.
+
+Level 2: Command Execution            terminal_exec, batch_exec, wait_for
+         (shell)                      Run commands and get structured output.
+
+Level 3: Interactive TUI              send_keys + read_pane
+         (keystrokes)                 Drive vim, tmux, interactive programs.
+</code></pre>
+<p>The agent should <strong>prefer higher levels</strong>. Level 3 (send_keys) is the last resort — only for programs that require interactive keystroke input, or when exec_visible_shell is unavailable (SSH without shell integration, inside tmux).</p>
+<h2 id="decision-framework">Decision Framework<a class="heading-anchor" href="#decision-framework" aria-hidden="true" aria-label="Link to Decision Framework"></a></h2><pre><code>Is this a shell command on a pane with exec_visible_shell?
+  → terminal_exec (single) or batch_exec (parallel)
+
+Is this a shell command on a pane WITHOUT exec_visible_shell?
+  → send_keys &quot;command\n&quot; (after read_pane to confirm shell prompt)
+
+Need to run on a host not currently connected?
+  → create_pane(command: &quot;ssh hostname&quot;) — output shows connection result
+
+Need to run on multiple hosts in parallel?
+  → create_pane for each host — each returns output showing connection state
+  → terminal_exec (if exec_visible_shell) or send_keys for each
+
+Need to interact with a TUI (vim, htop, etc.)?
+  → send_keys + read_pane (follow playbooks)
+
+Need to wait for a long-running command?
+  → wait_for(pane, timeout) — works universally (see idle detection below)
+
+Need file operations on the local machine?
+  → file_read, file_write, edit_file, search, list_files
+
+Need file operations on a remote host?
+  → send_keys with heredoc (Level 3 — no direct remote file access)
+</code></pre>
+<h2 id="tool-design-principles">Tool Design Principles<a class="heading-anchor" href="#tool-design-principles" aria-hidden="true" aria-label="Link to Tool Design Principles"></a></h2><p>These principles govern the design of every agent tool. They are derived from production failures — each one exists because violating it caused a real, observable breakdown in agent behavior.</p>
+<h3 id="1-dont-force-the-model-to-predict">1. Don&#39;t force the model to predict<a class="heading-anchor" href="#1-dont-force-the-model-to-predict" aria-hidden="true" aria-label="Link to 1. Don&amp;#39;t force the model to predict"></a></h3><p>If a tool requires the model to guess what will happen, the tool is broken. The model doesn&#39;t know what apt will print, whether SSH will ask for a password, or how long a build takes. When we force predictions, the model guesses wrong and the system hangs or fails silently.</p>
+<p><strong>Test</strong>: Can the model use this tool correctly with zero domain knowledge about the command it&#39;s running? If not, the tool needs to observe on the model&#39;s behalf.</p>
+<p>Applied:</p>
+<ul>
+<li><code>wait_for</code> idle mode: the system detects completion (via shell integration or quiescence) — the model doesn&#39;t guess output text</li>
+<li><code>create_pane</code> returns initial output: the model sees &quot;connected&quot; or &quot;Password:&quot; — doesn&#39;t predict auth method</li>
+<li>Pattern mode is last resort, not default</li>
+</ul>
+<h3 id="2-if-a-parameter-exists-the-model-will-fill-it">2. If a parameter exists, the model will fill it<a class="heading-anchor" href="#2-if-a-parameter-exists-the-model-will-fill-it" aria-hidden="true" aria-label="Link to 2. If a parameter exists, the model will fill it"></a></h3><p>Every schema parameter is a decision point. Models are thorough — they fill optional parameters &quot;to be safe.&quot; If the system knows the right value (timeouts, polling intervals, buffer sizes), don&#39;t expose it. The model should express <strong>intent</strong>, not <strong>mechanics</strong>.</p>
+<p><strong>Test</strong>: For each optional parameter, ask: &quot;Is there ever a case where the model choosing a value produces a better outcome than the system&#39;s default?&quot; If no, remove it from the schema. Keep it in the Rust struct for internal use.</p>
+<p>Applied:</p>
+<ul>
+<li><code>timeout_secs</code> removed from <code>wait_for</code> schema — system uses 30s default, model retries on timeout</li>
+<li>Polling intervals are internal — never exposed</li>
+</ul>
+<h3 id="3-tool-responses-must-be-self-contained-for-the-next-decision">3. Tool responses must be self-contained for the next decision<a class="heading-anchor" href="#3-tool-responses-must-be-self-contained-for-the-next-decision" aria-hidden="true" aria-label="Link to 3. Tool responses must be self-contained for the next decision"></a></h3><p>A tool response should contain everything the model needs to decide its next action. If the model must immediately call another tool to understand what happened, the first tool&#39;s response is incomplete.</p>
+<p><strong>Test</strong>: After receiving this response, can the model decide what to do next without another tool call? If not, include the missing information.</p>
+<p>Applied:</p>
+<ul>
+<li><code>create_pane</code> returns <code>output</code> alongside <code>pane_index</code> — no follow-up <code>read_pane</code> needed</li>
+<li><code>wait_for</code> returns <code>output</code> (last 50 lines) alongside <code>status</code> — on timeout, the model can see what&#39;s happening</li>
+<li><code>terminal_exec</code> returns stdout/stderr/exit_code — complete picture</li>
+</ul>
+<h3 id="4-degrade-gracefully-never-refuse">4. Degrade gracefully, never refuse<a class="heading-anchor" href="#4-degrade-gracefully-never-refuse" aria-hidden="true" aria-label="Link to 4. Degrade gracefully, never refuse"></a></h3><p>When a capability isn&#39;t available (no shell integration, no OSC 133), fall back to something useful. Never return an error that says &quot;can&#39;t help&quot; when a less precise but functional alternative exists.</p>
+<p><strong>Test</strong>: Does this tool work on a bare SSH pane with no shell integration? If not, what&#39;s the fallback?</p>
+<p>Applied:</p>
+<ul>
+<li><code>wait_for</code> without shell integration → quiescence detection (output stability)</li>
+<li><code>terminal_exec</code> without <code>exec_visible_shell</code> → clear error with suggested alternative (send_keys)</li>
+</ul>
+<h3 id="5-normalize-at-the-boundary">5. Normalize at the boundary<a class="heading-anchor" href="#5-normalize-at-the-boundary" aria-hidden="true" aria-label="Link to 5. Normalize at the boundary"></a></h3><p>Data from external systems (terminal grid, PTY output, FFI returns) has quirks the model can&#39;t handle — trailing whitespace from cursor position, ANSI codes, encoding variations. Normalize at the system boundary, before the data reaches any comparison logic or the model.</p>
+<p><strong>Test</strong>: If I run the same command twice and <code>diff</code> the tool&#39;s output, do I get identical results? If not, normalize whatever varies.</p>
+<p>Applied:</p>
+<ul>
+<li><code>trim_end()</code> on each line before quiescence comparison — cursor position doesn&#39;t affect stability detection</li>
+<li><code>recent_lines()</code> returns plain text (no ANSI) — model sees clean content</li>
+<li>Empty pattern <code>&quot;&quot;</code> normalized to <code>None</code> — Rust&#39;s <code>&quot;&quot;.contains(&quot;&quot;)</code> edge case handled at entry</li>
+</ul>
+<h2 id="observe-before-acting">Observe Before Acting<a class="heading-anchor" href="#observe-before-acting" aria-hidden="true" aria-label="Link to Observe Before Acting"></a></h2><p>The agent must never assume terminal state. Before acting on any pane:</p>
+<ul>
+<li>Before send_keys: read_pane to see what is on screen</li>
+<li>After send_keys: read_pane to verify the action took effect</li>
+<li>After create_pane: check the returned output (included in response)</li>
+<li>Never chain multiple actions without observing between them</li>
+</ul>
+<h2 id="tools">Tools<a class="heading-anchor" href="#tools" aria-hidden="true" aria-label="Link to Tools"></a></h2><h3 id="level-1-terminal-management">Level 1: Terminal Management<a class="heading-anchor" href="#level-1-terminal-management" aria-hidden="true" aria-label="Link to Level 1: Terminal Management"></a></h3><h4 id="createpane"><code>create_pane</code><a class="heading-anchor" href="#createpane" aria-hidden="true" aria-label="Link to create_pane"></a></h4><p>Create a new terminal pane (split in current tab). Optionally run a startup command.</p>
+<pre><code>Parameters:
+  command: Option&lt;String&gt;    Start command (e.g., &quot;ssh host&quot;). Executes automatically.
+
+Returns:
+  pane_index: usize          The new pane&#39;s 1-indexed position.
+  command: Option&lt;String&gt;    Echo of the startup command.
+  output: String             Initial terminal output (settled via quiescence).
+</code></pre>
+<p>Implementation: pane creation is deferred to render cycle (ghostty surfaces need a window context). The command is written to the PTY via <code>write_or_queue()</code> which buffers data if the ghostty surface hasn&#39;t initialized yet, flushing when <code>ensure_initialized()</code> completes.</p>
+<p>After creation, the tool uses <strong>two-phase output detection</strong> (max 15s budget):</p>
+<ul>
+<li><strong>Phase 1 (change)</strong>: Wait for content to change from the initial command echo. The local shell echoes the command immediately, but the program (SSH handshake, server connection) takes 1-5s to respond. Settling on the echo returns the wrong content.</li>
+<li><strong>Phase 2 (stability)</strong>: Once content changed, wait for 3 consecutive stable polls (1.5s). The program&#39;s output (MOTD, prompt, error) streams in and eventually stops.</li>
+</ul>
+<p>This correctly handles: SSH key auth (echo → pause → MOTD+prompt), SSH password (echo → pause → &quot;Password:&quot;), connection errors (echo → pause → error message), and fast local commands (echo → output → prompt).</p>
+<p>Design notes:</p>
+<ul>
+<li>The <code>command</code> executes automatically — the model must NOT re-send it via send_keys.</li>
+<li>Returns <code>CreatePaneOutput</code> struct (not a string) to avoid double-encoding.</li>
+<li><strong>Output is included in the response.</strong> The model sees what happened (SSH connected with prompt, password prompt, connection refused) without a follow-up <code>read_pane</code>. This eliminates the &quot;guess what SSH will do&quot; anti-pattern — the model observes, doesn&#39;t predict.</li>
+<li>New pane is a horizontal split within the agent&#39;s tab.</li>
+</ul>
+<h3 id="level-2-command-execution">Level 2: Command Execution<a class="heading-anchor" href="#level-2-command-execution" aria-hidden="true" aria-label="Link to Level 2: Command Execution"></a></h3><h4 id="terminalexec"><code>terminal_exec</code><a class="heading-anchor" href="#terminalexec" aria-hidden="true" aria-label="Link to terminal_exec"></a></h4><p>Run a shell command in a visible pane, wait for completion, return structured output.
+Requires <code>exec_visible_shell</code> capability (shell integration). 60-second timeout with fallback polling.</p>
+<h4 id="batchexec"><code>batch_exec</code><a class="heading-anchor" href="#batchexec" aria-hidden="true" aria-label="Link to batch_exec"></a></h4><p>Run multiple commands in parallel across panes. Same exec_visible_shell requirement.
+Returns <code>serde_json::Value</code> (not String) to avoid double-encoding.</p>
+<h4 id="waitfor"><code>wait_for</code><a class="heading-anchor" href="#waitfor" aria-hidden="true" aria-label="Link to wait_for"></a></h4><p>Wait for a pane to become idle or match a text pattern.</p>
+<pre><code>Parameters:
+  pane_index: usize
+  timeout_secs: Option&lt;u64&gt;      Default 30. Max 120. Short timeouts + retry preferred.
+  pattern: Option&lt;String&gt;        Wait for this text to appear in output.
+
+Returns:
+  status: &quot;idle&quot; | &quot;matched&quot; | &quot;timeout&quot;
+  output: String                 Recent output (last 50 lines).
+</code></pre>
+<p>Implementation: delegates to workspace-side GPUI async task with direct terminal access (no per-tick channel roundtrips). Three detection modes:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Condition</th>
+<th>Polling</th>
+<th>Detection</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Shell integration idle</td>
+<td>no pattern + has SI</td>
+<td>100ms</td>
+<td><code>take_command_finished()</code> or <code>!is_busy()</code></td>
+</tr>
+<tr>
+<td>Quiescence</td>
+<td>no pattern + no SI</td>
+<td>500ms</td>
+<td>Normalized output unchanged for 4 consecutive polls (2s)</td>
+</tr>
+<tr>
+<td>Pattern match</td>
+<td>pattern provided</td>
+<td>500ms</td>
+<td>Substring match in <code>recent_lines(50)</code></td>
+</tr>
+</tbody></table>
+<p>Design notes:</p>
+<ul>
+<li><strong>Idle mode works universally.</strong> With shell integration, uses precise OSC 133 D signals. Without it (remote SSH panes), falls back to output quiescence — detects when normalized output (trailing whitespace trimmed) stops changing for 2 seconds. The model doesn&#39;t need to know which mode is active.</li>
+<li><strong>Prefer idle mode (no pattern).</strong> Pattern mode requires guessing what the output will contain. Idle mode just waits for the command to finish.</li>
+<li><strong>Empty pattern normalized to idle.</strong> <code>pattern: Some(&quot;&quot;)</code> is treated as <code>None</code> — Rust&#39;s <code>&quot;&quot;.contains(&quot;&quot;)</code> is always true, which would cause instant false match. The handler normalizes at entry.</li>
+<li>Quiescence baseline is captured inside the async task to avoid race between snapshot and first poll. Lines are <code>trim_end()</code>&#39;d before comparison to neutralize cursor-position-dependent trailing whitespace from <code>ghostty_surface_read_text</code>. Empty baselines are deferred — counting starts only after the first non-empty snapshot.</li>
+<li>The tool sends a single <code>PaneQuery::WaitFor</code> and blocks on <code>response_rx.recv_timeout()</code>.</li>
+</ul>
+<h4 id="shellexec"><code>shell_exec</code><a class="heading-anchor" href="#shellexec" aria-hidden="true" aria-label="Link to shell_exec"></a></h4><p>Run a command on the local machine (invisible to user). For git, file searches, package lookups.</p>
+<h3 id="level-3-interactive-tui">Level 3: Interactive TUI<a class="heading-anchor" href="#level-3-interactive-tui" aria-hidden="true" aria-label="Link to Level 3: Interactive TUI"></a></h3><h4 id="sendkeys"><code>send_keys</code><a class="heading-anchor" href="#sendkeys" aria-hidden="true" aria-label="Link to send_keys"></a></h4><p>Send keystrokes to a pane. For TUI interaction (vim, tmux, interactive programs) and shell commands on panes without exec_visible_shell.</p>
+<p>Implementation: decodes escape sequences (\x1b, \x03, \n, etc. and bare hex fallback for weaker models), splits at standalone ESC boundaries with 10ms inter-segment delay to avoid VT parser ambiguity.</p>
+<h4 id="readpane"><code>read_pane</code><a class="heading-anchor" href="#readpane" aria-hidden="true" aria-label="Link to read_pane"></a></h4><p>Read recent terminal output. Default 50 lines. Returns plain text from ghostty&#39;s grid (no ANSI codes).</p>
+<h3 id="observation-tools">Observation Tools<a class="heading-anchor" href="#observation-tools" aria-hidden="true" aria-label="Link to Observation Tools"></a></h3><ul>
+<li><code>list_panes</code>: Enumerate all panes with full metadata. Returns <code>serde_json::Value</code>.</li>
+<li><code>search_panes</code>: Search scrollback content across panes by regex.</li>
+<li><code>tmux_inspect</code>: Query tmux state within a pane. Returns <code>serde_json::Value</code>.</li>
+</ul>
+<h3 id="file-tools">File Tools<a class="heading-anchor" href="#file-tools" aria-hidden="true" aria-label="Link to File Tools"></a></h3><p>All file tools (<code>file_read</code>, <code>file_write</code>, <code>edit_file</code>, <code>search</code>, <code>list_files</code>) are local-only by design. Cannot access remote SSH hosts.</p>
+<h2 id="system-prompt-architecture">System Prompt Architecture<a class="heading-anchor" href="#system-prompt-architecture" aria-hidden="true" aria-label="Link to System Prompt Architecture"></a></h2><p>The system prompt is constructed dynamically by <code>TerminalContext::to_system_prompt()</code>:</p>
+<ol>
+<li><strong>Decision framework</strong> — keystroke categories, tool selection matrix</li>
+<li><strong>Tool descriptions</strong> — brief summaries (model also sees full tool schemas from rig)</li>
+<li><strong>Safety rules</strong> — destructive command guards, addressing rules</li>
+<li><strong>Verify-before-act</strong> — universal observe-before-acting principle</li>
+<li><strong>TUI guide</strong> (conditional) — emitted only when TUI panes are detected:<ul>
+<li>VERIFY_AFTER_ACT — detailed send_keys procedure</li>
+<li>REMOTE_WORK — when focused pane has a remote host</li>
+<li>TMUX_PLAYBOOK — when tmux is in any target stack</li>
+<li>VIM_PLAYBOOK — when vim/nvim is visible</li>
+<li>GENERAL_TUI — fallback for unknown TUIs</li>
+</ul>
+</li>
+<li><strong>Terminal context</strong> — focused pane state, other pane summaries</li>
+</ol>
+<p>Token budget: ~7,750 tokens for TUI sessions, ~5,000 for shell-only sessions.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#mental-model">Mental Model</a>
+      
+        <a class="docs-toc-item depth-3" href="#keystroke-categories">Keystroke categories</a>
+      
+        <a class="docs-toc-item depth-2" href="#three-abstraction-levels">Three Abstraction Levels</a>
+      
+        <a class="docs-toc-item depth-2" href="#decision-framework">Decision Framework</a>
+      
+        <a class="docs-toc-item depth-2" href="#tool-design-principles">Tool Design Principles</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-dont-force-the-model-to-predict">1. Don&amp;#39;t force the model to predict</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-if-a-parameter-exists-the-model-will-fill-it">2. If a parameter exists, the model will fill it</a>
+      
+        <a class="docs-toc-item depth-3" href="#3-tool-responses-must-be-self-contained-for-the-next-decision">3. Tool responses must be self-contained for the next decision</a>
+      
+        <a class="docs-toc-item depth-3" href="#4-degrade-gracefully-never-refuse">4. Degrade gracefully, never refuse</a>
+      
+        <a class="docs-toc-item depth-3" href="#5-normalize-at-the-boundary">5. Normalize at the boundary</a>
+      
+        <a class="docs-toc-item depth-2" href="#observe-before-acting">Observe Before Acting</a>
+      
+        <a class="docs-toc-item depth-2" href="#tools">Tools</a>
+      
+        <a class="docs-toc-item depth-3" href="#level-1-terminal-management">Level 1: Terminal Management</a>
+      
+        <a class="docs-toc-item depth-3" href="#level-2-command-execution">Level 2: Command Execution</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

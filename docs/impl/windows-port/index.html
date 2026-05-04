@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Windows Port — Plan and Status | con docs</title>
+<meta name="description" content="Windows Port — Plan and Status con ships on macOS and has a working Windows beta."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/windows-port/"/>
+<meta property="og:title" content="Windows Port — Plan and Status | con docs"/>
+<meta property="og:description" content="Windows Port — Plan and Status con ships on macOS and has a working Windows beta."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/windows-port/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Windows Port — Plan and Status | con docs"/>
+<meta name="twitter:description" content="Windows Port — Plan and Status con ships on macOS and has a working Windows beta."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Windows Port — Plan and Status","description":"Windows Port — Plan and Status con ships on macOS and has a working Windows beta.","url":"https://con.nowledge.co/docs/impl/windows-port/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item active" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/windows-port.md" target="_blank" rel="noreferrer">docs/impl/windows-port.md</a>
+    </div>
+    <h1 id="windows-port-plan-and-status">Windows Port — Plan and Status<a class="heading-anchor" href="#windows-port-plan-and-status" aria-hidden="true" aria-label="Link to Windows Port — Plan and Status"></a></h1><p>con ships on macOS and has a working Windows beta. This document captures
+what we learned while preparing the codebase for the Windows port and lays
+out the staged path that got it there. It is the single source of truth
+for Windows-specific work.</p>
+<p>This is a planning document, not an implementation log. The corresponding
+postmortem (<code>postmortem/2026-04-16-prepare-windows-port.md</code>) records the
+decisions made when this plan was first written. Linux now has its own
+companion plan in <code>docs/impl/linux-port.md</code>.</p>
+<h2 id="building-today">Building today<a class="heading-anchor" href="#building-today" aria-hidden="true" aria-label="Link to Building today"></a></h2><p>As of Phase 2 the workspace builds on Windows, Linux, and macOS. What
+you get per platform:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Target</th>
+<th align="center">UI binary</th>
+<th align="center">Terminal pane</th>
+<th align="center">Control socket</th>
+<th align="center">Agent / settings / CLI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">macOS</td>
+<td align="center">✅ real</td>
+<td align="center">✅ libghostty + Metal</td>
+<td align="center"><code>/tmp/con.sock</code></td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td align="left">Windows</td>
+<td align="center">✅ real</td>
+<td align="center">✅ libghostty-vt + ConPTY + D3D11/DirectWrite</td>
+<td align="center"><code>\\.\pipe\con</code></td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td align="left">Linux</td>
+<td align="center">✅ real preview</td>
+<td align="center">✅ Unix PTY + libghostty-vt + GPUI styled-cell paint</td>
+<td align="center"><code>/tmp/con.sock</code></td>
+<td align="center">✅</td>
+</tr>
+</tbody></table>
+<p>On Windows (from a Developer Command Prompt for VS 2022):</p>
+<pre><code class="language-powershell">rustup default stable
+git clone https://github.com/nowledge-co/con-terminal.git
+cd con-terminal
+cargo wbuild -p con --release          # → target\release\con-app.exe
+cargo wtest  -p con-core -p con-cli -p con-agent -p con-terminal
+</code></pre>
+<p>Prerequisites:</p>
+<ul>
+<li><strong>Rust</strong> (stable, edition 2024).</li>
+<li><strong>Visual Studio Build Tools 2022</strong> with &quot;Desktop development with
+C++&quot; (for <code>link.exe</code> + Windows SDK).</li>
+<li><strong>Git for Windows</strong>.</li>
+<li><strong>Zig 0.15.2 or newer</strong> on PATH (for <code>libghostty-vt</code>); download from
+<a href="https://ziglang.org/download/" target="_blank" rel="noreferrer">https://ziglang.org/download/</a>. If the <code>zig</code> executable isn&#39;t on
+PATH, set <code>CON_ZIG_BIN</code> to its absolute path.</li>
+</ul>
+<p>Build-time env vars for <code>con-ghostty</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Var</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CON_ZIG_BIN</code></td>
+<td>Absolute path to the <code>zig</code> executable.</td>
+</tr>
+<tr>
+<td><code>CON_GHOSTTY_SOURCE_DIR</code></td>
+<td>Reuse a local Ghostty checkout instead of fetching one into <code>OUT_DIR</code> (handy on Windows when <code>MAX_PATH</code> bites or Defender scans the <code>target</code> dir).</td>
+</tr>
+<tr>
+<td><code>CON_GHOSTTY_VT_STEP</code></td>
+<td>Exact Zig build step/flag to pass for libghostty-vt. Autodetected; override only if the probe picks wrong.</td>
+</tr>
+<tr>
+<td><code>CON_GHOSTTY_VT_TARGET</code></td>
+<td>Override the Zig target passed to the <code>libghostty-vt</code> build. Normally derived from Cargo&#39;s target triple and set explicitly so release artifacts do not inherit the build machine&#39;s native CPU features.</td>
+</tr>
+<tr>
+<td><code>CON_GHOSTTY_VT_SIMD=1</code></td>
+<td>Opt in to Ghostty&#39;s SIMD UTF-8 paths (<code>-Dsimd=true</code>). Default off on Windows because the resulting <code>ghostty-vt-static.lib</code> references <code>simdutf</code> C++ symbols that Zig doesn&#39;t bundle into the archive. Flip this once simdutf link-resolution is sorted (see TODO in <code>build.rs</code>).</td>
+</tr>
+<tr>
+<td><code>CON_STUB_GHOSTTY_VT=1</code></td>
+<td>Compile <code>src/windows/ghostty_vt_stub.c</code> and link it instead of libghostty-vt. The resulting <code>con-app.exe</code> launches the full GPUI app and ConPTY shell path, but the terminal grid is empty because the VT parser is stubbed. Useful for iterating the GPUI / renderer path while a real libghostty-vt build is broken.</td>
+</tr>
+<tr>
+<td><code>CON_GHOSTTY_VT_RENDER_STATE=0</code></td>
+<td>Skip <code>ghostty_render_state_new</code> at startup. Default on (render state is how we read cells back for display). The escape hatch exists because older Ghostty revisions have a broken render-state implementation on Windows; the <code>GHOSTTY_REV</code> pin as of 2026-04-17 tip-of-main works, but if you pull a regression from upstream you can ship a runnable app with <code>=0</code> while the fix is in flight.</td>
+</tr>
+<tr>
+<td><code>CON_SKIP_GHOSTTY_VT=1</code></td>
+<td>Skip both. <code>cargo build</code> will fail at link. Only useful for <code>cargo check</code>.</td>
+</tr>
+<tr>
+<td><code>ZIG_GLOBAL_CACHE_DIR</code></td>
+<td>Optional Zig cache override. On Windows, <code>con-ghostty</code> now defaults this to a short path (<code>C:\zc</code>, then <code>%TEMP%\zc</code> fallback) when unset so Ghostty/uucode helper spawns stay under <code>MAX_PATH</code>.</td>
+</tr>
+</tbody></table>
+<p>Common Windows pitfalls when the Zig step fails mid-build with
+<code>FileNotFound</code> on a just-compiled <code>uucode_build_tables.exe</code>:</p>
+<ol>
+<li><strong>Windows Defender</strong> is quarantining the newborn executable. Add an
+exclusion for <code>C:\path\to\con</code> + <code>%USERPROFILE%\.zig-cache</code> +
+<code>%LOCALAPPDATA%\zig</code>.</li>
+<li><strong>MAX_PATH</strong> — the default 260-char limit trips on Zig&#39;s deep cache
+layout. Enable long paths (<code>HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled = 1</code>)
+OR point <code>CON_GHOSTTY_SOURCE_DIR</code> at a short path like <code>C:\ghostty</code>.
+<code>con-ghostty</code> now also defaults <code>ZIG_GLOBAL_CACHE_DIR</code> to a short
+path on Windows; if your machine disallows <code>C:\zc</code>, set
+<code>ZIG_GLOBAL_CACHE_DIR</code> explicitly to another short writable path.</li>
+<li><strong>Zig version mismatch</strong> — the current pin is validated with Zig
+0.15.2. If a newer Zig breaks upstream, either install the validated
+Zig version or bump <code>GHOSTTY_REV</code> in <code>build.rs</code> (requires macOS
+re-validation of the full libghostty build).</li>
+</ol>
+<p>The binary ships as <code>con-app.exe</code>, not <code>con.exe</code>: <code>CON</code> is a reserved
+DOS device name and Windows refuses to create <code>con.exe</code> via most
+Win32 file APIs. The package name is still <code>con</code> (so <code>cargo run -p con</code> is unambiguous), and the <code>wbuild</code> / <code>wrun</code> / <code>wtest</code> / <code>wcheck</code>
+aliases in <code>.cargo/config.toml</code> wrap the <code>--no-default-features --features con/bin-con-app</code> incantation that selects the renamed bin.
+macOS and Linux keep the plain <code>con</code> binary unchanged.</p>
+<p>The produced <code>con-app.exe</code> launches into the full UI with a real,
+GPU-rendered terminal pane — libghostty-vt parses the VT stream from a
+ConPTY child, the D3D11/DirectWrite atlas renderer rasterizes glyphs
+(including IoskeleyMono&#39;s Nerd-Font icon set), and the grid is drawn
+in a single <code>DrawIndexedInstanced</code> per frame. Current beta builds also
+reserve Unicode-derived two-cell atlas slots for wide CJK glyphs and
+prefer installed monospace fallbacks before proportional UI fonts when
+the requested/default terminal font is unavailable.</p>
+<h2 id="what-works-today-macos">What works today (macOS)<a class="heading-anchor" href="#what-works-today-macos" aria-hidden="true" aria-label="Link to What works today (macOS)"></a></h2><p>The macOS stack is fully native:</p>
+<pre><code>GPUI window (upstream zed-industries/zed)
+  └── GhosttyView                          crates/con-app/src/ghostty_view.rs
+        ├── child NSView (host)            cocoa::base::id
+        ├── GhosttyApp     (per window)    crates/con-ghostty
+        └── GhosttyTerminal (per surface)  ghostty_surface_t
+              ├── PTY + child process      libghostty
+              ├── VT parser + scrollback   libghostty
+              ├── Metal renderer           libghostty (IOSurface layer)
+              └── action callbacks         libghostty
+</code></pre>
+<p>The UI crate lives at <code>crates/con-app/</code> (not <code>crates/con/</code>) because <code>CON</code>
+is a reserved DOS device name on Windows — <code>git clone</code> and <code>git checkout</code>
+refuse to create any path component named <code>con</code>. The Cargo package name
+and the binary name are both still <code>con</code> on macOS; only the filesystem
+directory changed. See &quot;Binary naming on Windows&quot; below for how the
+future Windows build will produce a valid executable filename.</p>
+<p><code>con-ghostty</code> is a thin Rust wrapper over libghostty&#39;s C embedding API.
+libghostty is built from a pinned Ghostty revision via <code>zig build</code> and
+linked statically as <code>libghostty-fat.a</code>. Surface creation hands a NSView
+pointer to libghostty, which attaches a Metal <code>IOSurfaceLayer</code> and renders
+the terminal directly into it. PTY, VT parsing, and rendering are all
+inside libghostty.</p>
+<h2 id="per-platform-status-of-the-upstream-layers">Per-platform status of the upstream layers<a class="heading-anchor" href="#per-platform-status-of-the-upstream-layers" aria-hidden="true" aria-label="Link to Per-platform status of the upstream layers"></a></h2><h3 id="libghostty-ghostty-embedded-c-api">libghostty (Ghostty embedded C API)<a class="heading-anchor" href="#libghostty-ghostty-embedded-c-api" aria-hidden="true" aria-label="Link to libghostty (Ghostty embedded C API)"></a></h3><p>As of April 2026, libghostty&#39;s full embedded C API
+(<code>ghostty_app_*</code>, <code>ghostty_surface_*</code>, <code>ghostty_config_*</code>) is <strong>macOS-only</strong>
+upstream. The platform tag in <code>ghostty_platform_e</code> only has <code>MACOS</code> and
+<code>IOS</code> variants — there is no <code>WINDOWS</code> variant in
+<code>include/ghostty.h</code>.</p>
+<p>Ghostty has split out a smaller library called <strong><code>libghostty-vt</code></strong>
+(PR ghostty-org/ghostty#8840) which exposes only the VT parser and
+terminal state machine and is buildable for macOS, Linux, Windows, and
+WebAssembly. It does <strong>not</strong> include a renderer, font stack, or PTY —
+those become the embedder&#39;s responsibility.</p>
+<p>A Win32 apprt (<code>-Dapp-runtime=win32</code>) is in progress in community forks
+(notably <code>InsipidPoint/ghostty-windows</code> and <code>adilahmeddev/windows-apprt</code>)
+but is not merged upstream. None of these forks expose the embedded C API
+that <code>con-ghostty</code> consumes — they ship a standalone <code>.exe</code>.</p>
+<p>Cross-compiling libghostty for Windows from Linux is currently broken
+(discussion ghostty-org/ghostty#11697); building <strong>on</strong> Windows works
+after the fix in PR ghostty-org/ghostty#11698.</p>
+<h3 id="gpui-zed">GPUI (Zed)<a class="heading-anchor" href="#gpui-zed" aria-hidden="true" aria-label="Link to GPUI (Zed)"></a></h3><p>The Zed Windows backend lives at <code>crates/gpui/src/platform/windows/</code>
+in <code>zed-industries/zed</code>. It uses Direct3D 11.1 via DirectComposition,
+DirectWrite for fonts, and is in public beta as of &quot;Zed for Windows is
+here&quot; (zed.dev). Core features (rendering, dialogs, clipboard, fonts,
+HiDPI, IME for most input methods, dark/light mode) work; rough edges are
+multi-monitor, 120-144 Hz scheduling, certain IMEs, and some GPU
+variants.</p>
+<p>Two GPUI gaps matter for con&#39;s Windows port:</p>
+<ol>
+<li><strong>HWND child-window embedding is missing.</strong> PR
+zed-industries/zed#24330 attempted exactly this for Windows 11
+Taskbar embedding and was closed unmerged because maintainers wanted
+a cross-platform API first. The macOS pattern of &quot;give libghostty an
+NSView and let it render into your view tree&quot; has no upstream Windows
+equivalent.</li>
+<li><strong>No tray icon, accessibility (UIA), or background-running app
+support.</strong> Not blockers for con today but worth tracking.</li>
+</ol>
+<p>The workspace currently uses upstream <code>zed-industries/zed</code> gpui directly
+(see <code>Cargo.toml</code>), not the GPUI-CE community fork. CLAUDE.md previously
+described a GPUI-CE pin; that wording is being corrected as part of this
+prep work.</p>
+<h3 id="gpui-component-longbridge">gpui-component (longbridge)<a class="heading-anchor" href="#gpui-component-longbridge" aria-hidden="true" aria-label="Link to gpui-component (longbridge)"></a></h3><p>Officially supports Windows x86_64 with CI. Depends on upstream Zed&#39;s
+gpui by git, matching our workspace pin. Should require no per-target
+changes.</p>
+<h3 id="rig-tokio-serde-etc">Rig, tokio, serde, etc.<a class="heading-anchor" href="#rig-tokio-serde-etc" aria-hidden="true" aria-label="Link to Rig, tokio, serde, etc."></a></h3><p>All cross-platform. Rig only assumes std + reqwest, which we already
+build with rustls.</p>
+<h2 id="the-path-to-a-working-windows-build">The path to a working Windows build<a class="heading-anchor" href="#the-path-to-a-working-windows-build" aria-hidden="true" aria-label="Link to The path to a working Windows build"></a></h2><p>The port has to clear three independent technical hurdles. They can be
+worked in parallel by different contributors.</p>
+<h3 id="hurdle-1-terminal-backend-on-windows">Hurdle 1 — Terminal backend on Windows<a class="heading-anchor" href="#hurdle-1-terminal-backend-on-windows" aria-hidden="true" aria-label="Link to Hurdle 1 — Terminal backend on Windows"></a></h3><p><code>con-ghostty</code> cannot be reused as-is. The realistic options are, in
+order from lowest-risk to most-coupled:</p>
+<p><strong>Option A. <code>libghostty-vt</code> + custom renderer + ConPTY (lowest risk).</strong></p>
+<ul>
+<li>Embed <code>libghostty-vt</code> for the VT parser and screen state machine.</li>
+<li>Implement a Direct3D 11 / DirectWrite renderer in a new
+<code>con-ghostty-win</code> crate (or as a <code>cfg(windows)</code> module inside
+<code>con-ghostty</code>).</li>
+<li>Drive a child shell via <code>CreatePseudoConsole</code> (ConPTY) and feed bytes
+into the libghostty-vt parser; pull back grid/scrollback diffs and
+render them.</li>
+<li>Reuse <code>con-ghostty</code>&#39;s public Rust types (<code>TerminalColors</code>,
+<code>GhosttySurfaceEvent</code>, <code>GhosttyTerminal::write</code>, etc.) so
+<code>terminal_pane.rs</code> doesn&#39;t have to know which backend it is talking to.</li>
+</ul>
+<p>This is what Ghostty maintainers point external embedders at today.
+Largest engineering investment but cleanest layering.</p>
+<p><strong>Option B. Carry a Win32 embedded apprt patch on libghostty.</strong></p>
+<ul>
+<li>Fork <code>InsipidPoint/ghostty-windows</code> and add an <code>apprt-embedded</code>
+variant that exposes <code>ghostty_surface_*</code> on Windows by accepting an
+HWND in a new <code>ghostty_platform_windows_s</code> variant.</li>
+<li>Update <code>con-ghostty/src/ffi.rs</code> to add the <code>WINDOWS</code> enum variant and
+the HWND union member.</li>
+<li>Update <code>con-ghostty/build.rs</code> to invoke <code>zig build</code> with the win32
+toolchain on Windows.</li>
+</ul>
+<p>Smaller engineering investment per feature, but you own a Ghostty fork
+forever unless the changes upstream.</p>
+<p><strong>Option C. Wait for upstream.</strong> Track <code>zig build</code> on Windows and the
+in-progress Win32 apprt. No action item except subscribing to the
+relevant issues.</p>
+<p>We recommend <strong>Option A</strong> as the primary direction. Option B is a
+viable fallback if libghostty-vt&#39;s surface area turns out to be
+insufficient (e.g. if shell integration features that today live in the
+full libghostty are needed and would be expensive to re-implement).</p>
+<h3 id="hurdle-2-embedding-the-terminal-surface-in-the-gpui-window">Hurdle 2 — Embedding the terminal surface in the GPUI window<a class="heading-anchor" href="#hurdle-2-embedding-the-terminal-surface-in-the-gpui-window" aria-hidden="true" aria-label="Link to Hurdle 2 — Embedding the terminal surface in the GPUI window"></a></h3><p>Whichever backend wins Hurdle 1, the rendered output has to land
+inside a GPUI window. Three sub-options:</p>
+<ol>
+<li><strong>Patch GPUI to support <code>WindowKind::Child</code> on Windows</strong> (revive
+PR zed-industries/zed#24330). This is the structural equivalent of
+what we do on macOS. It needs upstream coordination, ideally with a
+cross-platform API that also covers macOS and Linux.</li>
+<li><strong>Render the terminal grid via GPUI&#39;s own painter.</strong> If the renderer
+from Hurdle 1A produces a pixel buffer or a textured quad, GPUI can
+paint it as part of its own scene. This avoids HWND embedding
+altogether but means we don&#39;t get libghostty&#39;s GPU pipeline — we&#39;d
+re-render through GPUI&#39;s D3D11.</li>
+<li><strong>Sibling HWND</strong> with manual Z-order / position coordination. Fast
+to prototype but well-known to glitch on resize, alt-tab, and
+fullscreen.</li>
+</ol>
+<p>Recommendation: prototype option 2 first because it keeps the rendering
+contract entirely inside GPUI. If perf is unacceptable (likely fine for
+text), pursue option 1.</p>
+<h3 id="binary-naming-on-windows">Binary naming on Windows<a class="heading-anchor" href="#binary-naming-on-windows" aria-hidden="true" aria-label="Link to Binary naming on Windows"></a></h3><p><code>CON</code> is a reserved DOS device name on Windows. That reservation covers
+both filesystem paths (<code>git checkout</code> refuses to create <code>crates/con/</code>
+even read-only, which is why the UI crate now lives at
+<code>crates/con-app/</code>) and the produced executable — a <code>con.exe</code> file
+cannot be created by most file-creation APIs. The <code>CON</code> reservation
+applies regardless of extension.</p>
+<p>This is implemented with feature-gated twin <code>[[bin]]</code> entries: macOS and
+Linux keep the plain <code>con</code> binary, while Windows builds <code>con-app.exe</code>.
+Cargo does not support per-target <code>[[bin]] name</code> in the manifest, so the
+practical mechanisms were:</p>
+<ol>
+<li><p><strong>Feature-gated twin <code>[[bin]]</code> entries pointing at the same
+<code>main.rs</code></strong> —</p>
+<pre><code class="language-toml">[features]
+default = [&quot;bin-con&quot;]
+bin-con = []      # enabled on macOS/Linux via a .cargo/config.toml
+bin-con-app = []  # enabled on Windows
+
+[[bin]]
+name = &quot;con&quot;
+path = &quot;src/main.rs&quot;
+required-features = [&quot;bin-con&quot;]
+
+[[bin]]
+name = &quot;con-app&quot;
+path = &quot;src/main.rs&quot;
+required-features = [&quot;bin-con-app&quot;]
+</code></pre>
+<p>Combined with a <code>.cargo/config.toml</code> that sets the right feature
+per <code>[target.cfg(...)]</code>, <code>cargo run -p con</code> works everywhere and
+produces <code>con</code> on Unix / <code>con-app.exe</code> on Windows.</p>
+</li>
+<li><p><strong>Rename the single <code>[[bin]]</code> to <code>con-app</code> and install a shell
+wrapper named <code>con</code></strong> in the macOS cask / Homebrew formula so the
+command-line experience is unchanged. Simpler manifest, more work
+in the packaging scripts.</p>
+</li>
+</ol>
+<p>Mechanism 1 is the active policy. It keeps the binary-name behavior
+platform-local and does not require installers to hide the difference.</p>
+<h3 id="hurdle-3-host-side-windows-isms">Hurdle 3 — Host-side Windows-isms<a class="heading-anchor" href="#hurdle-3-host-side-windows-isms" aria-hidden="true" aria-label="Link to Hurdle 3 — Host-side Windows-isms"></a></h3><p>These are small, but they compound into &quot;the binary won&#39;t even compile&quot;
+if untouched. The Windows-prep PR series should land these incrementally:</p>
+<ul>
+<li><strong>Sockets.</strong> Replace <code>tokio::net::UnixListener</code>/<code>UnixStream</code> with a
+small transport abstraction backed by Unix sockets on <code>cfg(unix)</code> and
+Windows Named Pipes (<code>\\.\pipe\con-&lt;user&gt;</code>) on <code>cfg(windows)</code>.</li>
+<li><strong>Path conventions.</strong> Replace hard-coded <code>/tmp</code> fallbacks with
+<code>std::env::temp_dir()</code>. Use <code>con-paths</code> for config, data, auth,
+theme, and skills storage so Windows gets <code>con-terminal</code> instead of
+the reserved <code>con</code> path segment.</li>
+<li><strong>Permissions.</strong> Gate <code>set_permissions(0o600)</code> and any
+<code>std::os::unix::*</code> imports behind <code>cfg(unix)</code>.</li>
+<li><strong>Bundle metadata.</strong> <code>bundle_info_value</code>, <code>set_dock_icon</code>,
+<code>macos_major_version</code>, <code>global_hotkey</code>, <code>updater</code> (Sparkle) are
+macOS-only. Each call site needs a <code>cfg(target_os = &quot;macos&quot;)</code> gate so
+the non-macOS paths use sensible defaults (e.g. version from
+<code>CARGO_PKG_VERSION</code>).</li>
+<li><strong>Global hotkey.</strong> Carbon RegisterEventHotKey on macOS;
+<code>RegisterHotKey</code> on Windows. Out of scope for the first port but
+worth abstracting at the call site.</li>
+<li><strong>Auto-update.</strong> Sparkle on macOS; the standard Windows pattern is
+WiX MSI + a separate updater binary, or <code>cargo dist</code>&#39;s self-update
+flow. Out of scope for the first port.</li>
+<li><strong>Process spawn / shell discovery.</strong> Currently delegated entirely to
+libghostty. The Windows backend (Hurdle 1) will need to discover
+<code>cmd.exe</code> / <code>powershell.exe</code> / <code>pwsh.exe</code> / <code>wsl.exe</code> and pipe
+through ConPTY itself.</li>
+</ul>
+<h2 id="phased-work-breakdown">Phased work breakdown<a class="heading-anchor" href="#phased-work-breakdown" aria-hidden="true" aria-label="Link to Phased work breakdown"></a></h2><p>The port should land in small, mergeable PRs in roughly this order. Each
+phase keeps the macOS build green.</p>
+<table>
+<thead>
+<tr>
+<th align="right">Phase</th>
+<th>Scope</th>
+<th>What changes</th>
+<th>Build state / status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>prep</td>
+<td>Cfg-gates, transport abstraction, docs, cleaner non-macOS error message</td>
+<td>macOS unchanged; non-UI crates compile on Windows. ✅ landed</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>Windows + Linux CI smoke test</td>
+<td><code>.github/workflows/ci-portable.yml</code> runs <code>cargo check</code> + <code>cargo test</code> for the portable crates and the UI binary on <code>windows-latest</code> and <code>ubuntu-latest</code></td>
+<td>CI green on both targets. ✅ landed</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>Stub terminal backend</td>
+<td><code>con-ghostty</code> exposes stub types on non-macOS; <code>stub_view.rs</code> is a GPUI placeholder view selected via <code>#[path]</code>; the <code>compile_error!</code> is gone</td>
+<td><code>cargo build -p con</code> worked on Windows and Linux with a placeholder pane during the bootstrap phase. ✅ landed</td>
+</tr>
+<tr>
+<td align="right">3a</td>
+<td>Windows backend scaffold</td>
+<td><code>con-ghostty/src/windows/</code> modules: ConPTY wrapper, libghostty-vt FFI, D3D11 + DirectWrite renderer skeleton, offscreen render session, and <code>WindowsGhosttyApp</code> / <code>WindowsGhosttyTerminal</code> facade. <code>con-app/src/windows_view.rs</code> instantiates a <code>RenderSession</code> lazily once GPUI pane bounds are known. <code>build.rs</code> builds <code>libghostty-vt</code> via <code>zig build</code> on Windows host targets (probes available step names; <code>CON_GHOSTTY_VT_STEP</code> override). Binary renamed to <code>con-app.exe</code> on Windows via feature-gated twin <code>[[bin]]</code> (CON is reserved DOS device name).</td>
+<td><code>cargo wbuild -p con --release</code> on Windows produces a <code>con-app.exe</code> that launches; terminal pane spawns a real ConPTY shell, drives libghostty-vt, and paints through the offscreen D3D11 -&gt; GPUI image bridge. Compiles clean on Linux + Windows CI. ✅ landed</td>
+</tr>
+<tr>
+<td align="right">3b</td>
+<td>Glyph atlas + grid render</td>
+<td>HLSL shaders embedded and runtime-compiled via <code>D3DCompile</code>. Skyline-packed (<code>etagere</code>) BGRA8 glyph atlas (<code>con-ghostty/src/windows/render/atlas.rs</code>), glyphs rasterized via Direct2D <code>DrawText</code> with grayscale AA. Three-case PUA rasterization (fits-cell / width-overflow with lsb shift / height-overflow with scale-around-centre) for Nerd-Font icons, plus per-slot <code>PushAxisAlignedClip</code> + black pre-fill to prevent antialias fringe bleeding between atlas neighbours. The shader collapses sampled atlas RGB to scalar glyph coverage, so driver or remote-display subpixel fallback cannot leak colored ClearType fringe into screenshots or transparent windows. CJK/wide fallback glyphs reserve two-cell atlas slots using <code>unicode-width</code>, so DirectWrite fallback faces match the width libghostty-vt reserved in the terminal grid instead of looking clipped followed by a blank spacer cell. D3D11 pipeline (<code>pipeline.rs</code>): per-instance IA layout, dynamic instance buffer with <code>Map(WRITE_DISCARD)</code>, single <code>DrawIndexedInstanced(6, cell_count)</code> per frame — matches Windows Terminal AtlasEngine&#39;s architecture. Wide PUA instances are stable-sorted after narrow ones so DX11&#39;s in-order per-pixel writes let them win overlap with neighbour backgrounds; the cursor inverse-colour instance is captured pre-sort and pushed post-sort so it always draws last. <code>vt.rs</code> uses the <code>ghostty_render_state</code> API (row iterator + <code>row_cells_get_multi</code> + DIRTY row skip) — not the <code>grid_ref</code> path that the upstream header explicitly warns against for render loops.</td>
+<td>Real glyph rendering on Windows, runtime-validated on real hardware against oh-my-posh prompt stacks, CJK fallback text, and dense hyphen rules. Postmortems: <code>postmortem/2026-04-21-windows-atlas-pua-rasterization.md</code>, <code>postmortem/2026-04-30-windows-font-rgb-fringing.md</code>. ✅ landed</td>
+</tr>
+<tr>
+<td align="right">3c</td>
+<td>Input + selection</td>
+<td>Beta-baseline input, selection, scrollback, clipboard, and ConPTY launch behavior are landed; details below.</td>
+<td>Beta-baseline terminal interactivity is landed. Remaining polish belongs in Phase 4 hardening. ✅ largely landed</td>
+</tr>
+<tr>
+<td align="right">3d</td>
+<td>(Parallel, upstream)</td>
+<td><code>WindowsWindow::attach_external_swap_chain_handle(bounds, HANDLE)</code> PR to <code>zed-industries/zed</code>. When merged, swap the current offscreen readback/image bridge to a composition swap chain that GPUI can place directly in its DComp tree.</td>
+<td>No con-side merge blocker; still upstream-facing work. This is the remaining structural performance cleanup. —</td>
+</tr>
+<tr>
+<td align="right">3e</td>
+<td>renderer perf tuning</td>
+<td>The current pipeline draws into an offscreen D3D11 texture, reads back BGRA bytes (<code>RenderSession::render_frame</code>), wraps them as <code>ImageSource::Render(Arc&lt;RenderImage&gt;)</code>, and lets GPUI re-upload them into its DComp tree. The GPU→CPU readback per dirty frame plus the CPU→GPU re-upload adds structural overhead versus Windows Terminal&#39;s direct-DComp present path. Landed mitigations: (1) ✅ wake GPUI from the ConPTY reader thread so freshly arrived shell output paints on the next prepaint instead of waiting for user input; (2) ✅ move steady-state terminal image generation into the main render path so freshly rendered images can appear in the current frame rather than always one frame later; (3) ✅ skip default-background blank-cell instances that are already covered by the render-target clear; (4) ✅ avoid a full-frame zero-fill before D3D readback; (5) ✅ only stable-sort the instance stream when a frame actually contains overflowing wide glyphs; (6) ✅ keep low-latency presents armed until the triggering input actually advances the VT generation, so shell echo/prompt redraws do not miss the fresh-frame path; (7) ✅ treat the staging ring as a mailbox so maximize/fullscreen backlog never blocks GPUI&#39;s thread trying to rescue stale readbacks; (8) ✅ snapshot Ghostty&#39;s actual render-state rows/cols during asynchronous resize catch-up and include snapshot geometry in the renderer invalidation key so resize catch-up frames are not skipped as &quot;unchanged&quot;; (9) ✅ keep the fresh-frame preference armed across a short interactive typing/paste burst so repeated echoed generations do not periodically fall back to stale-frame presents mid-burst; (10) ✅ stop forcing speculative GPUI repaints on handled key input before ConPTY echo has advanced the VT, so steady typing rides the real output wake path instead of paying for an extra unchanged prepaint; (11) ✅ preserve successive output wakes from the ConPTY reader instead of draining them into one repaint request, so bursty commands like <code>ls</code> can advance across multiple prepaints rather than visibly batching intermediate output; (12) ✅ when a fresher VT snapshot has already been submitted, stop presenting an older completed readback ahead of it, so PTY-driven redraws use true mailbox semantics instead of sliding through stale intermediate frames; (13) ✅ compute exact changed VT rows even when libghostty-vt reports full dirty, and use D3D <code>CopySubresourceRegion</code> to read back only those pixel rows for small updates while keeping full-readback fallbacks for resize/selection/theme changes; (14) ✅ replace dirty rows inside a CPU-side BGRA backing frame before publishing one GPUI image, so partial D3D readbacks keep replacement semantics even with translucent terminal backgrounds; (15) ✅ keep command-start output latency-critical for long enough to cover delayed shell output; (16) ✅ control shell/profile as a benchmark variable by honoring Windows Terminal&#39;s <code>defaultProfile</code> where possible. Runtime instrumentation behind <code>CON_GHOSTTY_PROFILE</code> now logs the full chain: <code>conpty_read</code> for chunk cadence, <code>vt_snapshot</code> for shared render-state + clone cost, <code>win_renderer</code> for drain/draw/submit/readback timing, partial-readback row counts, and ring state, <code>win_render_frame</code> for session-level timing, and <code>win_sync_render</code> for GPUI image-wrap/upload timing. Use <code>CON_LOG_FILE=con-profile.log</code> to capture these logs without shell redirection; idle unchanged frames are filtered by default to keep the app usable during profiling, and <code>CON_GHOSTTY_PROFILE_VERBOSE=1</code> enables every-frame traces. Postmortem: <code>postmortem/2026-04-26-windows-command-render-latency.md</code>. Long-term plan: once Phase 3d lands, present the swap chain directly via <code>attach_external_swap_chain_handle</code> and drop the readback entirely; profile with PIX / GPUView / ETW to verify Enter→glyph latency parity with WT.</td>
+<td>Wins in <code>crates/con-app/src/windows_view.rs</code> (output wake handling + same-frame image swap + CPU-backed row replacement + image-wrap timing), <code>crates/con-ghostty/src/windows/conpty.rs</code> (chunk cadence timing + spawn-handle marker + Windows Terminal default-profile shell resolution), <code>crates/con-ghostty/src/windows/host_view.rs</code> (VT-generation-aware low-latency presents + frame instrumentation), <code>crates/con-ghostty/src/vt.rs</code> (render-state geometry snapshot + exact dirty-row derivation + shared snapshot instrumentation), and <code>crates/con-ghostty/src/windows/render/mod.rs</code> (instance/readback hot path + partial-row staging copies + per-stage timing + true mailbox presentation policy). ✅ substantially improved; direct swap-chain composition remains the long-term cleanup</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>Hardening</td>
+<td>Multi-pane, splits, IME edge-case validation, focus, resize, copy/paste, drag/drop, OSC 133 shell integration, ligatures</td>
+<td>Beta-quality polish and correctness backlog. —</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>Distribution</td>
+<td>Installer/signing strategy (MSI/MSIX/winget/<code>cargo dist</code>), code signing, update verification / hardening, <code>con-app.exe</code> rename via feature-gated twin <code>[[bin]]</code></td>
+<td>ZIP + PowerShell installer + in-place beta update flow exist; release-trust hardening remains. —</td>
+</tr>
+</tbody></table>
+<p>Phase 3c details now covered by the beta baseline:</p>
+<ul>
+<li><code>host_view</code> translates <code>VK_*</code> input into terminal-local xterm sequences, including Tab / Shift+Tab capture, while preserving mouse selection behavior.</li>
+<li>Wheel and touchpad input scroll libghostty-vt viewport state when mouse tracking is inactive. Alternate-screen mode-1007 wheel gestures translate into cursor keys with the same fractional row accumulator used by primary scrollback.</li>
+<li>The Windows pane has a visible GPUI scrollback scrollbar backed by cached libghostty-vt scrollbar state, so render no longer polls the expensive scrollbar query on every paint.</li>
+<li>OSC 52 and ordinary clipboard operations are wired through the Win32 clipboard.</li>
+<li>CJK IME commit/preedit input is wired through GPUI&#39;s platform
+<code>InputHandler</code>. The terminal still owns control, alt/meta, and
+special-key encoding, while printable text and IME commits enter the
+PTY as text. Composition ranges report cursor-relative bounds so
+candidate windows anchor to the terminal cursor.</li>
+<li>ConPTY child launch passes the pseudo-console with <code>PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE</code>, avoids inheriting con&#39;s unrelated stdout/stderr handles, starts from a valid absolute cwd when provided, then falls back to the user&#39;s home directory and finally <code>%TEMP%</code>.</li>
+<li>Profiling uses <code>CON_LOG_FILE</code> instead of shell redirection so the child shell never sees redirected log handles.</li>
+</ul>
+<p>Phases 0-3e are <strong>substantially complete</strong> for the current Windows beta
+baseline. Phase 3b shipped the full glyph atlas, the three-case PUA
+rasterization that lets IoskeleyMono&#39;s Nerd-Font icons and ASCII
+punctuation coexist, and the cursor z-order fix. Phase 3e closed the
+largest avoidable latency gaps in the current offscreen bridge. Phase
+3d/direct composition remains the structural cleanup that removes the
+GPU -&gt; CPU -&gt; GPUI round trip rather than optimizing around it.</p>
+<h3 id="renderer-perf-current-cost-and-tuning-track">Renderer perf — current cost and tuning track<a class="heading-anchor" href="#renderer-perf-current-cost-and-tuning-track" aria-hidden="true" aria-label="Link to Renderer perf — current cost and tuning track"></a></h3><p>The macOS path uses libghostty&#39;s Metal pipeline, which presents directly
+to a <code>CAMetalLayer</code> and is profiled (<code>docs/impl/macos-terminal-profiling.md</code>).
+The Windows backend is a custom D3D11/DirectWrite stack that — to avoid
+child-window z-order and modal-composition problems — currently composites through
+GPUI&#39;s image path:</p>
+<pre><code>ConPTY reader thread ─→ vt.feed(bytes) ─→ updates grid
+                                          (now: signals wake_tx)
+GPUI prepaint tick   ─→ render_frame()
+                       └→ D3D11 draw to OFFSCREEN texture     (GPU)
+                       └→ GPU→CPU readback of BGRA bytes      ← intrinsic cost
+                       └→ patch CPU BGRA backing, wrap as RenderImage(Arc)
+                       └→ GPUI uploads back to GPU            (CPU→GPU)
+                       └→ DComp composite                     (GPU)
+</code></pre>
+<p>Compared to Windows Terminal&#39;s AtlasEngine, two costs are structural:</p>
+<ol>
+<li><strong>GPU→CPU→GPU round-trip per dirty frame.</strong> Synchronous readback alone
+is typically 5–15ms; re-upload adds a few more. WT presents directly to
+a DComp swap chain — no readback.</li>
+<li><strong>PTY arrival → repaint latency.</strong> The reader thread used to update the
+grid in place but never poke the view. The next prompt only painted on
+the next user input event or animation tick (up to ~16ms slack).
+Phase 3e step (1) closes this — <code>RenderSession::new</code> now takes a
+<code>wake: Fn() + Send + Sync</code> callback that the view uses to push a
+coalesced <code>cx.notify()</code> per PTY chunk (<code>crates/con-app/src/windows_view.rs</code>).</li>
+</ol>
+<p>The remaining structural cost (readback plus GPUI image upload) goes away
+once Phase 3d (<code>attach_external_swap_chain_handle</code>) lands and we can
+present the swap chain into GPUI&#39;s DComp tree directly.</p>
+<p>The current Phase 3e mitigations reduce work inside that temporary image
+path without changing rendering semantics: default-background blank cells
+are represented by the clear color, explicit SGR backgrounds and cursor /
+selection / underline state still get instances, readback copies only
+changed pixel rows when the VT snapshot is row-local, GPUI receives
+one image produced from a CPU BGRA backing frame patched with those row
+readbacks, and the wide-glyph sort is skipped on ordinary text frames.
+After the 2026-04-26 profiling pass,
+command output should also be compared with the same shell/profile that
+Windows Terminal uses; con now reads Windows Terminal&#39;s <code>defaultProfile</code>
+when possible so PowerShell profile hooks or WSL startup do not masquerade
+as renderer latency.</p>
+<h3 id="what-you-can-do-today-on-windows">What you can do <em>today</em> on Windows<a class="heading-anchor" href="#what-you-can-do-today-on-windows" aria-hidden="true" aria-label="Link to What you can do today on Windows"></a></h3><pre><code class="language-powershell">git clone https://github.com/nowledge-co/con-terminal.git
+cd con-terminal
+cargo wbuild -p con --release
+target\release\con-app.exe
+</code></pre>
+<p>The window comes up with the full chrome and a live terminal pane.
+ConPTY spawns the Windows Terminal default profile shell when its
+settings are readable, libghostty-vt parses the VT
+stream, and the D3D11/DirectWrite atlas renderer draws the grid at
+native refresh rate — IoskeleyMono ASCII, box-drawing, Powerline
+separators, CJK/wide fallback glyphs, CJK IME text input, and the Nerd-Font icon set
+(folder, git, status, …) all render correctly, cursor lands on the
+right column, Tab / Shift+Tab reach shells and TUIs, wheel gestures
+respect the platform scroll intent, and normal-shell scrollback is
+reachable through both the mouse wheel and the visible scrollbar.
+Resize works. Window close kills the shell. The remaining Windows work
+is now direct-composition presentation, IME edge-case validation /
+resize / advanced selection polish, and distribution hardening rather than basic
+input/selection bring-up.</p>
+<p>Caveats:</p>
+<ul>
+<li>You must have <strong>Zig 0.15.2 exactly</strong> on <code>PATH</code> for <code>cargo build</code> to
+compile <code>libghostty-vt</code>. Do not use Zig 0.16.0 for this pinned
+Ghostty revision; install 0.15.2 from
+<a href="https://ziglang.org/download/0.15.2/" target="_blank" rel="noreferrer">https://ziglang.org/download/0.15.2/</a> or point <code>CON_ZIG_BIN</code> at an
+explicit 0.15.2 binary. <code>cargo check</code> works without Zig
+(compile-only, no link); set <code>CON_SKIP_GHOSTTY_VT=1</code> to skip the
+build entirely.</li>
+<li>The shell is <code>CON_SHELL</code> if set, else the configured Windows Terminal
+default profile command when <code>%LOCALAPPDATA%</code> settings are readable,
+else <code>pwsh.exe</code>/<code>powershell.exe</code> if on <code>PATH</code>, else <code>$env:COMSPEC</code>,
+else <code>cmd.exe</code>. A first-class config field is still Phase 4 work.</li>
+<li>The terminal still pays a GPU→CPU readback and GPUI image upload on
+dirty frames. Recent fixes made small updates row-local and removed
+avoidable extra-frame latency plus several backlog stalls, but Windows
+Terminal can still feel faster until the direct-composition
+presentation path lands.</li>
+</ul>
+<h2 id="remaining-decisions">Remaining decisions<a class="heading-anchor" href="#remaining-decisions" aria-hidden="true" aria-label="Link to Remaining decisions"></a></h2><p>The Windows beta no longer has open questions about whether the local
+ConPTY + libghostty-vt + D3D11/DirectWrite architecture works. The
+remaining decisions are narrower:</p>
+<ol>
+<li><strong>Direct composition boundary.</strong> Land or otherwise obtain a GPUI API
+that lets con present a Windows composition swap chain directly in the
+GPUI tree, then remove the D3D readback + <code>RenderImage</code> re-upload
+bridge.</li>
+<li><strong>Shell integration scope.</strong> Decide whether OSC 133 / OSC 7 and
+related shell-integration features belong in the shared VT layer or in
+per-platform shell adapters.</li>
+<li><strong>Windows hardening.</strong> Broaden IME/dead-key/international-keyboard
+validation, drag-to-scroll selection polish, column selection,
+extreme resize behavior, ligatures, and remaining multi-monitor/GPU
+edge cases.</li>
+<li><strong>Distribution.</strong> Choose the installer/signing path (MSIX/MSI/cargo
+dist/winget), code-sign the binary, and harden the existing beta
+in-place update flow with artifact signature verification.</li>
+</ol>
+<h2 id="references">References<a class="heading-anchor" href="#references" aria-hidden="true" aria-label="Link to References"></a></h2><ul>
+<li>Ghostty: <a href="https://github.com/ghostty-org/ghostty" target="_blank" rel="noreferrer">https://github.com/ghostty-org/ghostty</a></li>
+<li>Ghostty Windows roadmap discussion #2563:
+<a href="https://github.com/ghostty-org/ghostty/discussions/2563" target="_blank" rel="noreferrer">https://github.com/ghostty-org/ghostty/discussions/2563</a></li>
+<li>libghostty-vt PR #8840:
+<a href="https://github.com/ghostty-org/ghostty/pull/8840" target="_blank" rel="noreferrer">https://github.com/ghostty-org/ghostty/pull/8840</a></li>
+<li>Ghostty libxml2 Windows build issue #11697:
+<a href="https://github.com/ghostty-org/ghostty/discussions/11697" target="_blank" rel="noreferrer">https://github.com/ghostty-org/ghostty/discussions/11697</a></li>
+<li>Community Win32 apprt fork:
+<a href="https://github.com/InsipidPoint/ghostty-windows" target="_blank" rel="noreferrer">https://github.com/InsipidPoint/ghostty-windows</a></li>
+<li>Zed for Windows launch: <a href="https://zed.dev/blog/zed-for-windows-is-here" target="_blank" rel="noreferrer">https://zed.dev/blog/zed-for-windows-is-here</a></li>
+<li>GPUI WindowKind::Child PR (closed):
+<a href="https://github.com/zed-industries/zed/pull/24330" target="_blank" rel="noreferrer">https://github.com/zed-industries/zed/pull/24330</a></li>
+<li>Microsoft ConPTY:
+<a href="https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session</a></li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#building-today">Building today</a>
+      
+        <a class="docs-toc-item depth-2" href="#what-works-today-macos">What works today (macOS)</a>
+      
+        <a class="docs-toc-item depth-2" href="#per-platform-status-of-the-upstream-layers">Per-platform status of the upstream layers</a>
+      
+        <a class="docs-toc-item depth-3" href="#libghostty-ghostty-embedded-c-api">libghostty (Ghostty embedded C API)</a>
+      
+        <a class="docs-toc-item depth-3" href="#gpui-zed">GPUI (Zed)</a>
+      
+        <a class="docs-toc-item depth-3" href="#gpui-component-longbridge">gpui-component (longbridge)</a>
+      
+        <a class="docs-toc-item depth-3" href="#rig-tokio-serde-etc">Rig, tokio, serde, etc.</a>
+      
+        <a class="docs-toc-item depth-2" href="#the-path-to-a-working-windows-build">The path to a working Windows build</a>
+      
+        <a class="docs-toc-item depth-3" href="#hurdle-1-terminal-backend-on-windows">Hurdle 1 — Terminal backend on Windows</a>
+      
+        <a class="docs-toc-item depth-3" href="#hurdle-2-embedding-the-terminal-surface-in-the-gpui-window">Hurdle 2 — Embedding the terminal surface in the GPUI window</a>
+      
+        <a class="docs-toc-item depth-3" href="#binary-naming-on-windows">Binary naming on Windows</a>
+      
+        <a class="docs-toc-item depth-3" href="#hurdle-3-host-side-windows-isms">Hurdle 3 — Host-side Windows-isms</a>
+      
+        <a class="docs-toc-item depth-2" href="#phased-work-breakdown">Phased work breakdown</a>
+      
+        <a class="docs-toc-item depth-3" href="#renderer-perf-current-cost-and-tuning-track">Renderer perf — current cost and tuning track</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

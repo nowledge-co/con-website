@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>con UI and Visual Spec | con</title>
+<meta name="description" content="con UI and Visual Spec Purpose This document defines the visual and interaction system for con ."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/design/con-ui-visual-spec/"/>
+<meta property="og:title" content="con UI and Visual Spec | con"/>
+<meta property="og:description" content="con UI and Visual Spec Purpose This document defines the visual and interaction system for con ."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/design/con-ui-visual-spec/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="con UI and Visual Spec | con"/>
+<meta name="twitter:description" content="con UI and Visual Spec Purpose This document defines the visual and interaction system for con ."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"con UI and Visual Spec","description":"con UI and Visual Spec Purpose This document defines the visual and interaction system for con .","url":"https://con.nowledge.co/docs/design/con-ui-visual-spec/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item active" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/design/con-ui-visual-spec.md" target="_blank" rel="noreferrer">docs/design/con-ui-visual-spec.md</a>
+    </div>
+    <h1 id="con-ui-and-visual-spec">con UI and Visual Spec<a class="heading-anchor" href="#con-ui-and-visual-spec" aria-hidden="true" aria-label="Link to con UI and Visual Spec"></a></h1><h2 id="purpose">Purpose<a class="heading-anchor" href="#purpose" aria-hidden="true" aria-label="Link to Purpose"></a></h2><p>This document defines the visual and interaction system for <strong>con</strong>.</p>
+<p>It translates the product brief into practical guidance for:</p>
+<ul>
+<li>layout</li>
+<li>typography</li>
+<li>color</li>
+<li>spacing</li>
+<li>surface treatment</li>
+<li>motion</li>
+<li>component anatomy</li>
+</ul>
+<p>It should be read together with:</p>
+<ul>
+<li><code>docs/design/con-design-language.md</code></li>
+<li><code>docs/design/con-ux-product-spec.md</code></li>
+</ul>
+<hr>
+<h2 id="visual-positioning">Visual Positioning<a class="heading-anchor" href="#visual-positioning" aria-hidden="true" aria-label="Link to Visual Positioning"></a></h2><p>con should feel:</p>
+<ul>
+<li>native</li>
+<li>light-first (Flexoki Light default, Flexoki Dark available)</li>
+<li>elegant</li>
+<li>low-noise</li>
+<li>terminal-first</li>
+<li>fast even at a glance</li>
+<li>trustworthy under operational pressure</li>
+<li>borderless and shadowless</li>
+</ul>
+<p>The app should communicate quality through restraint.
+Not through decoration.</p>
+<hr>
+<h2 id="source-interpretation">Source Interpretation<a class="heading-anchor" href="#source-interpretation" aria-hidden="true" aria-label="Link to Source Interpretation"></a></h2><p>From the Nowledge Labs reference system, con should inherit:</p>
+<ul>
+<li>typography-led hierarchy</li>
+<li>opacity-based neutrals</li>
+<li>monochrome default surfaces</li>
+<li>generous spacing</li>
+<li>subtle containers</li>
+<li>calm settings and navigation patterns</li>
+<li>progressive disclosure</li>
+</ul>
+<p>From strong terminal-native UX patterns, con should inherit:</p>
+<ul>
+<li>structured discoverability</li>
+<li>thoughtful command/action composition</li>
+<li>keyboard-forward usability</li>
+<li>clearer session and task orientation</li>
+</ul>
+<p>What makes con distinct is that all of these qualities must be adapted to a <strong>terminal-native</strong> environment without losing polish in either theme.</p>
+<hr>
+<h2 id="theme-strategy">Theme Strategy<a class="heading-anchor" href="#theme-strategy" aria-hidden="true" aria-label="Link to Theme Strategy"></a></h2><h3 id="light-first-by-default">Light-first by default<a class="heading-anchor" href="#light-first-by-default" aria-hidden="true" aria-label="Link to Light-first by default"></a></h3><p>Flexoki Light is the default shipping theme, so the design system must hold up in light mode first.</p>
+<h3 id="dark-mode-as-equal-partner">Dark mode as equal partner<a class="heading-anchor" href="#dark-mode-as-equal-partner" aria-hidden="true" aria-label="Link to Dark mode as equal partner"></a></h3><p>Dark mode must feel equally polished, not like a downgraded variant.
+The product should feel native and intentional in either theme.</p>
+<h3 id="surface-philosophy">Surface philosophy<a class="heading-anchor" href="#surface-philosophy" aria-hidden="true" aria-label="Link to Surface philosophy"></a></h3><p>Most surfaces should be created through:</p>
+<ul>
+<li>slight value shifts</li>
+<li>opacity-based overlays</li>
+<li>spacing and text hierarchy</li>
+<li>occasional soft dividers</li>
+</ul>
+<p>Not through obvious card borders, loud gradients, or deep shadow stacks.</p>
+<hr>
+<h2 id="dual-theme-color-specifications">Dual Theme Color Specifications<a class="heading-anchor" href="#dual-theme-color-specifications" aria-hidden="true" aria-label="Link to Dual Theme Color Specifications"></a></h2><h3 id="dark-mode-palette">Dark Mode Palette<a class="heading-anchor" href="#dark-mode-palette" aria-hidden="true" aria-label="Link to Dark Mode Palette"></a></h3><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>background</td>
+<td>oklch(0.11 0.01 260)</td>
+<td>Deep blue-black ink</td>
+</tr>
+<tr>
+<td>terminal</td>
+<td>oklch(0.09 0.012 260)</td>
+<td>Deepest surface</td>
+</tr>
+<tr>
+<td>chrome</td>
+<td>oklch(0.13 0.01 260)</td>
+<td>Slightly elevated</td>
+</tr>
+<tr>
+<td>elevated</td>
+<td>oklch(0.15 0.01 260)</td>
+<td>Lifted surfaces</td>
+</tr>
+<tr>
+<td>card</td>
+<td>oklch(0.14 0.01 260)</td>
+<td>Panel backgrounds</td>
+</tr>
+<tr>
+<td>primary</td>
+<td>oklch(0.65 0.15 245)</td>
+<td>Calm blue focus</td>
+</tr>
+<tr>
+<td>accent</td>
+<td>oklch(0.55 0.12 280)</td>
+<td>Lavender assistant</td>
+</tr>
+<tr>
+<td>success</td>
+<td>oklch(0.65 0.18 145)</td>
+<td>Green success</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>oklch(0.75 0.15 80)</td>
+<td>Amber caution</td>
+</tr>
+<tr>
+<td>destructive</td>
+<td>oklch(0.55 0.2 25)</td>
+<td>Red danger</td>
+</tr>
+<tr>
+<td>border</td>
+<td>oklch(0.22 0.01 260)</td>
+<td>Hairline</td>
+</tr>
+<tr>
+<td>border-subtle</td>
+<td>oklch(0.18 0.008 260)</td>
+<td>Nearly invisible</td>
+</tr>
+<tr>
+<td>text-primary</td>
+<td>oklch(0.92 0.01 260)</td>
+<td>Main text</td>
+</tr>
+<tr>
+<td>text-muted</td>
+<td>oklch(0.55 0.01 260)</td>
+<td>Secondary</td>
+</tr>
+</tbody></table>
+<h3 id="light-mode-palette">Light Mode Palette<a class="heading-anchor" href="#light-mode-palette" aria-hidden="true" aria-label="Link to Light Mode Palette"></a></h3><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>background</td>
+<td>oklch(0.995 0.002 90)</td>
+<td>Pure white with warmth</td>
+</tr>
+<tr>
+<td>terminal</td>
+<td>oklch(0.98 0.003 260)</td>
+<td>Slightly cooler for code</td>
+</tr>
+<tr>
+<td>chrome</td>
+<td>oklch(1 0 0)</td>
+<td>Pure white</td>
+</tr>
+<tr>
+<td>elevated</td>
+<td>oklch(0.995 0.002 90)</td>
+<td>Subtle warmth</td>
+</tr>
+<tr>
+<td>card</td>
+<td>oklch(1 0 0)</td>
+<td>Clean white</td>
+</tr>
+<tr>
+<td>primary</td>
+<td>oklch(0.55 0.15 245)</td>
+<td>Refined blue</td>
+</tr>
+<tr>
+<td>accent</td>
+<td>oklch(0.65 0.12 280)</td>
+<td>Lavender presence</td>
+</tr>
+<tr>
+<td>success</td>
+<td>oklch(0.55 0.18 145)</td>
+<td>Green success</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>oklch(0.65 0.15 80)</td>
+<td>Amber caution</td>
+</tr>
+<tr>
+<td>destructive</td>
+<td>oklch(0.55 0.2 25)</td>
+<td>Red danger</td>
+</tr>
+<tr>
+<td>border</td>
+<td>oklch(0.92 0.003 260)</td>
+<td>Hairline</td>
+</tr>
+<tr>
+<td>border-subtle</td>
+<td>oklch(0.95 0.002 260)</td>
+<td>Nearly invisible</td>
+</tr>
+<tr>
+<td>text-primary</td>
+<td>oklch(0.18 0.01 260)</td>
+<td>Main text</td>
+</tr>
+<tr>
+<td>text-muted</td>
+<td>oklch(0.50 0.01 260)</td>
+<td>Secondary</td>
+</tr>
+</tbody></table>
+<h3 id="theme-agnostic-rules">Theme-Agnostic Rules<a class="heading-anchor" href="#theme-agnostic-rules" aria-hidden="true" aria-label="Link to Theme-Agnostic Rules"></a></h3><ul>
+<li>All semantic tokens must work in both themes</li>
+<li>Contrast ratios: 4.5:1 minimum for body text</li>
+<li>Focus rings: visible without being gaudy</li>
+<li>Color never the only differentiator for state</li>
+</ul>
+<hr>
+<h2 id="color-system">Color System<a class="heading-anchor" href="#color-system" aria-hidden="true" aria-label="Link to Color System"></a></h2><h2 id="neutral-roles">Neutral roles<a class="heading-anchor" href="#neutral-roles" aria-hidden="true" aria-label="Link to Neutral roles"></a></h2><p>Use a small set of semantic neutral roles instead of many explicit gray values.</p>
+<h3 id="recommended-roles">Recommended roles<a class="heading-anchor" href="#recommended-roles" aria-hidden="true" aria-label="Link to Recommended roles"></a></h3><ul>
+<li><code>bg/app</code></li>
+<li><code>bg/terminal</code></li>
+<li><code>bg/chrome</code></li>
+<li><code>bg/elevated</code></li>
+<li><code>bg/overlay</code></li>
+<li><code>bg/subtle</code></li>
+<li><code>border/subtle</code></li>
+<li><code>border/emphasis</code></li>
+<li><code>text/primary</code></li>
+<li><code>text/secondary</code></li>
+<li><code>text/muted</code></li>
+<li><code>text/faint</code></li>
+</ul>
+<h3 id="neutral-behavior">Neutral behavior<a class="heading-anchor" href="#neutral-behavior" aria-hidden="true" aria-label="Link to Neutral behavior"></a></h3><ul>
+<li>base surfaces should feel like deep blue-black ink, not flat gray</li>
+<li>elevated surfaces should use slight lift, not heavy fill</li>
+<li>large neutral fills should stay light in opacity</li>
+<li>dividers should be hairline and quiet</li>
+</ul>
+<h2 id="semantic-colors">Semantic colors<a class="heading-anchor" href="#semantic-colors" aria-hidden="true" aria-label="Link to Semantic colors"></a></h2><p>Color should be used rarely and precisely.</p>
+<h3 id="role-mapping">Role mapping<a class="heading-anchor" href="#role-mapping" aria-hidden="true" aria-label="Link to Role mapping"></a></h3><ul>
+<li>blue: focus, selected route, active state</li>
+<li>green: success, healthy, completed</li>
+<li>amber: pending, approval needed, caution</li>
+<li>red: failure, destructive, dangerous scope</li>
+<li>lavender: assistant presence and streaming state when useful</li>
+</ul>
+<h3 id="rule">Rule<a class="heading-anchor" href="#rule" aria-hidden="true" aria-label="Link to Rule"></a></h3><p>Never rely on color alone for critical meaning.
+Use text, shape, or icon support as well.</p>
+<hr>
+<h2 id="typography">Typography<a class="heading-anchor" href="#typography" aria-hidden="true" aria-label="Link to Typography"></a></h2><p>Typography is one of the main carriers of polish in con.</p>
+<h2 id="ui-type">UI type<a class="heading-anchor" href="#ui-type" aria-hidden="true" aria-label="Link to UI type"></a></h2><p>Recommended stack on macOS:</p>
+<ul>
+<li><code>SF Pro Text</code> / system UI font</li>
+</ul>
+<p>Use:</p>
+<ul>
+<li>regular for body</li>
+<li>medium for labels and controls</li>
+<li>semibold sparingly for headings and state emphasis</li>
+</ul>
+<h2 id="terminal-type">Terminal type<a class="heading-anchor" href="#terminal-type" aria-hidden="true" aria-label="Link to Terminal type"></a></h2><p>Recommended defaults for exploration:</p>
+<ul>
+<li><code>IoskeleyMono</code></li>
+</ul>
+<p>Choose based on:</p>
+<ul>
+<li>punctuation clarity</li>
+<li>small-size readability</li>
+<li>shell prompt legibility</li>
+<li>box-drawing quality</li>
+<li>low fatigue in long sessions</li>
+</ul>
+<h2 id="type-scale">Type scale<a class="heading-anchor" href="#type-scale" aria-hidden="true" aria-label="Link to Type scale"></a></h2><p>Keep the scale tight and disciplined.</p>
+<h3 id="suggested-sizes">Suggested sizes<a class="heading-anchor" href="#suggested-sizes" aria-hidden="true" aria-label="Link to Suggested sizes"></a></h3><ul>
+<li>11 px: micro labels, metadata, status tags</li>
+<li>12 px: secondary UI text, tab labels, helpers</li>
+<li>13 px: default UI body text</li>
+<li>14 px: composer text, primary assistant body text</li>
+<li>16 px: section headers and stronger labels</li>
+<li>20–24 px: large titles only where appropriate</li>
+</ul>
+<h3 id="rules">Rules<a class="heading-anchor" href="#rules" aria-hidden="true" aria-label="Link to Rules"></a></h3><ul>
+<li>use opacity before bold when possible</li>
+<li>keep assistant prose readable and compact</li>
+<li>use mono only for terminal data, code, commands, paths, diffs, and technical identifiers</li>
+<li>avoid too many weights and sizes in a single surface</li>
+</ul>
+<hr>
+<h2 id="spacing-and-radius">Spacing and Radius<a class="heading-anchor" href="#spacing-and-radius" aria-hidden="true" aria-label="Link to Spacing and Radius"></a></h2><h2 id="spacing-rhythm">Spacing rhythm<a class="heading-anchor" href="#spacing-rhythm" aria-hidden="true" aria-label="Link to Spacing rhythm"></a></h2><p>Use an 8 px base rhythm with 4 px support increments.</p>
+<h3 id="core-scale">Core scale<a class="heading-anchor" href="#core-scale" aria-hidden="true" aria-label="Link to Core scale"></a></h3><ul>
+<li>4 px micro separation</li>
+<li>8 px tight control spacing</li>
+<li>12 px compact layout spacing</li>
+<li>16 px standard padding</li>
+<li>20 px roomy grouping</li>
+<li>24 px section spacing</li>
+<li>32 px major breathing room</li>
+</ul>
+<h3 id="where-to-be-generous">Where to be generous<a class="heading-anchor" href="#where-to-be-generous" aria-hidden="true" aria-label="Link to Where to be generous"></a></h3><ul>
+<li>assistant cards</li>
+<li>settings sections</li>
+<li>approval sheets</li>
+<li>modal overlays</li>
+<li>outer shell composition</li>
+</ul>
+<h3 id="where-to-stay-tight">Where to stay tight<a class="heading-anchor" href="#where-to-stay-tight" aria-hidden="true" aria-label="Link to Where to stay tight"></a></h3><ul>
+<li>tab strip</li>
+<li>pane headers</li>
+<li>metadata rows</li>
+<li>inline controls</li>
+<li>chip groups</li>
+</ul>
+<h2 id="radius">Radius<a class="heading-anchor" href="#radius" aria-hidden="true" aria-label="Link to Radius"></a></h2><p>Use a small family of radii.</p>
+<h3 id="suggested-set">Suggested set<a class="heading-anchor" href="#suggested-set" aria-hidden="true" aria-label="Link to Suggested set"></a></h3><ul>
+<li>8 px for tabs and small controls</li>
+<li>10–12 px for chips and compact surfaces</li>
+<li>14–16 px for panels, composer, and overlays</li>
+</ul>
+<p>Avoid mixing too many radii in one screen.</p>
+<hr>
+<h2 id="elevation-model">Elevation Model<a class="heading-anchor" href="#elevation-model" aria-hidden="true" aria-label="Link to Elevation Model"></a></h2><p>Use a small number of surface levels.</p>
+<h3 id="level-0-terminal">Level 0 — terminal<a class="heading-anchor" href="#level-0-terminal" aria-hidden="true" aria-label="Link to Level 0 — terminal"></a></h3><p>The deepest surface.
+Flat and calm.</p>
+<h3 id="level-1-shell-chrome">Level 1 — shell chrome<a class="heading-anchor" href="#level-1-shell-chrome" aria-hidden="true" aria-label="Link to Level 1 — shell chrome"></a></h3><p>Titlebar, metadata rail, pane headers, composer container.
+Slightly lifted from terminal.</p>
+<h3 id="level-2-companion-surfaces">Level 2 — companion surfaces<a class="heading-anchor" href="#level-2-companion-surfaces" aria-hidden="true" aria-label="Link to Level 2 — companion surfaces"></a></h3><p>Assistant panel, timeline cards, inline explain surfaces.
+Soft fill, subtle shape.</p>
+<h3 id="level-3-decision-surfaces">Level 3 — decision surfaces<a class="heading-anchor" href="#level-3-decision-surfaces" aria-hidden="true" aria-label="Link to Level 3 — decision surfaces"></a></h3><p>Command palette, approval sheet, settings modal.
+May use stronger contrast and slightly more explicit edges.</p>
+<h3 id="rule-1">Rule<a class="heading-anchor" href="#rule-1" aria-hidden="true" aria-label="Link to Rule"></a></h3><p>Elevation should come mostly from contrast and layering, not shadow theatrics.</p>
+<hr>
+<h2 id="window-anatomy">Window Anatomy<a class="heading-anchor" href="#window-anatomy" aria-hidden="true" aria-label="Link to Window Anatomy"></a></h2><p>The window should be composed as follows:</p>
+<ol>
+<li>titlebar and tab strip</li>
+<li>metadata rail</li>
+<li>main work area</li>
+<li>persistent composer</li>
+<li>optional overlays</li>
+</ol>
+<h2 id="1-titlebar-and-tab-strip">1. Titlebar and tab strip<a class="heading-anchor" href="#1-titlebar-and-tab-strip" aria-hidden="true" aria-label="Link to 1. Titlebar and tab strip"></a></h2><h3 id="purpose-1">Purpose<a class="heading-anchor" href="#purpose-1" aria-hidden="true" aria-label="Link to Purpose"></a></h3><ul>
+<li>native window identity</li>
+<li>tab management</li>
+<li>quick high-level actions</li>
+</ul>
+<h3 id="guidance">Guidance<a class="heading-anchor" href="#guidance" aria-hidden="true" aria-label="Link to Guidance"></a></h3><ul>
+<li>low-profile height</li>
+<li>quiet active tab treatment</li>
+<li>minimal border usage</li>
+<li>right-side utility cluster stays understated</li>
+</ul>
+<p>The titlebar should frame the workspace, not become a control dashboard.</p>
+<h2 id="2-metadata-rail">2. Metadata rail<a class="heading-anchor" href="#2-metadata-rail" aria-hidden="true" aria-label="Link to 2. Metadata rail"></a></h2><p>A thin contextual strip below the titlebar.</p>
+<h3 id="use-it-for">Use it for<a class="heading-anchor" href="#use-it-for" aria-hidden="true" aria-label="Link to Use it for"></a></h3><ul>
+<li>repo or folder name</li>
+<li>branch</li>
+<li>remote host when relevant</li>
+<li>task or assistant status</li>
+<li>subtle session state</li>
+</ul>
+<h3 id="guidance-1">Guidance<a class="heading-anchor" href="#guidance-1" aria-hidden="true" aria-label="Link to Guidance"></a></h3><ul>
+<li>make it glanceable in under a second</li>
+<li>use subdued text and restrained badges</li>
+<li>avoid overloading it with every possible status</li>
+</ul>
+<h2 id="3-main-work-area">3. Main work area<a class="heading-anchor" href="#3-main-work-area" aria-hidden="true" aria-label="Link to 3. Main work area"></a></h2><p>Contains split panes and, when present, the assistant companion.</p>
+<h3 id="guidance-2">Guidance<a class="heading-anchor" href="#guidance-2" aria-hidden="true" aria-label="Link to Guidance"></a></h3><ul>
+<li>keep the terminal the visual anchor</li>
+<li>dividers stay hairline</li>
+<li>pane headers are optional but useful</li>
+<li>assistant should dock elegantly and not feel bolted on</li>
+</ul>
+<h2 id="4-composer">4. Composer<a class="heading-anchor" href="#4-composer" aria-hidden="true" aria-label="Link to 4. Composer"></a></h2><p>The composer should be persistent, calm, and visually stable.</p>
+<h3 id="guidance-3">Guidance<a class="heading-anchor" href="#guidance-3" aria-hidden="true" aria-label="Link to Guidance"></a></h3><ul>
+<li>compact by default</li>
+<li>expands gracefully for multiline asks</li>
+<li>route selection is visible</li>
+<li>attached context is compact and removable</li>
+<li>focus state is obvious but refined</li>
+</ul>
+<h2 id="5-overlays">5. Overlays<a class="heading-anchor" href="#5-overlays" aria-hidden="true" aria-label="Link to 5. Overlays"></a></h2><p>Used for:</p>
+<ul>
+<li>command palette</li>
+<li>approvals</li>
+<li>settings</li>
+<li>search</li>
+<li>session switching</li>
+</ul>
+<p>These should feel like light sheets, not bulky modals.</p>
+<hr>
+<h2 id="pane-design">Pane Design<a class="heading-anchor" href="#pane-design" aria-hidden="true" aria-label="Link to Pane Design"></a></h2><h2 id="pane-headers">Pane headers<a class="heading-anchor" href="#pane-headers" aria-hidden="true" aria-label="Link to Pane headers"></a></h2><p>Pane headers should provide orientation without feeling like cards.</p>
+<h3 id="suggested-content">Suggested content<a class="heading-anchor" href="#suggested-content" aria-hidden="true" aria-label="Link to Suggested content"></a></h3><ul>
+<li>pane title or cwd</li>
+<li>process label</li>
+<li>remote/local state</li>
+<li>activity state</li>
+<li>lightweight actions on hover or focus</li>
+</ul>
+<h3 id="guidance-4">Guidance<a class="heading-anchor" href="#guidance-4" aria-hidden="true" aria-label="Link to Guidance"></a></h3><ul>
+<li>keep them short</li>
+<li>use typography and spacing before icons</li>
+<li>let hover actions stay hidden until needed</li>
+</ul>
+<h2 id="active-pane-state">Active pane state<a class="heading-anchor" href="#active-pane-state" aria-hidden="true" aria-label="Link to Active pane state"></a></h2><p>Active pane state must be obvious enough for keyboard-heavy use.</p>
+<h3 id="use-a-mix-of">Use a mix of<a class="heading-anchor" href="#use-a-mix-of" aria-hidden="true" aria-label="Link to Use a mix of"></a></h3><ul>
+<li>slightly stronger edge or divider</li>
+<li>clearer title text</li>
+<li>stronger caret/focus treatment</li>
+<li>subtle semantic state where useful</li>
+</ul>
+<p>Avoid thick glowing frames or loud neon focus rings.</p>
+<hr>
+<h2 id="assistant-companion">Assistant Companion<a class="heading-anchor" href="#assistant-companion" aria-hidden="true" aria-label="Link to Assistant Companion"></a></h2><p>The assistant panel should feel like part of the terminal workspace, not a separate product.</p>
+<h2 id="widths-to-design">Widths to design<a class="heading-anchor" href="#widths-to-design" aria-hidden="true" aria-label="Link to Widths to design"></a></h2><ul>
+<li>collapsed rail</li>
+<li>compact docked state</li>
+<li>full companion state</li>
+</ul>
+<h3 id="suggested-defaults">Suggested defaults<a class="heading-anchor" href="#suggested-defaults" aria-hidden="true" aria-label="Link to Suggested defaults"></a></h3><ul>
+<li>collapsed: narrow signal rail</li>
+<li>open: around 340–380 px on a comfortable desktop width</li>
+<li>resizable when the layout allows</li>
+</ul>
+<h2 id="panel-model">Panel model<a class="heading-anchor" href="#panel-model" aria-hidden="true" aria-label="Link to Panel model"></a></h2><p>Design it as a <strong>task timeline</strong>, not a chat transcript.</p>
+<h3 id="timeline-sections">Timeline sections<a class="heading-anchor" href="#timeline-sections" aria-hidden="true" aria-label="Link to Timeline sections"></a></h3><ul>
+<li>intent</li>
+<li>context attached</li>
+<li>plan</li>
+<li>tool calls</li>
+<li>outputs</li>
+<li>diffs / artifacts</li>
+<li>final summary</li>
+</ul>
+<h3 id="visual-guidance">Visual guidance<a class="heading-anchor" href="#visual-guidance" aria-hidden="true" aria-label="Link to Visual guidance"></a></h3><ul>
+<li>one calm card model repeated consistently</li>
+<li>strong title + subdued metadata</li>
+<li>collapsible detail regions</li>
+<li>code and diff areas get mono treatment and slightly firmer containment</li>
+</ul>
+<hr>
+<h2 id="composer-specification">Composer Specification<a class="heading-anchor" href="#composer-specification" aria-hidden="true" aria-label="Link to Composer Specification"></a></h2><p>The composer is one of the defining surfaces of con.</p>
+<h2 id="structure">Structure<a class="heading-anchor" href="#structure" aria-hidden="true" aria-label="Link to Structure"></a></h2><ul>
+<li>route chip on the left</li>
+<li>primary input region</li>
+<li>attached context pills</li>
+<li>right-side send or action affordance</li>
+<li>minimal but visible hinting</li>
+</ul>
+<h2 id="states">States<a class="heading-anchor" href="#states" aria-hidden="true" aria-label="Link to States"></a></h2><ul>
+<li>idle</li>
+<li>focused</li>
+<li>multiline expanded</li>
+<li>context attached</li>
+<li>waiting approval</li>
+<li>disabled or unavailable when appropriate</li>
+</ul>
+<h2 id="styling-guidance">Styling guidance<a class="heading-anchor" href="#styling-guidance" aria-hidden="true" aria-label="Link to Styling guidance"></a></h2><ul>
+<li>soft container</li>
+<li>no heavy outline by default</li>
+<li>stronger but still elegant focus state</li>
+<li>placeholder low contrast but readable</li>
+<li>pills remain compact and quiet</li>
+</ul>
+<h3 id="example-context-pills">Example context pills<a class="heading-anchor" href="#example-context-pills" aria-hidden="true" aria-label="Link to Example context pills"></a></h3><ul>
+<li><code>Pane: backend</code></li>
+<li><code>Repo: kingston</code></li>
+<li><code>Branch: main</code></li>
+<li><code>Selection: 18 lines</code></li>
+<li><code>Last command failed</code></li>
+</ul>
+<hr>
+<h2 id="tool-and-approval-cards">Tool and Approval Cards<a class="heading-anchor" href="#tool-and-approval-cards" aria-hidden="true" aria-label="Link to Tool and Approval Cards"></a></h2><p>These are operational surfaces and should feel more explicit than passive assistant text.</p>
+<h2 id="tool-cards-should-show">Tool cards should show<a class="heading-anchor" href="#tool-cards-should-show" aria-hidden="true" aria-label="Link to Tool cards should show"></a></h2><ul>
+<li>action name</li>
+<li>target scope</li>
+<li>short command or file summary</li>
+<li>state</li>
+<li>risk level</li>
+<li>key actions</li>
+</ul>
+<h2 id="approval-cards-should-show">Approval cards should show<a class="heading-anchor" href="#approval-cards-should-show" aria-hidden="true" aria-label="Link to Approval cards should show"></a></h2><ul>
+<li>what will happen</li>
+<li>where it will happen</li>
+<li>why approval is required</li>
+<li>direct approve / edit / deny actions</li>
+<li>expandable detail for full output or command text</li>
+</ul>
+<h3 id="visual-guidance-1">Visual guidance<a class="heading-anchor" href="#visual-guidance-1" aria-hidden="true" aria-label="Link to Visual guidance"></a></h3><ul>
+<li>use semantic badges sparingly</li>
+<li>do not rely on giant warning panels</li>
+<li>let the severity come from wording, icon, and precise accent color</li>
+</ul>
+<hr>
+<h2 id="command-palette">Command Palette<a class="heading-anchor" href="#command-palette" aria-hidden="true" aria-label="Link to Command Palette"></a></h2><p>The command palette should be a first-class surface.</p>
+<h2 id="use-it-for-1">Use it for<a class="heading-anchor" href="#use-it-for-1" aria-hidden="true" aria-label="Link to Use it for"></a></h2><ul>
+<li>navigate tabs and panes</li>
+<li>open projects or sessions</li>
+<li>invoke product actions</li>
+<li>attach context</li>
+<li>discover skills and commands</li>
+<li>access settings quickly</li>
+</ul>
+<h2 id="visual-guidance-2">Visual guidance<a class="heading-anchor" href="#visual-guidance-2" aria-hidden="true" aria-label="Link to Visual guidance"></a></h2><ul>
+<li>centered lightweight sheet</li>
+<li>immediate keyboard focus</li>
+<li>strong text hierarchy</li>
+<li>minimal visual clutter</li>
+<li>grouped result sets with compact metadata</li>
+</ul>
+<hr>
+<h2 id="settings">Settings<a class="heading-anchor" href="#settings" aria-hidden="true" aria-label="Link to Settings"></a></h2><p>The Nowledge Labs settings screens are a strong quality reference for calm configuration UI.
+con should adopt the same level of restraint while adapting it for a darker, more operational context.</p>
+<h2 id="guidance-5">Guidance<a class="heading-anchor" href="#guidance-5" aria-hidden="true" aria-label="Link to Guidance"></a></h2><ul>
+<li>category navigation should be simple and low-noise</li>
+<li>advanced provider and automation settings stay collapsed until relevant</li>
+<li>settings groups should breathe</li>
+<li>controls should look calm, not enterprise-heavy</li>
+</ul>
+<p>Good categories may include:</p>
+<ul>
+<li>appearance</li>
+<li>terminal</li>
+<li>keybindings</li>
+<li>AI providers and models</li>
+<li>automation / socket permissions</li>
+<li>sessions</li>
+</ul>
+<hr>
+<h2 id="notifications">Notifications<a class="heading-anchor" href="#notifications" aria-hidden="true" aria-label="Link to Notifications"></a></h2><p>Notifications should help people resume flow.
+They should not compete with the terminal.</p>
+<h2 id="preferred-surfaces">Preferred surfaces<a class="heading-anchor" href="#preferred-surfaces" aria-hidden="true" aria-label="Link to Preferred surfaces"></a></h2><ul>
+<li>pane signal</li>
+<li>tab badge</li>
+<li>subtle in-window toast</li>
+<li>system notification only when justified</li>
+</ul>
+<h2 id="styling-guidance-1">Styling guidance<a class="heading-anchor" href="#styling-guidance-1" aria-hidden="true" aria-label="Link to Styling guidance"></a></h2><ul>
+<li>neutral by default</li>
+<li>semantic color only for strong meaning</li>
+<li>concise title and optional one-line detail</li>
+<li>low visual mass</li>
+</ul>
+<hr>
+<h2 id="motion">Motion<a class="heading-anchor" href="#motion" aria-hidden="true" aria-label="Link to Motion"></a></h2><p>Motion should make con feel smoother and faster.</p>
+<h2 id="principles">Principles<a class="heading-anchor" href="#principles" aria-hidden="true" aria-label="Link to Principles"></a></h2><ul>
+<li>short durations</li>
+<li>low travel distance</li>
+<li>opacity + slight translation as default</li>
+<li>no bounce in primary workflows</li>
+</ul>
+<h2 id="suggested-durations">Suggested durations<a class="heading-anchor" href="#suggested-durations" aria-hidden="true" aria-label="Link to Suggested durations"></a></h2><ul>
+<li>hover and focus: 80–120 ms</li>
+<li>panel open/close: 140–180 ms</li>
+<li>overlay open/close: 180–220 ms</li>
+<li>notification: 160–220 ms</li>
+</ul>
+<h2 id="recommended-uses">Recommended uses<a class="heading-anchor" href="#recommended-uses" aria-hidden="true" aria-label="Link to Recommended uses"></a></h2><ul>
+<li>assistant reveal</li>
+<li>disclosure rows</li>
+<li>composer growth</li>
+<li>notification appearance</li>
+</ul>
+<h2 id="avoid">Avoid<a class="heading-anchor" href="#avoid" aria-hidden="true" aria-label="Link to Avoid"></a></h2><ul>
+<li>spring-heavy motion</li>
+<li>large scale shifts</li>
+<li>long ornamental transitions</li>
+</ul>
+<hr>
+<h2 id="accessibility-and-legibility">Accessibility and Legibility<a class="heading-anchor" href="#accessibility-and-legibility" aria-hidden="true" aria-label="Link to Accessibility and Legibility"></a></h2><p>Minimum expectations:</p>
+<ul>
+<li>contrast remains strong in dark mode</li>
+<li>focus states are visible without being gaudy</li>
+<li>semantic state is never color-only</li>
+<li>small text remains readable</li>
+<li>motion can be reduced</li>
+<li>mono and sans usage remain intentional and consistent</li>
+</ul>
+<hr>
+<h2 id="prototype-screen-checklist">Prototype Screen Checklist<a class="heading-anchor" href="#prototype-screen-checklist" aria-hidden="true" aria-label="Link to Prototype Screen Checklist"></a></h2><p>The design team should produce polished views for at least:</p>
+<ul>
+<li>default local workspace</li>
+<li>multi-pane workspace with assistant open</li>
+<li>failed command recovery state</li>
+<li>approval / diff review state</li>
+<li>SSH / tmux workspace state</li>
+<li>background task completion state</li>
+<li>command palette / attach-context flow</li>
+<li>settings surface</li>
+</ul>
+<hr>
+<h2 id="implementation-alignment-notes">Implementation Alignment Notes<a class="heading-anchor" href="#implementation-alignment-notes" aria-hidden="true" aria-label="Link to Implementation Alignment Notes"></a></h2><p>The current code already points toward a strong architecture:</p>
+<ul>
+<li><code>crates/con-app/src/workspace.rs</code> gives a useful shell composition model</li>
+<li><code>crates/con-app/src/ghostty_view.rs</code> keeps the terminal primary</li>
+<li><code>crates/con-app/src/input_bar.rs</code> proves the value of a bottom-anchored composer</li>
+<li><code>crates/con-app/src/agent_panel.rs</code> is the seed of the future companion timeline</li>
+<li><code>crates/con-app/src/theme.rs</code> should evolve from hard-coded values into semantic design tokens</li>
+</ul>
+<p>The next design pass should refine this direction, not replace it with a totally different product shape.</p>
+<hr>
+<h2 id="v08-prototype-reference-final">v0.8 Prototype Reference (Final)<a class="heading-anchor" href="#v08-prototype-reference-final" aria-hidden="true" aria-label="Link to v0.8 Prototype Reference (Final)"></a></h2><p>The React/Next.js prototype at <code>components/con/terminal-app.tsx</code> serves as the production-ready design reference for GPUI implementation.</p>
+<h3 id="key-design-decisions-final">Key Design Decisions (Final)<a class="heading-anchor" href="#key-design-decisions-final" aria-hidden="true" aria-label="Link to Key Design Decisions (Final)"></a></h3><p><strong>Colors</strong></p>
+<ul>
+<li>Dark base: <code>#0a0a0a</code> (pure black, not gray)</li>
+<li>Light content: <code>#ffffff</code>, light chrome: <code>#fafafa</code></li>
+<li>Primary accent: <code>#007AFF</code> (Apple system blue)</li>
+<li>Opacity overlays: white 3-8% (dark), black 2-6% (light)</li>
+<li>Amber for warnings/broadcast, emerald for success, red for destructive</li>
+</ul>
+<p><strong>Typography</strong></p>
+<ul>
+<li>UI: System sans (SF Pro), 10-17px range</li>
+<li>Terminal: Mono, 13px default, leading-[1.7]</li>
+<li>Weights: regular, medium, semibold (no bold in UI)</li>
+<li>Hierarchy via size, weight, and opacity (not color)</li>
+</ul>
+<p><strong>Spacing</strong></p>
+<ul>
+<li>Base unit: 4px</li>
+<li>Standard padding: 16-20px</li>
+<li>Component gaps: 8-12px</li>
+<li>Generous outer margins: 20px</li>
+</ul>
+<p><strong>Radii</strong></p>
+<ul>
+<li>Small controls (checkboxes): 4px</li>
+<li>Buttons/inputs: 8-12px</li>
+<li>Cards/modals: 16px (rounded-2xl)</li>
+<li>Pills/badges: fully rounded</li>
+</ul>
+<p><strong>Interactions</strong></p>
+<ul>
+<li>Hover: +3-4% opacity fill</li>
+<li>Active: scale-95 for tactile feedback</li>
+<li>Focus: no rings, just subtle background lift</li>
+<li>Transitions: 150ms default, all properties</li>
+</ul>
+<h3 id="component-reference">Component Reference<a class="heading-anchor" href="#component-reference" aria-hidden="true" aria-label="Link to Component Reference"></a></h3><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Dark BG</th>
+<th>Light BG</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Window chrome</td>
+<td>#0a0a0a</td>
+<td>#fafafa</td>
+<td>Matches base, no border</td>
+</tr>
+<tr>
+<td>Sidebar</td>
+<td>#0a0a0a</td>
+<td>#fafafa</td>
+<td>Same as chrome</td>
+</tr>
+<tr>
+<td>Terminal content</td>
+<td>#0a0a0a</td>
+<td>#ffffff</td>
+<td>Content area pure white in light</td>
+</tr>
+<tr>
+<td>Pane headers</td>
+<td>white/1.5%</td>
+<td>black/1.5%</td>
+<td>Barely visible lift</td>
+</tr>
+<tr>
+<td>Input container</td>
+<td>white/3%</td>
+<td>black/2%</td>
+<td>Lifts on focus</td>
+</tr>
+<tr>
+<td>Status bar</td>
+<td>border-t 4%</td>
+<td>border-t 4%</td>
+<td>Single hairline separator</td>
+</tr>
+<tr>
+<td>Modals</td>
+<td>#1c1c1e</td>
+<td>#ffffff</td>
+<td>Slightly lifted in dark</td>
+</tr>
+<tr>
+<td>Target pills selected</td>
+<td>#007AFF</td>
+<td>#007AFF</td>
+<td>Same blue both themes</td>
+</tr>
+<tr>
+<td>Target pills unselected</td>
+<td>transparent</td>
+<td>transparent</td>
+<td>Text only, hover reveals fill</td>
+</tr>
+</tbody></table>
+<h3 id="gpui-implementation-notes">GPUI Implementation Notes<a class="heading-anchor" href="#gpui-implementation-notes" aria-hidden="true" aria-label="Link to GPUI Implementation Notes"></a></h3><ol>
+<li><strong>No shadows</strong> - All elevation through opacity-based fills</li>
+<li><strong>No borders by default</strong> - Only for status bar and pane dividers (4% opacity)</li>
+<li><strong>Checkbox style</strong> - 15x15px, 4px radius, 1px border unselected, solid fill selected</li>
+<li><strong>Send button</strong> - 32x32px circle, Apple Messages style</li>
+<li><strong>Mode detection</strong> - Shell vs Agent auto-detected from input content</li>
+<li><strong>Broadcast mode</strong> - Amber &quot;ALL&quot; badge appears when multiple panes targeted</li>
+</ol>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#purpose">Purpose</a>
+      
+        <a class="docs-toc-item depth-2" href="#visual-positioning">Visual Positioning</a>
+      
+        <a class="docs-toc-item depth-2" href="#source-interpretation">Source Interpretation</a>
+      
+        <a class="docs-toc-item depth-2" href="#theme-strategy">Theme Strategy</a>
+      
+        <a class="docs-toc-item depth-3" href="#light-first-by-default">Light-first by default</a>
+      
+        <a class="docs-toc-item depth-3" href="#dark-mode-as-equal-partner">Dark mode as equal partner</a>
+      
+        <a class="docs-toc-item depth-3" href="#surface-philosophy">Surface philosophy</a>
+      
+        <a class="docs-toc-item depth-2" href="#dual-theme-color-specifications">Dual Theme Color Specifications</a>
+      
+        <a class="docs-toc-item depth-3" href="#dark-mode-palette">Dark Mode Palette</a>
+      
+        <a class="docs-toc-item depth-3" href="#light-mode-palette">Light Mode Palette</a>
+      
+        <a class="docs-toc-item depth-3" href="#theme-agnostic-rules">Theme-Agnostic Rules</a>
+      
+        <a class="docs-toc-item depth-2" href="#color-system">Color System</a>
+      
+        <a class="docs-toc-item depth-2" href="#neutral-roles">Neutral roles</a>
+      
+        <a class="docs-toc-item depth-3" href="#recommended-roles">Recommended roles</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

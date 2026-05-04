@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>con-cli E2E Guide | con</title>
+<meta name="description" content="con cli E2E Guide This is the reference workflow for validating Con's local control plane against a real running app session."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/con-cli-e2e/"/>
+<meta property="og:title" content="con-cli E2E Guide | con"/>
+<meta property="og:description" content="con cli E2E Guide This is the reference workflow for validating Con's local control plane against a real running app session."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/con-cli-e2e/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="con-cli E2E Guide | con"/>
+<meta name="twitter:description" content="con cli E2E Guide This is the reference workflow for validating Con's local control plane against a real running app session."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"con-cli E2E Guide","description":"con cli E2E Guide This is the reference workflow for validating Con's local control plane against a real running app session.","url":"https://con.nowledge.co/docs/impl/con-cli-e2e/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item active" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/con-cli-e2e.md" target="_blank" rel="noreferrer">docs/impl/con-cli-e2e.md</a>
+    </div>
+    <h1 id="con-cli-e2e-guide"><code>con-cli</code> E2E Guide<a class="heading-anchor" href="#con-cli-e2e-guide" aria-hidden="true" aria-label="Link to con-cli E2E Guide"></a></h1><p>This is the reference workflow for validating Con&#39;s local control plane against a real running app session.</p>
+<p>Use it for:</p>
+<ul>
+<li>smoke tests after control-plane changes</li>
+<li>external-agent evaluation runs</li>
+<li>reproducible bug reports for <code>con-cli</code> and the Unix socket bridge</li>
+</ul>
+<h2 id="preconditions">Preconditions<a class="heading-anchor" href="#preconditions" aria-hidden="true" aria-label="Link to Preconditions"></a></h2><ul>
+<li>Buildable workspace</li>
+<li>A macOS session that can launch the Con window</li>
+<li>Provider config or env vars if you want to verify <code>agent ask</code></li>
+</ul>
+<h2 id="1-launch-the-app">1. Launch the app<a class="heading-anchor" href="#1-launch-the-app" aria-hidden="true" aria-label="Link to 1. Launch the app"></a></h2><pre><code class="language-bash">RUST_LOG=con=debug cargo run -p con
+</code></pre>
+<p>Wait for the socket:</p>
+<pre><code class="language-bash">test -S /tmp/con-debug.sock
+</code></pre>
+<p>Debug builds use <code>/tmp/con-debug.sock</code>; release builds use <code>/tmp/con.sock</code>.
+<code>con-cli</code> uses the same build-aware default when built from the workspace.</p>
+<p>Override the socket only when needed:</p>
+<pre><code class="language-bash">CON_SOCKET_PATH=/tmp/con-alt.sock cargo run -p con
+con-cli --socket /tmp/con-alt.sock identify
+</code></pre>
+<h2 id="2-baseline-discovery">2. Baseline discovery<a class="heading-anchor" href="#2-baseline-discovery" aria-hidden="true" aria-label="Link to 2. Baseline discovery"></a></h2><p>Prefer <code>--json</code> for automation:</p>
+<pre><code class="language-bash">con-cli --json identify
+con-cli --json tabs list
+con-cli --json panes list
+con-cli --json tree
+</code></pre>
+<p>Before driving a pane, confirm it actually exposes the capability you need.</p>
+<p>For visible shell execution, the target pane should expose:</p>
+<ul>
+<li><code>exec_visible_shell</code></li>
+<li>usually <code>probe_shell_context</code> too</li>
+</ul>
+<p>If those are missing, do not send shell commands through <code>panes exec</code>.</p>
+<h2 id="3-visible-shell-smoke-test">3. Visible shell smoke test<a class="heading-anchor" href="#3-visible-shell-smoke-test" aria-hidden="true" aria-label="Link to 3. Visible shell smoke test"></a></h2><p>Example:</p>
+<pre><code class="language-bash">con-cli --json panes exec --tab 2 --pane-id 0 -- /bin/echo READY_OK
+con-cli --json panes wait --tab 2 --pane-id 0 --pattern READY_OK --timeout 10
+con-cli --json panes list --tab 2
+</code></pre>
+<p>Expected shape:</p>
+<ul>
+<li><code>panes exec</code> returns visible output from the real pane</li>
+<li><code>panes wait</code> returns <code>&quot;status&quot;:&quot;matched&quot;</code></li>
+<li>the pane remains in <code>shell_prompt</code> mode with <code>exec_visible_shell</code></li>
+</ul>
+<h2 id="4-built-in-agent-smoke-test">4. Built-in agent smoke test<a class="heading-anchor" href="#4-built-in-agent-smoke-test" aria-hidden="true" aria-label="Link to 4. Built-in agent smoke test"></a></h2><p>This uses the tab&#39;s real in-app conversation, not a separate headless call.</p>
+<pre><code class="language-bash">con-cli --json agent ask --tab 2 &quot;Reply with ONLY READY_AGENT_OK&quot;
+</code></pre>
+<p>Expected shape:</p>
+<ul>
+<li>JSON includes <code>conversation_id</code></li>
+<li><code>message.role</code> is <code>Assistant</code></li>
+<li><code>message.content</code> matches the requested output</li>
+</ul>
+<p>If this fails, check provider config/env first before treating it as a socket bug.</p>
+<h2 id="5-pane-creation">5. Pane creation<a class="heading-anchor" href="#5-pane-creation" aria-hidden="true" aria-label="Link to 5. Pane creation"></a></h2><p>Current command:</p>
+<pre><code class="language-bash">con-cli --json panes create --tab 2 --location right
+</code></pre>
+<p>Current status as of April 10, 2026:</p>
+<ul>
+<li>the request now returns promptly</li>
+<li>the returned pane identity is stable</li>
+<li>the response now reports <code>surface_ready</code>, <code>is_alive</code>, and <code>has_shell_integration</code></li>
+</ul>
+<p>Treat startup-command panes as provisional until their foreground state settles, but a clean pane creation should now come back with a live initialized surface:</p>
+<pre><code class="language-bash">con-cli --json panes list --tab 2
+con-cli --json panes read --tab 2 --pane-id &lt;new_id&gt; --lines 40
+</code></pre>
+<p>For follow-up shell control, wait until the pane reports:</p>
+<ul>
+<li><code>surface_ready: true</code></li>
+<li><code>is_alive: true</code></li>
+<li>the expected shell control capabilities if you need visible shell execution</li>
+</ul>
+<h2 id="6-automation-guidance">6. Automation guidance<a class="heading-anchor" href="#6-automation-guidance" aria-hidden="true" aria-label="Link to 6. Automation guidance"></a></h2><ul>
+<li>Use <code>pane_id</code> for follow-up targeting, not <code>pane_index</code></li>
+<li>Use <code>surfaces.*</code> only when the test is explicitly about pane-local terminal
+sessions. Existing pane and agent benchmarks should stay on <code>panes.*</code>.</li>
+<li>Use <code>surface_id</code> for surface follow-up targeting.</li>
+<li>After <code>surfaces create</code> or <code>surfaces split</code>, call
+<code>surfaces wait-ready --surface-id &lt;id&gt; --timeout 10</code> before sending input that
+assumes an initialized shell.</li>
+<li>Keep assertions concrete and machine-checkable</li>
+<li>Record the exact tab index you used</li>
+<li>Capture both the command result and a follow-up <code>panes list</code> snapshot when reporting regressions</li>
+</ul>
+<h2 id="suggested-eval-sequence">Suggested eval sequence<a class="heading-anchor" href="#suggested-eval-sequence" aria-hidden="true" aria-label="Link to Suggested eval sequence"></a></h2><pre><code class="language-bash">con-cli --json identify
+con-cli --json tabs list
+con-cli --json panes list --tab 2
+con-cli --json panes exec --tab 2 --pane-id 0 -- /bin/echo READY_OK
+con-cli --json panes wait --tab 2 --pane-id 0 --pattern READY_OK --timeout 10
+con-cli --json panes list --tab 2
+con-cli --json agent ask --tab 2 &quot;Reply with ONLY READY_AGENT_OK&quot;
+</code></pre>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#preconditions">Preconditions</a>
+      
+        <a class="docs-toc-item depth-2" href="#1-launch-the-app">1. Launch the app</a>
+      
+        <a class="docs-toc-item depth-2" href="#2-baseline-discovery">2. Baseline discovery</a>
+      
+        <a class="docs-toc-item depth-2" href="#3-visible-shell-smoke-test">3. Visible shell smoke test</a>
+      
+        <a class="docs-toc-item depth-2" href="#4-built-in-agent-smoke-test">4. Built-in agent smoke test</a>
+      
+        <a class="docs-toc-item depth-2" href="#5-pane-creation">5. Pane creation</a>
+      
+        <a class="docs-toc-item depth-2" href="#6-automation-guidance">6. Automation guidance</a>
+      
+        <a class="docs-toc-item depth-2" href="#suggested-eval-sequence">Suggested eval sequence</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

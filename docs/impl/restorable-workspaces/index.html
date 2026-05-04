@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Restorable Workspaces | con docs</title>
+<meta name="description" content="Restorable Workspaces Issue: 111 Product Position Restorable workspaces are a continuity feature, not a process snapshot feature."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/restorable-workspaces/"/>
+<meta property="og:title" content="Restorable Workspaces | con docs"/>
+<meta property="og:description" content="Restorable Workspaces Issue: 111 Product Position Restorable workspaces are a continuity feature, not a process snapshot feature."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/restorable-workspaces/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Restorable Workspaces | con docs"/>
+<meta name="twitter:description" content="Restorable Workspaces Issue: 111 Product Position Restorable workspaces are a continuity feature, not a process snapshot feature."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Restorable Workspaces","description":"Restorable Workspaces Issue: 111 Product Position Restorable workspaces are a continuity feature, not a process snapshot feature.","url":"https://con.nowledge.co/docs/impl/restorable-workspaces/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item active" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/restorable-workspaces.md" target="_blank" rel="noreferrer">docs/impl/restorable-workspaces.md</a>
+    </div>
+    <h1 id="restorable-workspaces">Restorable Workspaces<a class="heading-anchor" href="#restorable-workspaces" aria-hidden="true" aria-label="Link to Restorable Workspaces"></a></h1><p>Issue: <a href="https://github.com/nowledge-co/con-terminal/issues/111" target="_blank" rel="noreferrer">#111</a></p>
+<h2 id="product-position">Product Position<a class="heading-anchor" href="#product-position" aria-hidden="true" aria-label="Link to Product Position"></a></h2><p>Restorable workspaces are a continuity feature, not a process snapshot feature.
+Con should bring the user back to the same working shape: windows, tabs, panes,
+pane-local surfaces, cwd, history, focus, and agent context. It must not pretend
+that a shell process, a TUI process, or arbitrary terminal scrollback can be
+faithfully resumed.</p>
+<p>The production design has one priority order:</p>
+<ol>
+<li><strong>Local continuity first.</strong> Restore the user&#39;s own windows and project memory
+from private app data.</li>
+<li><strong>Project memory second.</strong> Opening a repo should feel like returning to a
+familiar workspace without writing anything to the repo.</li>
+<li><strong>Exported layout DSL third.</strong> A versioned schema is useful as Con&#39;s own
+export/import format. It should be generated from a user-tuned workspace
+first, not treated as a hand-written boot script.</li>
+</ol>
+<p>This ordering mirrors browser and IDE tacit behavior: New Window is fresh,
+Open Folder can restore local project memory, and app launch can continue where
+the user left off. Exported files describe layout intent; private runtime state
+stays private.</p>
+<h2 id="current-production-slice">Current Production Slice<a class="heading-anchor" href="#current-production-slice" aria-hidden="true" aria-label="Link to Current Production Slice"></a></h2><p>Implemented in the first issue #111 PR:</p>
+<ul>
+<li>private session restore now round-trips every pane-local surface in a pane</li>
+<li>each surface stores id, title, owner, cwd, and close-pane-when-last policy</li>
+<li>each surface stores bounded private screen text for restart continuity</li>
+<li>macOS, Windows, and Linux seed that text through the terminal parser before
+the shell starts, so restored text belongs to terminal content rather than a
+GPUI overlay</li>
+<li>each pane stores its active surface id</li>
+<li>old session files that only stored a leaf cwd still load correctly</li>
+<li>cwd restore is grounded in terminal protocol state (OSC 7/PWD), not restored
+prompt text. On macOS, Con&#39;s embedded Ghostty patch trusts the app-captured
+cwd for privacy-protected folders such as Documents/Downloads instead of
+rejecting it during directory open/stat preflight.</li>
+<li>New Window uses a fresh session seeded with global history, not a clone of
+the restored layout</li>
+<li>a second process that detects a live control endpoint opens a fresh
+history-backed session instead of restoring the same saved layout again</li>
+<li>the layout-only schema now has a closed import/export loop: users can export
+the current window, add a profile&#39;s tabs to an existing window, open a profile
+in a new window, or launch <code>con &lt;project-folder&gt;</code> / <code>con &lt;workspace.toml&gt;</code>
+explicitly</li>
+</ul>
+<p>This slice is production-safe because it improves private restore fidelity and
+introduces only a layout-only schema. It does not introduce command replay or a
+repo trust model.</p>
+<h2 id="slice-2-product-bar">Slice 2 Product Bar<a class="heading-anchor" href="#slice-2-product-bar" aria-hidden="true" aria-label="Link to Slice 2 Product Bar"></a></h2><p>The layout-profile workflow is mergeable only if it feels like a flagship
+continuity feature rather than a config-file feature.</p>
+<p>Required qualities:</p>
+<ul>
+<li><strong>Invisible by default.</strong> Ordinary launch, quit, upgrade, and reboot flows
+restore private state without asking users to understand a file.</li>
+<li><strong>Explicit when shared.</strong> A repo file appears only after the user exports or
+opens a project/profile intentionally.</li>
+<li><strong>Generated, not hand-authored.</strong> Users design the workspace in Con first;
+<code>.con/workspace.toml</code> is the reviewable artifact Con writes from that design.</li>
+<li><strong>Stable in git.</strong> Exported paths are repo-relative and slash-separated on
+every OS, so Windows/macOS/Linux do not churn diffs.</li>
+<li><strong>No trust surprise.</strong> Layout profiles never run commands, replay history,
+restore conversations, or embed terminal text.</li>
+<li><strong>Privacy control exists before data accumulates.</strong> Terminal text continuity
+is default-on for new installs and existing beta users because workspace
+continuity is the default product promise. Settings exposes an opt-out and
+Command Palette exposes a clear-and-disable action.</li>
+<li><strong>One mental model.</strong> The same path resolver powers <code>con &lt;project-folder&gt;</code>,
+<code>con &lt;workspace.toml&gt;</code>, Add Tabs from Layout Profile, and Open Layout Profile in
+New Window.</li>
+<li><strong>Scratch remains scratch.</strong> New Tab and New Window do not silently explode
+into project layouts; profile import is a named action until project memory
+and single-instance forwarding make stronger defaults safe.</li>
+</ul>
+<h2 id="first-principles">First Principles<a class="heading-anchor" href="#first-principles" aria-hidden="true" aria-label="Link to First Principles"></a></h2><ol>
+<li><p><strong>A terminal session is not a document.</strong>
+Con can restore placement and intent. It cannot honestly restore arbitrary
+process state. True process continuity belongs to tools such as tmux,
+zellij, shells, or the underlying application.</p>
+</li>
+<li><p><strong>Private state and shared intent are different products.</strong>
+Conversations, command history, trust decisions, window geometry, scrollback,
+active focus, and credentials are private. Team-shared files must be
+reviewable, deterministic, and safe to clone.</p>
+</li>
+<li><p><strong>New Window means fresh.</strong>
+Cmd+N, Dock reopen after all windows are closed, and summon-from-hotkey
+should create a clean shell unless the user explicitly opens a project or
+chooses to restore.</p>
+</li>
+<li><p><strong>Open Project can remember.</strong>
+If the user opens the same folder again, Con may restore local project
+memory keyed by the canonical project root. This is the IDE-shaped behavior
+users already understand.</p>
+</li>
+<li><p><strong>No hidden replay.</strong>
+Con must never run commands from a restored workspace without explicit user
+action. Future task files are picker inputs, not boot scripts. The layout
+schema deliberately has no <code>run</code> field.</p>
+</li>
+<li><p><strong>Stable IDs are for APIs; names are for humans.</strong>
+<code>pane_id</code> and <code>surface_id</code> are the control-plane targets. The UI should show
+stable names such as &quot;Server&quot;, &quot;Tests&quot;, &quot;Codex&quot;, or &quot;Surface 2&quot;.</p>
+</li>
+<li><p><strong>Restore should optimize for flow, not exact pixels.</strong>
+Rows, columns, pane ratios, cwd, active tab, and named surfaces matter.
+Pixel-perfect historical window bounds are secondary and platform-specific.</p>
+</li>
+<li><p><strong>Screen text history is a first-class continuity feature.</strong>
+Users expect meaningful scrollback to survive restart, especially if they
+come from iTerm2. The first production slice restores plain screen text into
+the terminal layer. It is intentionally private, lossy, and separate from
+exported layouts; styled scrollback, shell process state, alternate-screen
+apps, and command provenance remain future work.</p>
+</li>
+</ol>
+<h2 id="user-facing-flows">User-Facing Flows<a class="heading-anchor" href="#user-facing-flows" aria-hidden="true" aria-label="Link to User-Facing Flows"></a></h2><h3 id="flow-1-quit-tonight-continue-tomorrow">Flow 1: Quit Tonight, Continue Tomorrow<a class="heading-anchor" href="#flow-1-quit-tonight-continue-tomorrow" aria-hidden="true" aria-label="Link to Flow 1: Quit Tonight, Continue Tomorrow"></a></h3><p>The user has one Con window with three tabs:</p>
+<ul>
+<li><code>Dev</code>: editor shell, server pane, tests pane</li>
+<li><code>Agents</code>: two pane-local surfaces, <code>Planner</code> and <code>Worker</code></li>
+<li><code>Release</code>: one shell in <code>~/release</code></li>
+</ul>
+<p>When Con launches cold tomorrow:</p>
+<ul>
+<li>the same windows/tabs/panes/surfaces return</li>
+<li>each terminal opens at its remembered cwd</li>
+<li>the active tab/pane/surface is restored</li>
+<li>per-tab agent conversation resumes from private state</li>
+<li>commands are not automatically rerun</li>
+<li>global and project history are available for suggestions</li>
+</ul>
+<p>Example UI copy for restored panes:</p>
+<pre><code class="language-text">Restored workspace from May 2, 22:41. Processes were not resumed.
+</code></pre>
+<p>The line should be quiet and optional. It exists to set correct expectations,
+not to add noise to every shell forever.</p>
+<h3 id="flow-2-cmdn-scratch-window">Flow 2: Cmd+N Scratch Window<a class="heading-anchor" href="#flow-2-cmdn-scratch-window" aria-hidden="true" aria-label="Link to Flow 2: Cmd+N Scratch Window"></a></h3><p>The user presses Cmd+N while a large project workspace is open.</p>
+<p>Expected result:</p>
+<ul>
+<li>one clean shell</li>
+<li>default cwd from config or launch context</li>
+<li>shared command/input history</li>
+<li>no copied agent conversation</li>
+<li>no copied tabs, panes, or surfaces</li>
+</ul>
+<p>This is already the behavior direction of <code>fresh_window_session_with_history()</code>.</p>
+<h3 id="flow-3-second-process-invocation">Flow 3: Second Process Invocation<a class="heading-anchor" href="#flow-3-second-process-invocation" aria-hidden="true" aria-label="Link to Flow 3: Second Process Invocation"></a></h3><p>The user runs <code>con</code> while Con is already open.</p>
+<p>Production target:</p>
+<ul>
+<li>the new process sends a control-plane request to the running app</li>
+<li>the running app opens the requested window/project</li>
+<li>the new process exits</li>
+<li>only the running app writes runtime state</li>
+</ul>
+<p>Current mitigation:</p>
+<ul>
+<li>the second process detects the live endpoint for its build identity and opens
+a fresh-history session instead of cloning the last restored session</li>
+<li>debug builds use a separate default endpoint (<code>/tmp/con-debug.sock</code> on Unix,
+<code>\\.\pipe\con-debug</code> on Windows), so a development build can run next to an
+installed release/beta without suppressing the dev build&#39;s private restore</li>
+</ul>
+<p>The mitigation is safe, but not final. Single-instance forwarding is the
+production target.</p>
+<h3 id="flow-4-open-folder-open-profile">Flow 4: Open Folder / Open Profile<a class="heading-anchor" href="#flow-4-open-folder-open-profile" aria-hidden="true" aria-label="Link to Flow 4: Open Folder / Open Profile"></a></h3><p>The user explicitly runs:</p>
+<pre><code class="language-sh">con ~/dev/con
+</code></pre>
+<p>Current behavior:</p>
+<ul>
+<li>if <code>~/dev/con/.con/workspace.toml</code> exists, Con opens that layout profile</li>
+<li>otherwise, Con opens one fresh shell rooted at <code>~/dev/con</code></li>
+<li>profile import includes layout intent only; private history is shared from
+app data, and no commands run automatically</li>
+</ul>
+<p>Production target after AppState/project memory:</p>
+<ul>
+<li>Con canonicalizes the project root</li>
+<li>if local project memory exists, it restores that folder&#39;s last private Con
+shape</li>
+<li>otherwise, it opens the shared layout profile if present</li>
+<li>if neither exists, it opens one fresh shell rooted at the project</li>
+</ul>
+<p>Suggested private storage:</p>
+<pre><code class="language-text">&lt;app-data&gt;/
+  launch.json
+  windows/&lt;window-uuid&gt;.json
+  projects/&lt;hash-of-canonical-root&gt;.json
+  history.json
+</code></pre>
+<h3 id="flow-5-agent-orchestrator-surfaces">Flow 5: Agent Orchestrator Surfaces<a class="heading-anchor" href="#flow-5-agent-orchestrator-surfaces" aria-hidden="true" aria-label="Link to Flow 5: Agent Orchestrator Surfaces"></a></h3><p>An external orchestrator creates a pane with multiple surfaces:</p>
+<ul>
+<li>surface <code>planner</code>: cwd <code>~/dev/app</code></li>
+<li>surface <code>worker-1</code>: cwd <code>~/dev/app/crates/server</code></li>
+<li>surface <code>worker-2</code>: cwd <code>~/dev/app/crates/ui</code></li>
+</ul>
+<p>After restart:</p>
+<ul>
+<li>all three surfaces still exist in the same pane</li>
+<li>titles and owners survive</li>
+<li>inactive surfaces are sized to their pane before focus</li>
+<li>the orchestrator can continue targeting stable surface IDs where possible</li>
+<li>humans can distinguish the surfaces by names</li>
+</ul>
+<p>This is the most important shipped value of the current PR.</p>
+<h3 id="flow-6-tmux-ssh-continuity">Flow 6: tmux / SSH Continuity<a class="heading-anchor" href="#flow-6-tmux-ssh-continuity" aria-hidden="true" aria-label="Link to Flow 6: tmux / SSH Continuity"></a></h3><p>If the user wants true process continuity, Con should make tmux or an explicit
+SSH attach command easy, not fake process restore.</p>
+<p>Recommended user pattern:</p>
+<pre><code class="language-sh">tmux attach -t con || tmux new -s con
+</code></pre>
+<p>Con&#39;s job is to restore the terminal shape around that command. Running the
+command remains a user action unless a future trusted task system explicitly
+supports it.</p>
+<h2 id="state-model">State Model<a class="heading-anchor" href="#state-model" aria-hidden="true" aria-label="Link to State Model"></a></h2><h3 id="1-window-runtime-state">1. Window Runtime State<a class="heading-anchor" href="#1-window-runtime-state" aria-hidden="true" aria-label="Link to 1. Window Runtime State"></a></h3><p>Private app data, one file per window.</p>
+<p>Purpose:</p>
+<ul>
+<li>tabs</li>
+<li>split layout</li>
+<li>focused pane</li>
+<li>active tab</li>
+<li>pane-local surfaces</li>
+<li>agent panel state</li>
+<li>input bar state</li>
+<li>vertical tabs state</li>
+</ul>
+<p>Sketch:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;id&quot;: &quot;win_01j...&quot;,
+  &quot;project_root&quot;: &quot;/Users/me/dev/con&quot;,
+  &quot;active_tab&quot;: 0,
+  &quot;tabs&quot;: [],
+  &quot;chrome&quot;: {
+    &quot;agent_panel_open&quot;: true,
+    &quot;input_bar_visible&quot;: true,
+    &quot;vertical_tabs_visible&quot;: false
+  }
+}
+</code></pre>
+<h3 id="2-launch-manifest">2. Launch Manifest<a class="heading-anchor" href="#2-launch-manifest" aria-hidden="true" aria-label="Link to 2. Launch Manifest"></a></h3><p>Private app data that records which windows were open at last app quit.</p>
+<p>Sketch:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;restore_windows_on_launch&quot;: true,
+  &quot;last_active_window_id&quot;: &quot;win_01j...&quot;,
+  &quot;windows&quot;: [&quot;win_01j...&quot;, &quot;win_01k...&quot;]
+}
+</code></pre>
+<h3 id="3-project-memory">3. Project Memory<a class="heading-anchor" href="#3-project-memory" aria-hidden="true" aria-label="Link to 3. Project Memory"></a></h3><p>Private app data keyed by canonical root hash.</p>
+<p>Purpose:</p>
+<ul>
+<li>last local workspace shape for a project</li>
+<li>project-scoped command/input history</li>
+<li>per-tab conversation IDs</li>
+<li>last active tab/pane/surface for that project</li>
+</ul>
+<p>Sketch:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;root&quot;: &quot;/Users/me/dev/con&quot;,
+  &quot;last_window_id&quot;: &quot;win_01j...&quot;,
+  &quot;tabs&quot;: [],
+  &quot;history&quot;: {
+    &quot;commands&quot;: [],
+    &quot;inputs&quot;: []
+  }
+}
+</code></pre>
+<h3 id="4-exported-layout-dsl">4. Exported Layout DSL<a class="heading-anchor" href="#4-exported-layout-dsl" aria-hidden="true" aria-label="Link to 4. Exported Layout DSL"></a></h3><p>Implemented as <code>con-core::workspace_layout</code> for validation and future
+import/export wiring.</p>
+<p>Purpose:</p>
+<ul>
+<li>deterministic output from &quot;Save Layout Profile&quot;</li>
+<li>stable schema for import/export tests</li>
+<li>reviewable layout intent if a user chooses to commit it</li>
+<li>future bridge for orchestrators that want to generate Con layouts</li>
+</ul>
+<p>Non-purpose:</p>
+<ul>
+<li>not a shell history file</li>
+<li>not a process restore file</li>
+<li>not a credential store</li>
+<li>not a hand-written startup script</li>
+</ul>
+<p>Default path for future export:</p>
+<pre><code class="language-text">.con/workspace.toml
+</code></pre>
+<p>Current schema constraints:</p>
+<ul>
+<li><code>format = &quot;con.workspace.layout&quot;</code></li>
+<li><code>version = 1</code></li>
+<li>tabs, panes, surfaces, split geometry, cwd, and optional agent defaults</li>
+<li>no <code>run</code></li>
+<li>no <code>restore</code></li>
+<li>no conversations</li>
+<li>no command history</li>
+<li>no scrollback</li>
+<li>no trust decisions</li>
+</ul>
+<p>Future task files should be separate:</p>
+<ul>
+<li><code>.con/tasks.toml</code>: explicit named commands users pick from a menu</li>
+</ul>
+<p>Do not combine layout and command replay. It creates a trust model before the
+product needs one.</p>
+<h3 id="5-screen-text-history">5. Screen Text History<a class="heading-anchor" href="#5-screen-text-history" aria-hidden="true" aria-label="Link to 5. Screen Text History"></a></h3><p>Terminal scrollback in Con is currently runtime-only. That is a meaningful gap:
+screen text history is a practical continuity feature, and iTerm2 users expect
+it.</p>
+<p>Production direction:</p>
+<ul>
+<li>maintain an app-owned bounded transcript per pane/surface</li>
+<li>snapshot the visible scrollback privately with the window/project state</li>
+<li>restore it as text history before the new shell prompt is ready</li>
+<li>never write transcript history to exported workspace layouts</li>
+<li>cap disk and memory use aggressively</li>
+<li>avoid recording alternate-screen TUIs by default unless the user explicitly
+enables it</li>
+</ul>
+<p>This should be implemented separately from layout restore. Layout tells Con
+where terminals belong. Transcript history tells the user what happened there.</p>
+<h2 id="startup-semantics">Startup Semantics<a class="heading-anchor" href="#startup-semantics" aria-hidden="true" aria-label="Link to Startup Semantics"></a></h2><table>
+<thead>
+<tr>
+<th>Gesture</th>
+<th>Production Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cold app launch</td>
+<td>Restore windows from <code>launch.json</code> if enabled.</td>
+</tr>
+<tr>
+<td>Cmd+N</td>
+<td>Fresh scratch window with shared history only.</td>
+</tr>
+<tr>
+<td>Open Folder / <code>con &lt;path&gt;</code></td>
+<td>Restore private project memory if present; otherwise fresh root shell.</td>
+</tr>
+<tr>
+<td>Dock click after all windows closed</td>
+<td>Reopen one clean/default window, or last window if the user chose that setting.</td>
+</tr>
+<tr>
+<td>Second process invocation</td>
+<td>Forward to running app through the control socket, then exit.</td>
+</tr>
+<tr>
+<td>Crash recovery</td>
+<td>Restore last private shape, but never pretend processes resumed.</td>
+</tr>
+</tbody></table>
+<h2 id="control-plane-direction">Control Plane Direction<a class="heading-anchor" href="#control-plane-direction" aria-hidden="true" aria-label="Link to Control Plane Direction"></a></h2><p>Existing pane and surface APIs remain stable.</p>
+<p>Near-term additive APIs:</p>
+<ul>
+<li><code>windows.open</code></li>
+<li><code>windows.list</code></li>
+<li><code>windows.focus</code></li>
+<li><code>workspaces.open_project</code></li>
+<li><code>workspaces.current</code></li>
+<li><code>workspaces.save_local</code></li>
+<li><code>workspaces.clear_local</code></li>
+</ul>
+<p>Deferred APIs:</p>
+<ul>
+<li><code>workspaces.validate_layout</code></li>
+</ul>
+<p>The UI import/export loop exists now. Control-plane APIs for layout export and
+import should be added only when external automation needs them; they should
+reuse the same conversion path and must keep exported files layout-only.</p>
+<h2 id="implementation-roadmap">Implementation Roadmap<a class="heading-anchor" href="#implementation-roadmap" aria-hidden="true" aria-label="Link to Implementation Roadmap"></a></h2><h3 id="phase-1-lossless-surface-restore">Phase 1: Lossless Surface Restore<a class="heading-anchor" href="#phase-1-lossless-surface-restore" aria-hidden="true" aria-label="Link to Phase 1: Lossless Surface Restore"></a></h3><p>Status: implemented.</p>
+<ul>
+<li>Extend private <code>PaneLayoutState::Leaf</code> with <code>surfaces</code>.</li>
+<li>Persist every pane-local surface, not only the active cwd.</li>
+<li>Restore active surface, owner, title, cwd, and close policy.</li>
+<li>Keep old single-surface session files readable.</li>
+</ul>
+<h3 id="phase-2-appstate-v1">Phase 2: AppState v1<a class="heading-anchor" href="#phase-2-appstate-v1" aria-hidden="true" aria-label="Link to Phase 2: AppState v1"></a></h3><p>Status: next production milestone.</p>
+<ul>
+<li>Split the current single <code>Session</code> into window runtime files.</li>
+<li>Add a launch manifest that lists windows open at last app quit.</li>
+<li>Migrate old <code>session.json</code> into one window state on first launch.</li>
+<li>Keep global history independent.</li>
+<li>Add &quot;Restore windows on launch&quot; in Settings.</li>
+<li>Ensure Cmd+N always creates a scratch window.</li>
+<li>Treat Dock reopen after all windows close as a fresh-window gesture unless
+the user explicitly chose last-window restore.</li>
+</ul>
+<h3 id="phase-3-single-instance-forwarding">Phase 3: Single-Instance Forwarding<a class="heading-anchor" href="#phase-3-single-instance-forwarding" aria-hidden="true" aria-label="Link to Phase 3: Single-Instance Forwarding"></a></h3><p>Status: required before this feature is complete.</p>
+<ul>
+<li>When a second process starts, connect to the live control endpoint.</li>
+<li>Send a <code>windows.open</code> or <code>workspaces.open_project</code> request.</li>
+<li>Exit the second process.</li>
+<li>Add a write lock or generation stamp so stale processes cannot overwrite
+runtime state.</li>
+</ul>
+<h3 id="phase-4-project-memory">Phase 4: Project Memory<a class="heading-anchor" href="#phase-4-project-memory" aria-hidden="true" aria-label="Link to Phase 4: Project Memory"></a></h3><p>Status: after AppState.</p>
+<ul>
+<li>Detect project roots from explicit paths and cwd.</li>
+<li>Store private memory under <code>projects/&lt;hash(root)&gt;.json</code>.</li>
+<li>Restore local project shape when opening that folder again.</li>
+<li>Add &quot;Forget Local Workspace State&quot; in Command Palette and Settings.</li>
+</ul>
+<h3 id="phase-5-shared-tasks-and-layouts">Phase 5: Shared Tasks and Layouts<a class="heading-anchor" href="#phase-5-shared-tasks-and-layouts" aria-hidden="true" aria-label="Link to Phase 5: Shared Tasks and Layouts"></a></h3><p>Status: layout import/export is implemented; task files remain deferred.</p>
+<ul>
+<li>Save Layout Profile writes a generated <code>.con/workspace.toml</code> from the live
+window.</li>
+<li>Add Tabs from Layout Profile imports a profile into the current window.</li>
+<li>Open Layout Profile in New Window imports a profile into a separate window.</li>
+<li><code>con &lt;project-folder&gt;</code> opens the project profile when present; plain <code>con</code>
+remains private restore.</li>
+<li>Start with <code>.con/tasks.toml</code> for named commands.</li>
+<li>Keep <code>.con/workspace.toml</code> layout-only.</li>
+<li>Never store secrets, conversations, command history, scrollback, active focus,
+or trust decisions in repo files.</li>
+</ul>
+<h3 id="phase-6-screen-text-history">Phase 6: Screen Text History<a class="heading-anchor" href="#phase-6-screen-text-history" aria-hidden="true" aria-label="Link to Phase 6: Screen Text History"></a></h3><p>Status: first visual continuity slice implemented in this PR. On macOS, Con
+adds a narrow embedded-Ghostty <code>initial_output</code> hook at build time and feeds the
+snapshot through Ghostty&#39;s own terminal parser before the shell IO thread starts.
+On Windows and Linux, Con feeds the same sanitized snapshot into the
+<code>libghostty-vt</code> parser before starting ConPTY / the Unix PTY. This keeps
+restored text selectable, scrollable, and clipped by the terminal renderer
+instead of rendering a separate UI layer. Deeper native scrollback integration
+remains future work.</p>
+<p>If Ghostty&#39;s upstream source shape drifts and the macOS embedding patch cannot
+be applied, the build disables the hook and emits a Cargo warning instead of
+failing the whole app build. That makes terminal text restore an enhancement,
+not a build-time dependency for casual local builds. macOS release packaging
+sets <code>CON_REQUIRE_GHOSTTY_INITIAL_OUTPUT=1</code>, so the same drift blocks release
+artifacts and forces the patch to be rebased before shipping.</p>
+<ul>
+<li>Add bounded transcript capture per pane/surface.</li>
+<li>Persist private scrollback snapshots with AppState/project memory.</li>
+<li>Restore transcript text separately from the live PTY.</li>
+<li>Provide a setting for transcript retention size.</li>
+<li>Exclude alternate-screen content by default to avoid restoring stale TUI
+frames.</li>
+</ul>
+<h2 id="non-goals">Non-Goals<a class="heading-anchor" href="#non-goals" aria-hidden="true" aria-label="Link to Non-Goals"></a></h2><ul>
+<li>No full PTY/process snapshot.</li>
+<li>No hidden command replay.</li>
+<li>No terminal scrollback persistence in exported layouts.</li>
+<li>No shell-history file rewriting.</li>
+<li>No cross-machine conversation sync.</li>
+<li>No repo-stored credentials, tokens, or private histories.</li>
+<li>No command-running workspace files in the first production slice.</li>
+</ul>
+<h2 id="review-checklist">Review Checklist<a class="heading-anchor" href="#review-checklist" aria-hidden="true" aria-label="Link to Review Checklist"></a></h2><p>Before a restorable-workspace PR is merge-ready, verify:</p>
+<ul>
+<li>Cmd+N opens a fresh scratch window.</li>
+<li>Reopening Con after quit restores the previous private shape.</li>
+<li>Pane-local surfaces survive restore with correct title/cwd/owner.</li>
+<li>No project file is written unless the user explicitly requests export.</li>
+<li>No command runs because of restore.</li>
+<li>Exported layout TOML contains no commands, conversations, history, or
+scrollback.</li>
+<li>A second process does not clone the restored layout and agent conversation.</li>
+<li>Old session files still load.</li>
+<li>Windows, Linux, and macOS keep the same semantics even if their storage paths
+differ.</li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#product-position">Product Position</a>
+      
+        <a class="docs-toc-item depth-2" href="#current-production-slice">Current Production Slice</a>
+      
+        <a class="docs-toc-item depth-2" href="#slice-2-product-bar">Slice 2 Product Bar</a>
+      
+        <a class="docs-toc-item depth-2" href="#first-principles">First Principles</a>
+      
+        <a class="docs-toc-item depth-2" href="#user-facing-flows">User-Facing Flows</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-1-quit-tonight-continue-tomorrow">Flow 1: Quit Tonight, Continue Tomorrow</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-2-cmdn-scratch-window">Flow 2: Cmd+N Scratch Window</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-3-second-process-invocation">Flow 3: Second Process Invocation</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-4-open-folder-open-profile">Flow 4: Open Folder / Open Profile</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-5-agent-orchestrator-surfaces">Flow 5: Agent Orchestrator Surfaces</a>
+      
+        <a class="docs-toc-item depth-3" href="#flow-6-tmux-ssh-continuity">Flow 6: tmux / SSH Continuity</a>
+      
+        <a class="docs-toc-item depth-2" href="#state-model">State Model</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-window-runtime-state">1. Window Runtime State</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-launch-manifest">2. Launch Manifest</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

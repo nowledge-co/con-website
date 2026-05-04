@@ -18,12 +18,16 @@ const OS_CDN = {
   Linux:   'https://cdn.simpleicons.org/linux/f7f1ea',
 };
 const OVERLAY_ROUTES = {
+  '/docs': 'docs',
+  '/docs/': 'docs',
   '/changelog': 'changelog',
   '/changelog/': 'changelog',
 };
 
 function routeForOverlay(which) {
-  return which === 'changelog' ? '/changelog' : null;
+  if (which === 'docs') return '/docs/';
+  if (which === 'changelog') return '/changelog/';
+  return null;
 }
 
 function overlayFromLocation() {
@@ -121,13 +125,13 @@ const Page = ({ tweaks }) => {
       {/* NAV */}
       <header className="nav">
         <div className="brand">
-          <img src="assets/icon_con_black.png" alt="con" className="brand-icon" />
+          <img src="/assets/icon_con_black.png" alt="con" className="brand-icon" />
           <span className="brand-name">con</span>
           <span className="brand-version">{repoMeta.version}</span>
         </div>
         <nav className="nav-links">
-          <button className="nav-link-btn" onClick={() => openOverlay('docs')}>Docs</button>
-          <a className="nav-link-btn" href="/changelog" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
+          <a className="nav-link-btn" href="/docs/" onClick={(event) => openOverlay('docs', event)}>Docs</a>
+          <a className="nav-link-btn" href="/changelog/" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
         </nav>
         <a className="gh-pill" href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">
           <GitHubGlyph />
@@ -191,7 +195,7 @@ const Page = ({ tweaks }) => {
         <div className="foot-inner">
           <div className="foot-brand">
             <div className="foot-brand-row">
-              <img src="assets/icon_con_black.png" alt="" className="foot-icon" />
+              <img src="/assets/icon_con_black.png" alt="" className="foot-icon" />
               <span className="foot-name">con</span>
               <span className="foot-version">{repoMeta.version}</span>
             </div>
@@ -207,8 +211,8 @@ const Page = ({ tweaks }) => {
             <div className="foot-col">
               <div className="foot-col-label">Product</div>
               <a href={`https://github.com/${REPO}/releases/latest`} target="_blank" rel="noreferrer">Download</a>
-              <button className="foot-link-btn" onClick={() => openOverlay('docs')}>Docs</button>
-              <a href="/changelog" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
+              <a href="/docs/" onClick={(event) => openOverlay('docs', event)}>Docs</a>
+              <a href="/changelog/" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
               <a href={`https://github.com/${REPO}/issues`} target="_blank" rel="noreferrer">Roadmap</a>
             </div>
             <div className="foot-col">
@@ -229,7 +233,7 @@ const Page = ({ tweaks }) => {
         </div>
         <div className="foot-legal">
           <a className="foot-maker" href="https://nowledge-labs.ai" target="_blank" rel="noreferrer">
-            <img src="assets/nowledge-labs-icon.png" alt="" className="foot-maker-icon" />
+            <img src="/assets/nowledge-labs-icon.png" alt="" className="foot-maker-icon" />
             <span className="foot-maker-copy">
               <span className="foot-maker-name">Nowledge Labs</span>
               <span className="foot-maker-slogan">we build the knowledge layer.</span>

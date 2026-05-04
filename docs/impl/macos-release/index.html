@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>macOS Release Pipeline | con docs</title>
+<meta name="description" content="macOS Release Pipeline This repo now ships a first pass macOS release pipeline for con that: builds a native .app bundle without depending on cargo bundle emb"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/macos-release/"/>
+<meta property="og:title" content="macOS Release Pipeline | con docs"/>
+<meta property="og:description" content="macOS Release Pipeline This repo now ships a first pass macOS release pipeline for con that: builds a native .app bundle without depending on cargo bundle emb"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/macos-release/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="macOS Release Pipeline | con docs"/>
+<meta name="twitter:description" content="macOS Release Pipeline This repo now ships a first pass macOS release pipeline for con that: builds a native .app bundle without depending on cargo bundle emb"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"macOS Release Pipeline","description":"macOS Release Pipeline This repo now ships a first pass macOS release pipeline for con that: builds a native .app bundle without depending on cargo bundle emb","url":"https://con.nowledge.co/docs/impl/macos-release/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item active" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/macos-release.md" target="_blank" rel="noreferrer">docs/impl/macos-release.md</a>
+    </div>
+    <h1 id="macos-release-pipeline">macOS Release Pipeline<a class="heading-anchor" href="#macos-release-pipeline" aria-hidden="true" aria-label="Link to macOS Release Pipeline"></a></h1><p>This repo now ships a first-pass macOS release pipeline for <code>con</code> that:</p>
+<ul>
+<li>builds a native <code>.app</code> bundle without depending on <code>cargo-bundle</code></li>
+<li>embeds <code>con-cli</code> in the app bundle so installers and Homebrew can expose the
+control-plane CLI without a separate source build</li>
+<li>signs with a Developer ID Application certificate</li>
+<li>notarizes with <code>notarytool</code></li>
+<li>staples the <code>.app</code></li>
+<li>packages and signs a <code>.dmg</code></li>
+<li>notarizes and staples the <code>.dmg</code></li>
+<li>publishes per-architecture artifacts to GitHub Releases</li>
+</ul>
+<h2 id="what-changed">What Changed<a class="heading-anchor" href="#what-changed" aria-hidden="true" aria-label="Link to What Changed"></a></h2><p>Scripts live in <a href="https://github.com/nowledge-co/con-terminal/blob/main/scripts/macos" target="_blank" rel="noreferrer"><code>scripts/macos</code></a>:</p>
+<ul>
+<li><code>build-app.sh</code> builds <code>con</code> and assembles <code>con.app</code></li>
+<li><code>build-app.sh</code> also builds <code>con-cli</code> and places it at
+<code>Contents/MacOS/con-cli</code></li>
+<li><code>import-certificate.sh</code> imports the Developer ID cert into a temporary keychain for CI</li>
+<li><code>release.sh</code> runs build, sign, notarize, staple, package, and checksum generation</li>
+<li><code>verify.sh</code> runs <code>codesign</code>, <code>spctl</code>, and stapler validation checks</li>
+<li><code>verify.sh</code> fails the release if the bundled <code>con-cli</code> executable is missing</li>
+</ul>
+<p><code>con-cli</code> exposure is deliberately layered:</p>
+<ul>
+<li>Homebrew casks install a <code>con-cli</code> binary shim from the app bundle.</li>
+<li><code>install.sh</code> links <code>~/.local/bin/con-cli</code> to the bundled CLI after copying
+the app into <code>/Applications</code>.</li>
+<li>Sparkle updates replace only the app bundle, so the app also performs a
+conservative launch-time self-heal: it creates or repairs
+<code>~/.local/bin/con-cli</code> only when the path is missing or already points to a
+Con <code>.app</code> bundle. It never overwrites a real user-managed binary or an
+unrelated symlink.</li>
+</ul>
+<p>GitHub Actions release workflow:</p>
+<ul>
+<li><a href="https://github.com/nowledge-co/con-terminal/blob/main/.github/workflows/release-macos.yml" target="_blank" rel="noreferrer"><code>.github/workflows/release-macos.yml</code></a></li>
+</ul>
+<h2 id="identity-model">Identity Model<a class="heading-anchor" href="#identity-model" aria-hidden="true" aria-label="Link to Identity Model"></a></h2><p>The website host and the bundle identifier should not use the same order.</p>
+<ul>
+<li>website: <code>con-releases.nowledge.co</code></li>
+<li>macOS bundle id base: <code>co.nowledge.con</code></li>
+</ul>
+<p>That follows reverse-DNS convention and is the long-term correct identifier layout.</p>
+<p>Channel behavior:</p>
+<ul>
+<li><code>stable</code>: bundle id <code>co.nowledge.con</code>, app name <code>con</code></li>
+<li><code>beta</code>: bundle id <code>co.nowledge.con.beta</code>, app name <code>con Beta</code></li>
+</ul>
+<p>That split is deliberate. If beta and stable ever need to coexist on one machine, they cannot share a bundle identifier.</p>
+<h2 id="github-scope-split">GitHub Scope Split<a class="heading-anchor" href="#github-scope-split" aria-hidden="true" aria-label="Link to GitHub Scope Split"></a></h2><p>Use GitHub scopes this way:</p>
+<ul>
+<li>organization secrets: Apple team credentials reused by multiple apps</li>
+<li>repository variables: app identity and packaging defaults</li>
+</ul>
+<p>This is the right long-term split because your Apple trust chain belongs to the organization, while bundle ids and app names belong to individual products.</p>
+<p>GitHub documents organization-level secret sharing and selected-repository access here:</p>
+<ul>
+<li><a href="https://docs.github.com/en/actions/administering-github-actions/sharing-workflows-secrets-and-runners-with-your-organization" target="_blank" rel="noreferrer">https://docs.github.com/en/actions/administering-github-actions/sharing-workflows-secrets-and-runners-with-your-organization</a></li>
+<li><a href="https://docs.github.com/en/actions/reference/security/secrets" target="_blank" rel="noreferrer">https://docs.github.com/en/actions/reference/security/secrets</a></li>
+</ul>
+<h2 id="required-github-secrets">Required GitHub Secrets<a class="heading-anchor" href="#required-github-secrets" aria-hidden="true" aria-label="Link to Required GitHub Secrets"></a></h2><p>Signing:</p>
+<ul>
+<li><code>APPLE_CERTIFICATE_P12_BASE64</code></li>
+<li><code>APPLE_CERTIFICATE_PASSWORD</code></li>
+<li><code>APPLE_KEYCHAIN_PASSWORD</code></li>
+<li><code>APPLE_SIGNING_IDENTITY</code></li>
+</ul>
+<p>Notarization, preferred:</p>
+<ul>
+<li><code>APPLE_NOTARY_KEY_ID</code></li>
+<li><code>APPLE_NOTARY_ISSUER_ID</code></li>
+<li><code>APPLE_NOTARY_API_KEY_BASE64</code></li>
+</ul>
+<p>These are team-level credentials and can be organization secrets, restricted to the repositories that build signed apps.</p>
+<p>Important:</p>
+<ul>
+<li><code>APPLE_NOTARY_API_KEY_BASE64</code> must be the base64-encoded contents of the <code>.p8</code> file</li>
+<li>for local testing, you can skip base64 entirely and use <code>APPLE_NOTARY_KEY_PATH=/absolute/path/to/AuthKey_XXXXXX.p8</code></li>
+<li>the workflow uses <code>APPLE_NOTARY_API_KEY_BASE64</code> because GitHub secrets cannot safely point to local filesystem paths</li>
+</ul>
+<p>Local fallback is also supported in the scripts, but should not be your primary CI path:</p>
+<ul>
+<li><code>APPLE_ID</code></li>
+<li><code>APPLE_APP_SPECIFIC_PASSWORD</code></li>
+<li><code>APPLE_TEAM_ID</code></li>
+</ul>
+<p>Apple&#39;s App Store Connect API key docs are here:</p>
+<ul>
+<li><a href="https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-api" target="_blank" rel="noreferrer">https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-api</a></li>
+<li><a href="https://developer.apple.com/documentation/appstoreconnectapi/creating-api-keys-for-app-store-connect-api" target="_blank" rel="noreferrer">https://developer.apple.com/documentation/appstoreconnectapi/creating-api-keys-for-app-store-connect-api</a></li>
+</ul>
+<p>Apple explicitly notes that individual App Store Connect API keys cannot be used with <code>notaryTool</code>; use a team key.</p>
+<h2 id="repository-variables">Repository Variables<a class="heading-anchor" href="#repository-variables" aria-hidden="true" aria-label="Link to Repository Variables"></a></h2><p>This repo does not need any GitHub repository variables for macOS releases.</p>
+<p>The workflow builds correctly from the defaults baked into the scripts:</p>
+<ul>
+<li><code>MACOS_APP_NAME=con</code></li>
+<li><code>MACOS_BUNDLE_ID_BASE=co.nowledge.con</code></li>
+<li><code>MACOS_ICON_SOURCE=assets/Con-macOS-Dark-1024x1024@1x.png</code></li>
+<li><code>MACOS_MINIMUM_SYSTEM_VERSION=10.15.7</code></li>
+</ul>
+<p>If you reuse these scripts in another app repo, override those values there instead of editing the workflow.</p>
+<h2 id="release-tags">Release Tags<a class="heading-anchor" href="#release-tags" aria-hidden="true" aria-label="Link to Release Tags"></a></h2><p>Stable release:</p>
+<pre><code class="language-bash">git tag v0.1.0
+git push origin v0.1.0
+</code></pre>
+<p>Beta release:</p>
+<pre><code class="language-bash">git tag v0.2.0-beta.1
+git push origin v0.2.0-beta.1
+</code></pre>
+<p>Dev smoke release:</p>
+<pre><code class="language-bash">git tag v0.2.0-dev.1
+git push origin v0.2.0-dev.1
+</code></pre>
+<p>The workflow maps <code>*-beta.*</code> tags to the beta channel and <code>*-dev.*</code> tags to an
+internal dev channel. Dev releases are marked as GitHub prereleases and do not
+embed or update public appcasts, and do not update Homebrew casks. Beta tags
+are not marked as prereleases while Con is still in the all-beta era, so fresh
+installs resolve to the newest public beta after the finalizer promotes the
+draft.</p>
+<p>The release finalizer always syncs <code>install.sh</code> and <code>install.ps1</code> from the
+tagged commit to <code>gh-pages</code> before it promotes the draft. This keeps internal dev
+smoke tags useful for installer E2E without moving beta/stable appcasts or
+Homebrew casks.</p>
+<h2 id="reusing-existing-apple-credentials">Reusing Existing Apple Credentials<a class="heading-anchor" href="#reusing-existing-apple-credentials" aria-hidden="true" aria-label="Link to Reusing Existing Apple Credentials"></a></h2><p>If your existing <code>nowledge-identities.p12</code> contains the same Apple team&#39;s <code>Developer ID Application</code> identity, it can be reused for <code>con</code>.</p>
+<p>If your existing App Store Connect team API key is:</p>
+<ul>
+<li>Key ID: <code>KG4RA8F5A6</code></li>
+<li>Issuer ID: <code>df090cec-9b81-4642-a0f0-5063ae39fb87</code></li>
+</ul>
+<p>then it can also be reused for notarizing <code>con</code>, provided it is a team key and still active.</p>
+<p>What is reusable across apps:</p>
+<ul>
+<li>Developer ID Application certificate</li>
+<li>App Store Connect team API key</li>
+<li>temporary CI keychain password convention</li>
+</ul>
+<p>What is app-specific and should stay per-repo:</p>
+<ul>
+<li>bundle identifier</li>
+<li>app name</li>
+<li>icon path</li>
+<li>updater feed URL</li>
+<li>release-channel defaults</li>
+</ul>
+<h2 id="local-dry-run">Local Dry Run<a class="heading-anchor" href="#local-dry-run" aria-hidden="true" aria-label="Link to Local Dry Run"></a></h2><p>Ad-hoc signed local build:</p>
+<pre><code class="language-bash">CON_ALLOW_ADHOC_SIGNING=1 \
+CON_SKIP_NOTARIZATION=1 \
+./scripts/macos/release.sh
+</code></pre>
+<p>Signed local build with notarization:</p>
+<pre><code class="language-bash">export APPLE_SIGNING_IDENTITY=&quot;Developer ID Application: Your Company (TEAMID)&quot;
+export APPLE_NOTARY_KEY_ID=&quot;XXXXXXXXXX&quot;
+export APPLE_NOTARY_ISSUER_ID=&quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&quot;
+export APPLE_NOTARY_KEY_PATH=&quot;/absolute/path/to/AuthKey_XXXXXXXXXX.p8&quot;
+
+./scripts/macos/release.sh
+</code></pre>
+<p>Local beta updater test against the published beta appcast:</p>
+<pre><code class="language-bash">export CON_SPARKLE_PUBLIC_ED_KEY=&quot;...public key from your release setup...&quot;
+
+./scripts/macos/test-update-beta.sh
+</code></pre>
+<p>This intentionally builds a bundled beta app with a very low <code>CFBundleVersion</code>
+so Sparkle should see any real published beta release as newer. <code>cargo run</code>
+cannot test updates because it is not running inside a bundled app and does not
+embed <code>Sparkle.framework</code>.</p>
+<p>After the update installs, verify the result from either of these product surfaces:</p>
+<ul>
+<li><code>con</code> → <code>About con</code></li>
+<li>Settings → Updates</li>
+</ul>
+<p>Both should show the updated marketing version, build number, and release channel.</p>
+<h2 id="ci-output">CI Output<a class="heading-anchor" href="#ci-output" aria-hidden="true" aria-label="Link to CI Output"></a></h2><p>The workflow currently builds native artifacts on:</p>
+<ul>
+<li><code>macos-15</code> for Apple Silicon / <code>arm64</code></li>
+<li><code>macos-15-intel</code> for Intel / <code>x86_64</code></li>
+</ul>
+<p>That matches the current <code>con-ghostty</code> build behavior: it builds Ghostty for the host architecture in <code>build.rs</code>. This pipeline avoids pretending we have a universal build when we do not.</p>
+<h2 id="auto-update-architecture">Auto-Update Architecture<a class="heading-anchor" href="#auto-update-architecture" aria-hidden="true" aria-label="Link to Auto-Update Architecture"></a></h2><h3 id="overview">Overview<a class="heading-anchor" href="#overview" aria-hidden="true" aria-label="Link to Overview"></a></h3><p>Auto-update uses Sparkle on macOS with GitHub Releases as the artifact host and GitHub Pages as the appcast host.</p>
+<pre><code>Tag push → CI builds → signs → notarizes → uploads to GitHub Release
+                                                    ↓
+                                          signs artifact with Ed25519
+                                          generates/updates appcast XML
+                                          pushes appcast to gh-pages
+                                                    ↓
+                                          App (Sparkle) polls feed URL
+                                          compares build number
+                                          downloads DMG
+                                          verifies Ed25519 signature
+                                          installs + relaunches
+</code></pre>
+<h3 id="feed-url-scheme">Feed URL Scheme<a class="heading-anchor" href="#feed-url-scheme" aria-hidden="true" aria-label="Link to Feed URL Scheme"></a></h3><p>Each build targets one channel and one architecture.  The feed URL is derived deterministically and baked into <code>Info.plist</code> at build time:</p>
+<pre><code>https://con-releases.nowledge.co/appcast/{channel}-macos-{arch}.xml
+</code></pre>
+<p>Examples:</p>
+<ul>
+<li><code>https://con-releases.nowledge.co/appcast/stable-macos-arm64.xml</code></li>
+<li><code>https://con-releases.nowledge.co/appcast/beta-macos-arm64.xml</code></li>
+<li><code>https://con-releases.nowledge.co/appcast/stable-macos-x86_64.xml</code></li>
+</ul>
+<p>This is stable across releases and extensible to Linux when needed.</p>
+<h3 id="sparkle-integration">Sparkle Integration<a class="heading-anchor" href="#sparkle-integration" aria-hidden="true" aria-label="Link to Sparkle Integration"></a></h3><p>Sparkle is loaded dynamically from <code>Contents/Frameworks/Sparkle.framework</code> at app launch.  If the framework is absent (e.g. <code>cargo run</code> dev builds), auto-update silently disables.</p>
+<p>The Rust FFI bridge (<code>crates/con-app/src/updater.rs</code>) uses <code>objc</code> crate to:</p>
+<ol>
+<li>Load <code>Sparkle.framework</code> from the app bundle</li>
+<li>Verify <code>SUFeedURL</code> is set in Info.plist</li>
+<li>Create <code>SPUStandardUpdaterController</code> (starts automatic checking)</li>
+<li>Expose <code>check_for_updates()</code> for the manual “Check for Updates” menu action</li>
+</ol>
+<h3 id="manual-smoke-checklist">Manual Smoke Checklist<a class="heading-anchor" href="#manual-smoke-checklist" aria-hidden="true" aria-label="Link to Manual Smoke Checklist"></a></h3><p>Before shipping a beta or stable build, verify these flows from the bundled app:</p>
+<ol>
+<li>Open the app from Finder and confirm the terminal renders normally.</li>
+<li>Open <code>About con</code> and confirm the app icon, version, build, and channel are visible.</li>
+<li>Run <code>con-cli identify</code> from a new shell after installing by Homebrew or
+<code>install.sh</code>; it should connect to the running app and print app identity.</li>
+<li>For a manual DMG/Sparkle-updated app, confirm launching the app creates or
+repairs <code>~/.local/bin/con-cli</code> when that path is missing.</li>
+<li>Open Settings → Updates and confirm the same version/build information is shown there.</li>
+<li>Run <code>Check for Updates…</code> against the intended channel and confirm Sparkle presents the expected UI.</li>
+<li>After installation, reopen <code>About con</code> and confirm the build number changed.</li>
+</ol>
+<h3 id="automated-release-gates">Automated Release Gates<a class="heading-anchor" href="#automated-release-gates" aria-hidden="true" aria-label="Link to Automated Release Gates"></a></h3><p>Release safety is enforced in two layers:</p>
+<ol>
+<li>Platform release jobs verify artifact shape before upload. macOS checks the
+app bundle, ZIP, DMG, checksums, and bundled <code>con-cli</code>; Linux checks the
+tarball layout, checksum, and <code>con-cli --help</code>; Windows expands the ZIP,
+verifies <code>con-app.exe</code> and <code>con-cli.exe</code>, runs <code>con-cli.exe --help</code>, and
+checks <code>SHA256SUMS-windows.txt</code>.</li>
+<li><code>release-finalize.yml</code> refuses to promote the draft release unless the
+expected GitHub Release assets exist, stable/beta appcasts point at the
+same tag&#39;s artifacts, and the gh-pages installer scripts expose <code>con-cli</code>
+/ <code>con-cli.exe</code>.
+Dev tags skip appcast/Homebrew publication entirely and are only checked for
+artifact and installer-script shape.</li>
+</ol>
+<p>This means a failed or incomplete platform build can upload nothing more than
+a private draft. Fresh installs keep resolving the previous public release, and
+older clients keep polling the previous valid appcast entry.</p>
+<h3 id="release-channel-runtime">Release Channel Runtime<a class="heading-anchor" href="#release-channel-runtime" aria-hidden="true" aria-label="Link to Release Channel Runtime"></a></h3><p><code>con-core/src/release_channel.rs</code> provides a cross-platform <code>ReleaseChannel</code> enum:</p>
+<ul>
+<li><code>Dev</code> — local or internal smoke builds, never polls for updates</li>
+<li><code>Beta</code> — pre-release, polls <code>beta-macos-{arch}.xml</code></li>
+<li><code>Stable</code> — GA builds, polls <code>stable-macos-{arch}.xml</code></li>
+</ul>
+<p>On macOS, the channel is read from <code>ConReleaseChannel</code> in the bundle&#39;s Info.plist.
+On other platforms, it falls back to the <code>CON_RELEASE_CHANNEL</code> environment variable.</p>
+<h3 id="required-secrets-for-auto-update">Required Secrets for Auto-Update<a class="heading-anchor" href="#required-secrets-for-auto-update" aria-hidden="true" aria-label="Link to Required Secrets for Auto-Update"></a></h3><p>In addition to the signing secrets, the updater needs:</p>
+<ul>
+<li><code>SPARKLE_SIGNING_KEY</code> — Ed25519 private key (base64) for signing appcasts</li>
+<li><code>SPARKLE_PUBLIC_ED_KEY</code> — Ed25519 public key (base64) baked into Info.plist</li>
+</ul>
+<p>Generate a key pair:</p>
+<pre><code class="language-bash">./scripts/sparkle/keygen.sh
+</code></pre>
+<p>Store them:</p>
+<ul>
+<li><code>SPARKLE_SIGNING_KEY</code> → GitHub org secret</li>
+<li><code>SPARKLE_PUBLIC_ED_KEY</code> → GitHub org secret (passed as env var during build)</li>
+</ul>
+<h3 id="appcast-hosting">Appcast Hosting<a class="heading-anchor" href="#appcast-hosting" aria-hidden="true" aria-label="Link to Appcast Hosting"></a></h3><p>Appcasts are served from GitHub Pages:</p>
+<ul>
+<li>Branch: <code>gh-pages</code></li>
+<li>Custom domain: <code>con-releases.nowledge.co</code> (CNAME record → <code>nowledge-co.github.io</code>)</li>
+</ul>
+<p>Initialize the gh-pages branch:</p>
+<pre><code class="language-bash">./scripts/sparkle/init-gh-pages.sh
+git push -u origin gh-pages
+</code></pre>
+<p>Then configure GitHub Pages in repo Settings → Pages → gh-pages branch.</p>
+<h3 id="scripts">Scripts<a class="heading-anchor" href="#scripts" aria-hidden="true" aria-label="Link to Scripts"></a></h3><table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scripts/sparkle/download.sh</code></td>
+<td>Download Sparkle framework + CLI tools</td>
+</tr>
+<tr>
+<td><code>scripts/sparkle/keygen.sh</code></td>
+<td>Generate Ed25519 key pair</td>
+</tr>
+<tr>
+<td><code>scripts/sparkle/sign-artifact.sh</code></td>
+<td>Sign a release artifact</td>
+</tr>
+<tr>
+<td><code>scripts/sparkle/update-appcast.sh</code></td>
+<td>Add/update entry in appcast XML</td>
+</tr>
+<tr>
+<td><code>scripts/sparkle/init-gh-pages.sh</code></td>
+<td>Initialize gh-pages branch</td>
+</tr>
+</tbody></table>
+<h3 id="build-number-policy">Build Number Policy<a class="heading-anchor" href="#build-number-policy" aria-hidden="true" aria-label="Link to Build Number Policy"></a></h3><p><code>CFBundleVersion</code> (Sparkle&#39;s version comparison key) uses <code>GITHUB_RUN_NUMBER</code> — a monotonically increasing integer scoped to the workflow.  This guarantees Sparkle always sees a strictly increasing build number regardless of marketing version or channel.</p>
+<p>Local fallback: 0 (dev builds never poll, so the value only appears in Finder &quot;Get Info&quot;).</p>
+<h3 id="distribution-format">Distribution Format<a class="heading-anchor" href="#distribution-format" aria-hidden="true" aria-label="Link to Distribution Format"></a></h3><p><strong>DMG is the primary distribution artifact.</strong>  The zip file is produced for CI automation and programmatic consumption only.</p>
+<p>macOS framework bundles (like Sparkle.framework) rely on symlinks (<code>Versions/Current -&gt; B</code>).  Zip extraction via macOS Archive Utility dereferences these symlinks, producing a broken bundle that Gatekeeper rejects as &quot;ambiguous (could be app or framework).&quot;  The DMG preserves the full HFS+ structure including symlinks.</p>
+<p>Sparkle&#39;s auto-updater downloads the DMG from GitHub Releases and handles installation — users never need to extract zip files.</p>
+<h3 id="future-linux">Future: Linux<a class="heading-anchor" href="#future-linux" aria-hidden="true" aria-label="Link to Future: Linux"></a></h3><p>The release channel enum and feed URL scheme are platform-agnostic.  On Linux, replace Sparkle with a lighter mechanism (e.g. checking the GitHub Releases API directly or a custom HTTP-based updater).  The appcast hosting infrastructure (GitHub Pages) can serve additional feed formats alongside the Sparkle XML.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#what-changed">What Changed</a>
+      
+        <a class="docs-toc-item depth-2" href="#identity-model">Identity Model</a>
+      
+        <a class="docs-toc-item depth-2" href="#github-scope-split">GitHub Scope Split</a>
+      
+        <a class="docs-toc-item depth-2" href="#required-github-secrets">Required GitHub Secrets</a>
+      
+        <a class="docs-toc-item depth-2" href="#repository-variables">Repository Variables</a>
+      
+        <a class="docs-toc-item depth-2" href="#release-tags">Release Tags</a>
+      
+        <a class="docs-toc-item depth-2" href="#reusing-existing-apple-credentials">Reusing Existing Apple Credentials</a>
+      
+        <a class="docs-toc-item depth-2" href="#local-dry-run">Local Dry Run</a>
+      
+        <a class="docs-toc-item depth-2" href="#ci-output">CI Output</a>
+      
+        <a class="docs-toc-item depth-2" href="#auto-update-architecture">Auto-Update Architecture</a>
+      
+        <a class="docs-toc-item depth-3" href="#overview">Overview</a>
+      
+        <a class="docs-toc-item depth-3" href="#feed-url-scheme">Feed URL Scheme</a>
+      
+        <a class="docs-toc-item depth-3" href="#sparkle-integration">Sparkle Integration</a>
+      
+        <a class="docs-toc-item depth-3" href="#manual-smoke-checklist">Manual Smoke Checklist</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

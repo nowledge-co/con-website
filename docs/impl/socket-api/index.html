@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Implementation: Socket API and con-cli | con</title>
+<meta name="description" content="Implementation: Socket API and con cli Overview con now ships a real local control plane: the app listens on a Unix domain socket requests use newline delimit"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/socket-api/"/>
+<meta property="og:title" content="Implementation: Socket API and con-cli | con"/>
+<meta property="og:description" content="Implementation: Socket API and con cli Overview con now ships a real local control plane: the app listens on a Unix domain socket requests use newline delimit"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/socket-api/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Implementation: Socket API and con-cli | con"/>
+<meta name="twitter:description" content="Implementation: Socket API and con cli Overview con now ships a real local control plane: the app listens on a Unix domain socket requests use newline delimit"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Implementation: Socket API and con-cli","description":"Implementation: Socket API and con cli Overview con now ships a real local control plane: the app listens on a Unix domain socket requests use newline delimit","url":"https://con.nowledge.co/docs/impl/socket-api/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item active" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/socket-api.md" target="_blank" rel="noreferrer">docs/impl/socket-api.md</a>
+    </div>
+    <h1 id="implementation-socket-api-and-con-cli">Implementation: Socket API and <code>con-cli</code><a class="heading-anchor" href="#implementation-socket-api-and-con-cli" aria-hidden="true" aria-label="Link to Implementation: Socket API and con-cli"></a></h1><h2 id="overview">Overview<a class="heading-anchor" href="#overview" aria-hidden="true" aria-label="Link to Overview"></a></h2><p>con now ships a real local control plane:</p>
+<ul>
+<li>the app listens on a Unix domain socket</li>
+<li>requests use newline-delimited JSON-RPC 2.0</li>
+<li><code>con-cli</code> is the first client on top of that socket</li>
+</ul>
+<p>This is the first automation slice, not the final surface. The important architectural move is that the CLI does not invent new terminal semantics. It routes into the same pane runtime, tmux adapter, visible-shell execution guard, and per-tab agent session that the built-in UI already uses.</p>
+<p>That keeps CLI automation honest: if a pane is not a proven shell in the app, <code>con-cli panes exec</code> is refused for the same reason.</p>
+<h2 id="local-references-that-shaped-the-design">Local references that shaped the design<a class="heading-anchor" href="#local-references-that-shaped-the-design" aria-hidden="true" aria-label="Link to Local references that shaped the design"></a></h2><p>The CLI shape is intentionally informed by the local 3pp references in this repo:</p>
+<ul>
+<li><code>3pp/agent-browser</code> — flat agent-friendly command ergonomics, strong <code>--json</code> output, and a CLI that is useful both for humans and other agents</li>
+<li><code>3pp/waveterm/cmd/wsh</code> — app control over a local socket with a small RPC boundary instead of bolting automation directly onto UI code</li>
+<li><code>3pp/cmux/CLI/cmux.swift</code> — explicit socket-path discovery and the idea that the socket client should stay thin while the app remains the authority</li>
+</ul>
+<p>The result in con is a hybrid:</p>
+<ul>
+<li>user-facing CLI commands are grouped by domain: <code>tabs</code>, <code>panes</code>, <code>tmux</code>, <code>agent</code></li>
+<li>the transport methods are namespaced JSON-RPC methods such as <code>panes.list</code> and <code>agent.ask</code></li>
+</ul>
+<h2 id="socket-path">Socket path<a class="heading-anchor" href="#socket-path" aria-hidden="true" aria-label="Link to Socket path"></a></h2><ul>
+<li>Release default: <code>/tmp/con.sock</code></li>
+<li>Debug default: <code>/tmp/con-debug.sock</code></li>
+<li>Override: <code>CON_SOCKET_PATH</code></li>
+<li>CLI override: <code>con-cli --socket /custom/path ...</code></li>
+</ul>
+<p>The app removes stale socket files on startup and creates the live socket with
+user-only permissions. Debug builds intentionally use a separate default
+endpoint so <code>cargo run -p con</code> can run beside an installed Con without making
+startup treat the dev process as another window for the production app.</p>
+<h2 id="protocol">Protocol<a class="heading-anchor" href="#protocol" aria-hidden="true" aria-label="Link to Protocol"></a></h2><p>JSON-RPC 2.0 over a Unix domain socket, one JSON request per line and one JSON response per line.</p>
+<h3 id="request">Request<a class="heading-anchor" href="#request" aria-hidden="true" aria-label="Link to Request"></a></h3><pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;req-1&quot;,&quot;method&quot;:&quot;panes.read&quot;,&quot;params&quot;:{&quot;tab_index&quot;:1,&quot;pane_id&quot;:3,&quot;lines&quot;:80}}
+</code></pre>
+<h3 id="response">Response<a class="heading-anchor" href="#response" aria-hidden="true" aria-label="Link to Response"></a></h3><pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;req-1&quot;,&quot;result&quot;:{&quot;content&quot;:&quot;...&quot;}}
+</code></pre>
+<h3 id="error">Error<a class="heading-anchor" href="#error" aria-hidden="true" aria-label="Link to Error"></a></h3><pre><code class="language-json">{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;req-1&quot;,&quot;error&quot;:{&quot;code&quot;:-32602,&quot;message&quot;:&quot;Pane index 9 is out of range. Valid panes are ...&quot;}}
+</code></pre>
+<h2 id="current-method-surface">Current method surface<a class="heading-anchor" href="#current-method-surface" aria-hidden="true" aria-label="Link to Current method surface"></a></h2><h3 id="system">System<a class="heading-anchor" href="#system" aria-hidden="true" aria-label="Link to System"></a></h3><ul>
+<li><code>system.identify</code></li>
+<li><code>system.capabilities</code></li>
+</ul>
+<h3 id="tabs">Tabs<a class="heading-anchor" href="#tabs" aria-hidden="true" aria-label="Link to Tabs"></a></h3><ul>
+<li><code>tabs.list</code></li>
+</ul>
+<h3 id="panes">Panes<a class="heading-anchor" href="#panes" aria-hidden="true" aria-label="Link to Panes"></a></h3><ul>
+<li><code>panes.list</code></li>
+<li><code>panes.read</code></li>
+<li><code>panes.exec</code></li>
+<li><code>panes.send_keys</code></li>
+<li><code>panes.create</code></li>
+<li><code>panes.wait</code></li>
+<li><code>panes.probe_shell</code></li>
+</ul>
+<h3 id="tree-surfaces">Tree / Surfaces<a class="heading-anchor" href="#tree-surfaces" aria-hidden="true" aria-label="Link to Tree / Surfaces"></a></h3><ul>
+<li><code>tree.get</code></li>
+<li><code>surfaces.list</code></li>
+<li><code>surfaces.create</code></li>
+<li><code>surfaces.split</code></li>
+<li><code>surfaces.focus</code></li>
+<li><code>surfaces.rename</code></li>
+<li><code>surfaces.close</code></li>
+<li><code>surfaces.read</code></li>
+<li><code>surfaces.send_text</code></li>
+<li><code>surfaces.send_key</code></li>
+<li><code>surfaces.wait_ready</code></li>
+</ul>
+<h3 id="tmux">tmux<a class="heading-anchor" href="#tmux" aria-hidden="true" aria-label="Link to tmux"></a></h3><ul>
+<li><code>tmux.inspect</code></li>
+<li><code>tmux.list</code></li>
+<li><code>tmux.capture</code></li>
+<li><code>tmux.send_keys</code></li>
+<li><code>tmux.run</code></li>
+</ul>
+<h3 id="agent">Agent<a class="heading-anchor" href="#agent" aria-hidden="true" aria-label="Link to Agent"></a></h3><ul>
+<li><code>agent.ask</code></li>
+<li><code>agent.new_conversation</code></li>
+</ul>
+<h2 id="cli-surface">CLI surface<a class="heading-anchor" href="#cli-surface" aria-hidden="true" aria-label="Link to CLI surface"></a></h2><p>The first shipped client is <code>con-cli</code>.</p>
+<p>Examples:</p>
+<pre><code class="language-bash">con-cli identify
+con-cli capabilities
+
+con-cli tabs list
+con-cli panes list --tab 1
+con-cli panes read --tab 1 --pane-id 3 --lines 120
+con-cli panes exec --tab 1 --pane-id 3 cargo test -q
+con-cli panes send-keys --tab 1 --pane-id 3 $&#39;\u0003&#39;
+con-cli panes create --tab 1 --location right --command &quot;htop&quot;
+con-cli panes wait --tab 1 --pane-id 3 --timeout 20
+
+con-cli tree --tab 1
+con-cli surfaces list --tab 1
+con-cli surfaces split --tab 1 --pane-id 3 --location right --title worker-1 --owner subagent --command &quot;codex&quot;
+con-cli surfaces create --tab 1 --pane-id 4 --title worker-2 --owner subagent --command &quot;codex&quot;
+con-cli surfaces wait-ready --tab 1 --surface-id 7 --timeout 10
+con-cli surfaces focus --tab 1 --surface-id 7
+con-cli surfaces send-text --surface-id 7 &quot;explain this repo&quot;
+con-cli surfaces send-key --surface-id 7 enter
+con-cli surfaces read --surface-id 7 --lines 120
+con-cli surfaces close --surface-id 7 --close-empty-owned-pane
+
+con-cli tmux list --tab 1 --pane-id 3
+con-cli tmux capture --tab 1 --pane-id 3 --target %17 --lines 80
+con-cli tmux run --tab 1 --pane-id 3 --location new-window -- cargo test
+
+con-cli agent ask --tab 1 &quot;Summarize what is happening in this tab&quot;
+con-cli agent ask --tab 1 --auto-approve-tools &quot;Run the test suite and explain failures&quot;
+con-cli agent new-conversation --tab 1
+</code></pre>
+<p>For automation, every command also supports <code>--json</code>.</p>
+<h2 id="request-routing-rules">Request routing rules<a class="heading-anchor" href="#request-routing-rules" aria-hidden="true" aria-label="Link to Request routing rules"></a></h2><h3 id="tabs-are-explicit">Tabs are explicit<a class="heading-anchor" href="#tabs-are-explicit" aria-hidden="true" aria-label="Link to Tabs are explicit"></a></h3><ul>
+<li><code>tab_index</code> is 1-based in the control API and CLI</li>
+<li>omitting <code>tab_index</code> means &quot;use the active tab&quot;</li>
+</ul>
+<h3 id="pane-targets-reuse-cons-stable-pane-model">Pane targets reuse con&#39;s stable pane model<a class="heading-anchor" href="#pane-targets-reuse-cons-stable-pane-model" aria-hidden="true" aria-label="Link to Pane targets reuse con&amp;#39;s stable pane model"></a></h3><ul>
+<li><code>pane_index</code> is the current visible position in the split layout</li>
+<li><code>pane_id</code> is the stable identity for the life of that pane inside the tab</li>
+<li>follow-up automation should prefer <code>pane_id</code></li>
+</ul>
+<h3 id="surfaces-are-opt-in-pane-local-sessions">Surfaces are opt-in pane-local sessions<a class="heading-anchor" href="#surfaces-are-opt-in-pane-local-sessions" aria-hidden="true" aria-label="Link to Surfaces are opt-in pane-local sessions"></a></h3><ul>
+<li>a pane is a visible split rectangle</li>
+<li>a surface is a live terminal session inside a pane</li>
+<li>every pane has one active surface</li>
+<li><code>panes.*</code> continues to operate only on the active surface</li>
+<li><code>surfaces.*</code> exposes additional pane-local tabs without changing pane
+semantics for the built-in agent or existing benchmarks</li>
+<li>follow-up surface automation should prefer <code>surface_id</code></li>
+</ul>
+<p>See <code>docs/impl/pane-surfaces.md</code> for the full compatibility contract.</p>
+<h3 id="pane-actions-reuse-existing-guards">Pane actions reuse existing guards<a class="heading-anchor" href="#pane-actions-reuse-existing-guards" aria-hidden="true" aria-label="Link to Pane actions reuse existing guards"></a></h3><ul>
+<li><code>panes.exec</code> goes through the same visible-shell execution path as the built-in agent</li>
+<li><code>tmux.*</code> methods only work when the pane exposes native tmux capability</li>
+<li><code>panes.probe_shell</code> only works when the pane exposes <code>probe_shell_context</code></li>
+</ul>
+<p>That is deliberate. The CLI is not allowed to bypass the control-plane truths that the UI and agent already depend on.</p>
+<h2 id="agent-session-behavior">Agent session behavior<a class="heading-anchor" href="#agent-session-behavior" aria-hidden="true" aria-label="Link to Agent session behavior"></a></h2><p><code>agent.ask</code> targets a tab&#39;s existing built-in agent session.</p>
+<p>That means:</p>
+<ul>
+<li>it reuses the tab&#39;s conversation history</li>
+<li>it reuses the tab&#39;s focused-pane context and peer-pane summary</li>
+<li>the response also appears in con&#39;s own agent UI for that tab</li>
+</ul>
+<p>This is the key step that makes CLI-driven end-to-end evaluation possible. A coding agent outside the app can now drive panes, inspect tmux state, call the built-in agent in a real tab session, and verify the visible result without a human acting as the bridge.</p>
+<h2 id="threading-model">Threading model<a class="heading-anchor" href="#threading-model" aria-hidden="true" aria-label="Link to Threading model"></a></h2><ul>
+<li>socket accept/read/write runs on the harness Tokio runtime</li>
+<li>JSON-RPC parsing happens off the GPUI render path</li>
+<li>requests are bridged onto the workspace over a channel</li>
+<li>pane/tmux operations still execute through the workspace, because the workspace owns live panes</li>
+<li>long-running results are delivered back asynchronously over one-shot replies</li>
+</ul>
+<p>The render loop stays authoritative, but the socket never blocks on it directly.</p>
+<h2 id="known-limits-of-the-first-slice">Known limits of the first slice<a class="heading-anchor" href="#known-limits-of-the-first-slice" aria-hidden="true" aria-label="Link to Known limits of the first slice"></a></h2><ul>
+<li>no subscription or streaming RPC yet; requests are request/response only</li>
+<li>no window-focus or pane-focus RPC yet</li>
+<li>no auth modes beyond local socket file permissions yet</li>
+<li><code>agent.ask</code> assumes one automation request at a time per tab</li>
+<li>the socket surface only exposes capabilities that already exist in con&#39;s runtime and agent layers; it does not yet add a new app-native Codex/OpenCode attachment</li>
+<li>pane-local surfaces are live-session control primitives; session restore
+persists the active pane layout as before, not every hidden live surface</li>
+</ul>
+<p>Those are acceptable limits for phase one. The important part is that the control transport now exists and is wired to real product semantics instead of placeholder CLI text.</p>
+<h2 id="live-e2e-status">Live E2E status<a class="heading-anchor" href="#live-e2e-status" aria-hidden="true" aria-label="Link to Live E2E status"></a></h2><p>Live app-backed smoke tests were rerun on April 10, 2026 against a real <code>cargo run -p con</code> session.</p>
+<p>Verified end to end:</p>
+<ul>
+<li><code>con-cli identify</code></li>
+<li><code>con-cli tabs list</code></li>
+<li><code>con-cli panes list</code></li>
+<li><code>con-cli panes read</code></li>
+<li><code>con-cli panes exec</code></li>
+<li><code>con-cli panes wait</code></li>
+<li><code>con-cli agent ask</code></li>
+</ul>
+<p>Verified behavior notes:</p>
+<ul>
+<li><code>panes exec</code> now recovers cleanly when the visible prompt is back but Ghostty shell integration does not emit a matching command-finished signal fast enough for automation. That keeps the pane usable for follow-up <code>panes exec</code> calls in the same session.</li>
+<li><code>agent ask</code> was verified against a real configured model session, not just the transport boundary.</li>
+</ul>
+<p>Current known limitation from the same live run:</p>
+<ul>
+<li><code>panes.create</code> returns promptly with <code>tab_index</code>, <code>pane_index</code>, <code>pane_id</code>, <code>surface_ready</code>, <code>is_alive</code>, and <code>has_shell_integration</code>. Use <code>pane_id</code> for follow-up targeting, then confirm the created pane exposes the exact control capabilities you need before driving it further.</li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#overview">Overview</a>
+      
+        <a class="docs-toc-item depth-2" href="#local-references-that-shaped-the-design">Local references that shaped the design</a>
+      
+        <a class="docs-toc-item depth-2" href="#socket-path">Socket path</a>
+      
+        <a class="docs-toc-item depth-2" href="#protocol">Protocol</a>
+      
+        <a class="docs-toc-item depth-3" href="#request">Request</a>
+      
+        <a class="docs-toc-item depth-3" href="#response">Response</a>
+      
+        <a class="docs-toc-item depth-3" href="#error">Error</a>
+      
+        <a class="docs-toc-item depth-2" href="#current-method-surface">Current method surface</a>
+      
+        <a class="docs-toc-item depth-3" href="#system">System</a>
+      
+        <a class="docs-toc-item depth-3" href="#tabs">Tabs</a>
+      
+        <a class="docs-toc-item depth-3" href="#panes">Panes</a>
+      
+        <a class="docs-toc-item depth-3" href="#tree-surfaces">Tree / Surfaces</a>
+      
+        <a class="docs-toc-item depth-3" href="#tmux">tmux</a>
+      
+        <a class="docs-toc-item depth-3" href="#agent">Agent</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

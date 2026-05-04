@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>con: The Native Terminal Emulator with a Built-in AI Harness | con</title>
+<meta name="description" content="con: The Native Terminal Emulator with a Built in AI Harness Vision An open source, GPU accelerated terminal emulator that treats AI agents as first class cit"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/design/"/>
+<meta property="og:title" content="con: The Native Terminal Emulator with a Built-in AI Harness | con"/>
+<meta property="og:description" content="con: The Native Terminal Emulator with a Built in AI Harness Vision An open source, GPU accelerated terminal emulator that treats AI agents as first class cit"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/design/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="con: The Native Terminal Emulator with a Built-in AI Harness | con"/>
+<meta name="twitter:description" content="con: The Native Terminal Emulator with a Built in AI Harness Vision An open source, GPU accelerated terminal emulator that treats AI agents as first class cit"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"con: The Native Terminal Emulator with a Built-in AI Harness","description":"con: The Native Terminal Emulator with a Built in AI Harness Vision An open source, GPU accelerated terminal emulator that treats AI agents as first class cit","url":"https://con.nowledge.co/docs/design/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item active" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/DESIGN.md" target="_blank" rel="noreferrer">DESIGN.md</a>
+    </div>
+    <h1 id="con-the-native-terminal-emulator-with-a-built-in-ai-harness">con: The Native Terminal Emulator with a Built-in AI Harness<a class="heading-anchor" href="#con-the-native-terminal-emulator-with-a-built-in-ai-harness" aria-hidden="true" aria-label="Link to con: The Native Terminal Emulator with a Built-in AI Harness"></a></h1><h2 id="vision">Vision<a class="heading-anchor" href="#vision" aria-hidden="true" aria-label="Link to Vision"></a></h2><p>An open-source, GPU-accelerated terminal emulator that treats AI agents as first-class citizens. It aims for high terminal correctness, native performance, and a deeply integrated agent harness — all in Rust.</p>
+<p><strong>Why con exists:</strong></p>
+<ul>
+<li>Existing terminals bolt AI on as an afterthought</li>
+<li>Agent-native workflows deserve deep terminal integration, not wrapper hacks</li>
+<li>The terminal is the last IDE-free surface that hasn&#39;t been reinvented for the AI era</li>
+</ul>
+<hr>
+<h2 id="architecture-overview">Architecture Overview<a class="heading-anchor" href="#architecture-overview" aria-hidden="true" aria-label="Link to Architecture Overview"></a></h2><pre><code>┌─────────────────────────────────────────────────────────┐
+│                     con (binary)                        │
+│                                                         │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │  GPUI Shell  │  │  Agent Panel │  │  Command Bar  │  │
+│  │  (windows,   │  │  (chat, tool │  │  (palette,    │  │
+│  │   tabs,      │  │   calls,     │  │   search,     │  │
+│  │   splits)    │  │   context)   │  │   actions)    │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬────────┘  │
+│         │                 │                  │           │
+│  ┌──────┴─────────────────┴──────────────────┴────────┐  │
+│  │                    con-core                        │  │
+│  │  ┌────────────┐ ┌────────────┐ ┌────────────────┐  │  │
+│  │  │ Terminal    │ │ Agent      │ │ Session        │  │  │
+│  │  │ Manager    │ │ Harness    │ │ Manager        │  │  │
+│  │  │            │ │ (shared)   │ │                │  │  │
+│  │  │            │ │ + per-tab  │ │                │  │  │
+│  │  │            │ │ Sessions   │ │                │  │  │
+│  │  └─────┬──────┘ └─────┬──────┘ └────────────────┘  │  │
+│  └────────┼──────────────┼────────────────────────────┘  │
+│           │              │                               │
+│  ┌────────┴────────┐  ┌──┴──────────────┐               │
+│  │ con-ghostty     │  │ con-agent       │               │
+│  │ (platform       │  │ (rig 0.34,      │               │
+│  │  terminal       │  │  multi-provider)│               │
+│  │  backend)       │  │                 │               │
+│  ├─────────────────┤  └─────────────────┘               │
+│  │ con-terminal    │                                    │
+│  │ (themes +       │                                    │
+│  │  palette data)  │                                    │
+│  └─────────────────┘                                    │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="crate-structure">Crate Structure<a class="heading-anchor" href="#crate-structure" aria-hidden="true" aria-label="Link to Crate Structure"></a></h2><pre><code>kingston/
+├── Cargo.toml                 # workspace root
+├── crates/
+│   ├── con/                   # main binary — GPUI app shell
+│   │   └── src/
+│   │       ├── main.rs         # Application bootstrap + keybindings
+│   │       ├── workspace.rs    # window, tabs, splits layout
+│   │       ├── ghostty_view.rs  # embedded Ghostty surface view
+│   │       ├── agent_panel.rs  # side panel for AI chat / tool output
+│   │       ├── input_bar.rs    # smart input bar (NLP/shell/skill modes)
+│   │       ├── pane_tree.rs    # split pane layout tree
+│   │       ├── settings_panel.rs # provider config UI (Cmd+,)
+│   │       ├── sidebar.rs      # vertical-tabs side panel (rail / hover-peek / pinned)
+│   │       └── theme.rs        # Flexoki themes (Light default, Dark available)
+│   │
+│   ├── con-core/              # shared logic, no UI dependency
+│   │   └── src/
+│   │       ├── lib.rs
+│   │       ├── harness.rs     # AgentHarness (shared) + AgentSession (per-tab)
+│   │       ├── session.rs     # persist/restore workspace state
+│   │       ├── config.rs      # con config (TOML)
+│   │       └── suggestions.rs # AI shell command suggestions
+│   │
+│   ├── con-terminal/          # terminal themes and palette helpers
+│   │   └── src/
+│   │       ├── lib.rs
+│   │       └── theme.rs       # built-in themes + Ghostty theme import
+│   │
+│   ├── con-ghostty/           # ghostty FFI — primary macOS backend
+│   │   └── src/
+│   │       ├── lib.rs
+│   │       ├── ffi.rs         # C API bindings (libghostty types, functions)
+│   │       └── terminal.rs    # GhosttyApp, GhosttyTerminal, TerminalState, action callbacks
+│   │
+│   ├── con-agent/             # AI agent harness (Rig 0.34)
+│   │   └── src/
+│   │       ├── lib.rs
+│   │       ├── provider.rs    # Multi-provider Rig Agent (13 providers)
+│   │       ├── hook.rs        # ConHook — PromptHook lifecycle bridge
+│   │       ├── tools.rs       # Rig Tool trait impls (terminal_exec, shell, file, edit, list, search)
+│   │       ├── context.rs     # terminal context extraction for agent
+│   │       ├── conversation.rs # conversation state + Rig Message conversion
+│   │       └── skills.rs      # skill registry + AGENTS.md parser
+│   │
+│   └── con-cli/               # headless CLI + socket client (stub)
+│       └── src/main.rs
+│
+├── postmortem/                # incident &amp; integration postmortems
+│
+└── docs/
+    ├── study/                 # technology study notes
+    └── impl/                  # implementation notes
+</code></pre>
+<hr>
+<h2 id="key-technical-decisions">Key Technical Decisions<a class="heading-anchor" href="#key-technical-decisions" aria-hidden="true" aria-label="Link to Key Technical Decisions"></a></h2><h3 id="1-ui-framework-gpui">1. UI Framework: GPUI<a class="heading-anchor" href="#1-ui-framework-gpui" aria-hidden="true" aria-label="Link to 1. UI Framework: GPUI"></a></h3><p><strong>Why GPUI over alternatives (Tauri, Iced, egui, Slint):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Criteria</th>
+<th>GPUI</th>
+<th>Tauri</th>
+<th>Iced</th>
+<th>egui</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPU rendering</td>
+<td>Metal + Blade (OpenGL)</td>
+<td>WebView</td>
+<td>wgpu</td>
+<td>wgpu</td>
+</tr>
+<tr>
+<td>Text quality</td>
+<td>Production (Zed-grade)</td>
+<td>Web fonts</td>
+<td>Good</td>
+<td>Basic</td>
+</tr>
+<tr>
+<td>Product target today</td>
+<td>macOS-native app</td>
+<td>All</td>
+<td>All</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Maturity</td>
+<td>Zed production + 23+ apps</td>
+<td>Very mature</td>
+<td>Growing</td>
+<td>Mature</td>
+</tr>
+<tr>
+<td>Terminal canvas</td>
+<td>canvas() API</td>
+<td>DOM hacks</td>
+<td>Custom widget</td>
+<td>Custom paint</td>
+</tr>
+<tr>
+<td>Rust-native</td>
+<td>Yes</td>
+<td>Hybrid JS/Rust</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody></table>
+<p>GPUI gives us Zed-level text rendering quality (critical for a terminal) and a proven canvas API for custom grid drawing. The <code>termy</code> project in awesome-gpui proves terminal embedding works.</p>
+<h3 id="2-terminal-core-ghostty-only-runtime">2. Terminal Core: Ghostty-Only Runtime<a class="heading-anchor" href="#2-terminal-core-ghostty-only-runtime" aria-hidden="true" aria-label="Link to 2. Terminal Core: Ghostty-Only Runtime"></a></h3><p>con now runs one terminal runtime: full Ghostty embedded via its C API.</p>
+<ul>
+<li>Ghostty owns PTY lifecycle, VT parsing, scrollback, and rendering</li>
+<li>con embeds one shared Ghostty app per window and one Ghostty surface per split inside GPUI layouts</li>
+<li><code>con-ghostty</code> stays thin: app lifecycle, surface lifecycle, callbacks, and safe Rust accessors</li>
+<li><code>con-terminal</code> now only owns theme and palette data used to drive Ghostty config</li>
+</ul>
+<p>Native Ghostty splits do not imply a single monolithic surface. Ghostty&#39;s own macOS architecture also uses a host-managed surface tree with one surface per split. The right migration path for con is therefore a Ghostty-driven surface-tree controller, not collapsing the whole window into one terminal surface.</p>
+<p><code>TerminalPane</code> still exists, but it is now a product abstraction around one kind of pane, not a multi-backend compatibility layer.</p>
+<h3 id="3-pane-runtime-observer">3. Pane Runtime Observer<a class="heading-anchor" href="#3-pane-runtime-observer" aria-hidden="true" aria-label="Link to 3. Pane Runtime Observer"></a></h3><p>The long-term product requirement is not &quot;tmux detection.&quot;
+It is durable pane runtime observability.</p>
+<p>A pane may contain a nested stack:</p>
+<ul>
+<li>local shell</li>
+<li>SSH connection</li>
+<li>remote shell</li>
+<li>tmux</li>
+<li>another shell</li>
+<li>agent CLI / vim / htop</li>
+</ul>
+<p>The architecture must model that explicitly.</p>
+<p><strong>Three-layer design:</strong></p>
+<ol>
+<li><strong>Backend facts</strong> — Ghostty action callbacks, process-exited state, titles, PWD, command-finished events, PTY input generations, visible text</li>
+<li><strong>Pane runtime tracker</strong> — reducer over backend observations, typed shell probes, and con-originated actions; command-boundary freshness; scope-stack inference; confidence</li>
+<li><strong>Consumers</strong> — agent prompt, <code>list_panes</code>, approvals, sidebar, notifications, resume surfaces</li>
+</ol>
+<p><strong>Important constraint:</strong> shell metadata and visible-app identity are not the same thing. If con cannot prove the foreground runtime, it must say <code>unknown</code> instead of promoting title or screen-pattern guesses into product state.</p>
+<p><strong>Current foundation:</strong> Ghostty already gives con strong terminal facts, but the embedded C API does not yet expose foreground-process identity, authoritative command text, alternate-screen state, remote-host identity, or Ghostty&#39;s richer internal semantic prompt/runtime state. con therefore needs its own pane runtime tracker instead of pushing more product logic into prompt heuristics.</p>
+<p><strong>Reducer model:</strong> every pane now has a stateful tracker that merges three classes of input:</p>
+<ul>
+<li>backend observations from Ghostty</li>
+<li>typed shell-scope probes such as <code>probe_shell_context</code></li>
+<li>con-originated action history such as pane creation, visible shell exec, raw input, and process exit</li>
+</ul>
+<p>This lets con preserve causal history without confusing it for current foreground truth. A fresh shell prompt clears active tmux/app identity unless a fresh typed probe re-establishes it. Historical actions remain visible as evidence for how the pane was reached.</p>
+<p>One important middle layer now exists for remote work: <strong>con-managed SSH continuity</strong>. When con created or recently drove an SSH pane, and the current screen still looks prompt-like without tmux or TUI contradictions, that pane remains a reusable remote workspace even if fresh shell integration is absent. This is not promoted to foreground truth, but it is strong enough to prevent duplicate remote panes across follow-up turns.</p>
+<p><strong>Long-term direction:</strong> if con needs process-group identity or richer semantic prompt exports, the right move is to extend libghostty&#39;s C API upstream rather than reintroducing a second terminal runtime locally.</p>
+<p>See <code>docs/impl/pane-runtime-observer.md</code>.</p>
+<h3 id="3b-agent-runtime-control-plane">3b. Agent Runtime Control Plane<a class="heading-anchor" href="#3b-agent-runtime-control-plane" aria-hidden="true" aria-label="Link to 3b. Agent Runtime Control Plane"></a></h3><p>Observability alone is not enough.</p>
+<p>The agent also needs an explicit control plane that separates:</p>
+<ul>
+<li>con pane addresses</li>
+<li>nested runtime targets such as SSH scopes, tmux sessions, tmux panes, and editors</li>
+<li>control channels such as visible shell exec, local hidden exec, tmux control, and raw TUI input</li>
+</ul>
+<p>This is the architectural boundary that prevents failures like:</p>
+<ul>
+<li>running a local hidden command for a remote task</li>
+<li>confusing a tmux pane with a con pane</li>
+<li>typing shell commands into <code>nvim</code></li>
+</ul>
+<p>The long-term tool model should therefore be split by control layer, not just by &quot;pane plus command.&quot; See <code>docs/impl/agent-runtime-control-plane.md</code>.</p>
+<p>There is no single terminal-wide protocol comparable to Chrome DevTools Protocol.
+con therefore needs a layered control plane with explicit protocol attachments:</p>
+<ul>
+<li>Ghostty surface and VT facts</li>
+<li>shell prompt attachments</li>
+<li>tmux control attachments</li>
+<li>app-native RPC attachments</li>
+<li>OS and PTY process facts</li>
+</ul>
+<p>The first concrete attachment after the Ghostty surface is a proven shell-prompt attachment. That is where con can safely expose read-only shell probes such as <code>$TMUX</code>, <code>$SSH_CONNECTION</code>, tmux session/window/pane ids, and editor socket hints.</p>
+<p>The harness now only preloads <strong>silent</strong> attachments automatically. Visible shell probes stay explicit tool calls. This keeps the terminal calm on the first turn while still letting con reuse tmux state and remote workspace anchors across follow-up turns.</p>
+<p>See <code>docs/study/terminal-control-plane.md</code>.</p>
+<h3 id="4-ai-agent-harness-rig">4. AI Agent Harness: Rig<a class="heading-anchor" href="#4-ai-agent-harness-rig" aria-hidden="true" aria-label="Link to 4. AI Agent Harness: Rig"></a></h3><p><strong>Why <a href="https://rig.rs/" target="_blank" rel="noreferrer">Rig</a> over alternatives:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Rig</strong></td>
+<td>Most mature Rust AI agent framework. Multi-provider (OpenAI, Anthropic, Cohere, etc.). Tool-use, RAG, agent abstractions. 24.3% CPU — most efficient in benchmarks.</td>
+</tr>
+<tr>
+<td><strong>rust-genai</strong></td>
+<td>Multi-provider client but no agent abstractions (tools, chains). Just an API client.</td>
+</tr>
+<tr>
+<td><strong>Embed Bun + ai-sdk</strong></td>
+<td>Not feasible — Bun has no embedding API. Would need to spawn a subprocess.</td>
+</tr>
+<tr>
+<td><strong>AutoAgents</strong></td>
+<td>Multi-agent focused, heavier weight. Good for orchestration but overkill for terminal agent.</td>
+</tr>
+<tr>
+<td><strong>Raw HTTP</strong></td>
+<td>Maximum control but months of provider-specific work.</td>
+</tr>
+</tbody></table>
+<p><strong>Rig gives us:</strong></p>
+<ul>
+<li><code>CompletionClient::agent()</code> builder — preamble + tools + model config in one chain</li>
+<li><code>Tool</code> trait — type-safe tool definitions with <code>Args</code> (Deserialize), <code>Output</code> (Serialize), <code>Error</code></li>
+<li><code>Chat</code> trait — multi-turn conversation with <code>Vec&lt;Message&gt;</code> history</li>
+<li><code>PromptHook</code> trait — lifecycle callbacks (on_text_delta, on_tool_call, on_tool_result) for streaming UI</li>
+<li><code>anthropic::Client::new(api_key)</code> — direct Anthropic provider with model constants (<code>CLAUDE_4_SONNET</code>)</li>
+<li>Agent loop with automatic tool calling (up to N turns)</li>
+</ul>
+<p><strong>Current integration:</strong> con-agent implements 7 tools as Rig <code>Tool</code> impls (terminal_exec, shell_exec, file_read, file_write, edit_file, list_files, search), supports 13 providers (Anthropic, OpenAI, OpenAI-compatible, DeepSeek, Groq, Gemini, Ollama, OpenRouter, Mistral, Together, Cohere, Perplexity, xAI) with custom base_url for proxy endpoints. The harness runs on a shared tokio runtime. Provider settings are configurable via Cmd+, settings panel.</p>
+<p><strong>Agent lifecycle (PromptHook):</strong> Each agent request uses <code>agent.prompt().with_hook(hook).with_history(history)</code> instead of <code>agent.chat()</code>. The <code>ConHook</code> struct implements Rig&#39;s <code>PromptHook&lt;M&gt;</code> trait, emitting <code>AgentEvent</code>s for every tool call start/result and text delta. For dangerous tools (<code>shell_exec</code>, <code>terminal_exec</code>, <code>file_write</code>, <code>edit_file</code>), the hook blocks on a per-request approval channel — the UI must explicitly allow or deny execution before the agent proceeds. Safe tools (<code>file_read</code>, <code>list_files</code>, <code>search</code>) execute immediately. A 5-minute timeout prevents indefinite hangs if the UI becomes unresponsive.</p>
+<p><strong>Visible terminal tool:</strong> The <code>terminal_exec</code> tool is con&#39;s core differentiator. Instead of running commands in a hidden subprocess, it writes commands to the user&#39;s visible Ghostty pane. Output is captured via Ghostty&#39;s command-finished signal, with a bounded recent-output fallback when shell integration is unavailable. The user sees every command the agent runs in real time — full transparency.</p>
+<p><strong>Streaming cancellation:</strong> Agent requests can be cancelled mid-stream. The harness maintains an <code>Arc&lt;AtomicBool&gt;</code> cancellation flag checked between stream items. The agent panel shows a &quot;Stop&quot; button during streaming. Cancellation preserves the partial response accumulated so far.</p>
+<p><strong>Per-request approval channels:</strong> Each <code>send_message()</code> creates a fresh crossbeam channel pair. The sender is delivered to the UI via <code>ToolApprovalNeeded</code> events. The receiver is owned by the <code>ConHook</code> for that request. This eliminates race conditions between concurrent agent requests — only one hook instance reads from each channel.</p>
+<p><strong>Per-tab agent sessions:</strong> Each tab owns an independent <code>AgentSession</code> — its own conversation, event channels, terminal exec channels, and cancellation flag. The <code>AgentHarness</code> (shared per window) holds only infrastructure: the tokio runtime (2 worker threads), config, and skill registry. When the user switches tabs, the agent panel swaps its <code>PanelState</code> in and out via <code>std::mem::replace()</code>, preserving each tab&#39;s conversation history and in-flight state. Background tabs continue processing agent events into their cached <code>PanelState</code>. Terminal exec requests route to the originating tab&#39;s pane tree, not the active tab — so an agent running in Tab 2 executes commands in Tab 2 even if the user has switched to Tab 1.</p>
+<p><strong>Conversation round-trip:</strong> The conversation state (<code>Arc&lt;Mutex&lt;Conversation&gt;&gt;</code>) is shared between the main thread and spawned tasks. After the agent completes, the assistant message is added back to the conversation, enabling multi-turn context. Each tab persists its own <code>conversation_id</code> across restarts.</p>
+<p><strong>Escape hatch:</strong> If we later need ai-sdk features, we can spawn a Bun/Node sidecar process and communicate over IPC. This is a pragmatic fallback, not a primary architecture.</p>
+<h3 id="5-platform-strategy">5. Platform Strategy<a class="heading-anchor" href="#5-platform-strategy" aria-hidden="true" aria-label="Link to 5. Platform Strategy"></a></h3><p>con now has three platform states:</p>
+<ul>
+<li>macOS: shipped, using the embedded libghostty + AppKit path</li>
+<li>Windows: beta, using <code>libghostty-vt</code> + ConPTY + a local D3D11/DirectWrite renderer</li>
+<li>Linux: preview, using Unix PTY + shared <code>libghostty-vt</code> + a GPUI-owned per-row <code>StyledText</code> paint path. SGR colors / bold / italic / underline / inverse + block cursor all work, the window ships with client-side decorations, transparent ARGB visual, rounded corners, and KWin-Wayland backdrop blur where the compositor exposes it. The long-term GPUI-owned glyph-atlas grid renderer (matching the D3D11/DirectWrite path Windows uses) is the remaining Linux work.</li>
+</ul>
+<p>The platform architecture is no longer &quot;macOS only,&quot; but it is still not
+&quot;one backend everywhere.&quot;</p>
+<ul>
+<li>GPUI provides the host app shell on all supported platforms</li>
+<li>Ghostty remains the preferred terminal truth source whenever its
+embedding surface is available</li>
+<li>platform-specific backend glue still matters:<ul>
+<li>AppKit on macOS</li>
+<li>D3D11/ConPTY on Windows today</li>
+<li>Unix PTY + GPUI-owned renderer on Linux; see <code>docs/impl/linux-port.md</code></li>
+</ul>
+</li>
+</ul>
+<p>Important consequence:</p>
+<ul>
+<li>Windows proved that con can ship a local backend when upstream
+embedding is unavailable.</li>
+<li>Linux feasibility work showed that upstream Ghostty and GPUI both have
+real Linux stacks, but their embedding boundaries do not line up for
+con today.</li>
+<li>con therefore takes the same delivery stance on Linux that it used on
+Windows: ship a local backend instead of waiting on upstream embed
+hooks.</li>
+</ul>
+<hr>
+<h2 id="core-features-mvp-v01">Core Features (MVP → v0.1)<a class="heading-anchor" href="#core-features-mvp-v01" aria-hidden="true" aria-label="Link to Core Features (MVP → v0.1)"></a></h2><h3 id="phase-1-terminal-that-works">Phase 1: Terminal That Works<a class="heading-anchor" href="#phase-1-terminal-that-works" aria-hidden="true" aria-label="Link to Phase 1: Terminal That Works"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> GPUI window with single terminal pane</li>
+<li><input checked="" disabled="" type="checkbox"> Embedded Ghostty surface lifecycle and input forwarding</li>
+<li><input checked="" disabled="" type="checkbox"> Dynamic terminal resize (fills available window space)</li>
+<li><input checked="" disabled="" type="checkbox"> Scrollback buffer with mouse wheel navigation</li>
+<li><input checked="" disabled="" type="checkbox"> 256-color + truecolor</li>
+<li><input checked="" disabled="" type="checkbox"> DEC private modes: DECCKM, DECAWM, alt screen, bracketed paste</li>
+<li><input checked="" disabled="" type="checkbox"> DA/DSR responses written back to PTY</li>
+<li><input checked="" disabled="" type="checkbox"> Application cursor keys (SS3 mode for vim/less/top)</li>
+<li><input checked="" disabled="" type="checkbox"> Text style rendering: italic, underline, strikethrough, dim, inverse</li>
+<li><input checked="" disabled="" type="checkbox"> Basic tabs (Cmd+T / Cmd+W) with tab bar and OSC title</li>
+<li><input checked="" disabled="" type="checkbox"> Font size from config (config.toml terminal.font_size)</li>
+<li><input checked="" disabled="" type="checkbox"> CWD display in input bar from OSC 7</li>
+<li><input checked="" disabled="" type="checkbox"> Mouse text selection (click-drag, auto-copy, Cmd+C copy)</li>
+<li><input checked="" disabled="" type="checkbox"> Clipboard paste (Cmd+V) with bracketed paste mode support</li>
+<li><input checked="" disabled="" type="checkbox"> Terminal media ingress: file drops / file-path clipboard paste as quoted paths, and image clipboard paste forwarded to TUI apps via raw Ctrl+V</li>
+<li><input checked="" disabled="" type="checkbox"> Cmd+1..9 tab switching</li>
+<li><input checked="" disabled="" type="checkbox"> Session persistence (tabs, active tab, agent panel state)</li>
+<li><input checked="" disabled="" type="checkbox"> Kitty keyboard protocol (CSI u encoding, push/pop/query flags)</li>
+<li><input checked="" disabled="" type="checkbox"> Split panes (macOS: Cmd+D / Cmd+Shift+D, Windows/Linux: Alt+D / Alt+Shift+D, pane tree)</li>
+</ul>
+<h3 id="phase-2-agent-harness">Phase 2: Agent Harness<a class="heading-anchor" href="#phase-2-agent-harness" aria-hidden="true" aria-label="Link to Phase 2: Agent Harness"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> Side panel for AI chat (Cmd+L to toggle)</li>
+<li><input checked="" disabled="" type="checkbox"> Terminal context injection (last N lines, current command, cwd)</li>
+<li><input checked="" disabled="" type="checkbox"> Tool execution: agent can run shell commands in terminal</li>
+<li><input checked="" disabled="" type="checkbox"> Multi-provider config (13 providers via Rig 0.34)</li>
+<li><input checked="" disabled="" type="checkbox"> Settings panel (Cmd+,) with provider selector and model config</li>
+<li><input checked="" disabled="" type="checkbox"> Smart input bar (shell/agent/smart modes)</li>
+<li><input checked="" disabled="" type="checkbox"> Agent notification system (blue dot on tab when agent responds)</li>
+</ul>
+<h3 id="phase-3-agent-lifecycle-tool-transparency">Phase 3: Agent Lifecycle &amp; Tool Transparency<a class="heading-anchor" href="#phase-3-agent-lifecycle-tool-transparency" aria-hidden="true" aria-label="Link to Phase 3: Agent Lifecycle &amp;amp; Tool Transparency"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> PromptHook integration — tool calls visible in agent panel</li>
+<li><input checked="" disabled="" type="checkbox"> Tool danger classification (safe: file_read, search; dangerous: shell_exec, file_write)</li>
+<li><input checked="" disabled="" type="checkbox"> Per-request approval channels (no cross-request interference)</li>
+<li><input checked="" disabled="" type="checkbox"> Approval timeout (5 minutes, denies on expiry)</li>
+<li><input checked="" disabled="" type="checkbox"> Conversation round-trip (assistant messages added back for multi-turn)</li>
+<li><input checked="" disabled="" type="checkbox"> Agent status indicators (Idle/Thinking/Responding)</li>
+<li><input checked="" disabled="" type="checkbox"> Tool call rendering (in-progress dots, completed results)</li>
+<li><input checked="" disabled="" type="checkbox"> Approval dialog UI (inline approval cards with Allow/Deny)</li>
+<li><input checked="" disabled="" type="checkbox"> Streaming via <code>stream_prompt()</code> with real-time token rendering</li>
+</ul>
+<h3 id="phase-4-agent-chat-polish">Phase 4: Agent Chat Polish<a class="heading-anchor" href="#phase-4-agent-chat-polish" aria-hidden="true" aria-label="Link to Phase 4: Agent Chat Polish"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> Structured tool call cards (icon, name, formatted args, result)</li>
+<li><input checked="" disabled="" type="checkbox"> Inline approval cards for dangerous tools (Allow/Deny buttons)</li>
+<li><input checked="" disabled="" type="checkbox"> Scrollable agent panel</li>
+<li><input checked="" disabled="" type="checkbox"> Collapsible step timeline (click to expand/collapse)</li>
+<li><input checked="" disabled="" type="checkbox"> Auto-approve toggle in settings UI (switch with live config propagation)</li>
+<li><input checked="" disabled="" type="checkbox"> Streaming text rendering via <code>stream_prompt()</code></li>
+</ul>
+<h3 id="phase-5-deep-integration">Phase 5: Deep Integration<a class="heading-anchor" href="#phase-5-deep-integration" aria-hidden="true" aria-label="Link to Phase 5: Deep Integration"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> OSC 133 command block tracking (prompt/command/exit code detection)</li>
+<li><input checked="" disabled="" type="checkbox"> Command palette (Cmd+Shift+P) with fuzzy search and keyboard nav</li>
+<li><input checked="" disabled="" type="checkbox"> Command history in agent context (last 10 commands with exit codes)</li>
+<li><input checked="" disabled="" type="checkbox"> Inline AI suggestions (debounced completion engine with caching)</li>
+<li><input checked="" disabled="" type="checkbox"> Command block actions (copy output, re-run, explain via agent)</li>
+<li><input checked="" disabled="" type="checkbox"> Pane-safe agent execution guards and typed control-plane state</li>
+<li><input disabled="" type="checkbox"> Authoritative SSH scope detection on embedded Ghostty</li>
+<li><input disabled="" type="checkbox"> Authoritative tmux / TUI runtime detection on embedded Ghostty</li>
+<li><input checked="" disabled="" type="checkbox"> Conversation history + search (save/load/list, new chat, history panel)</li>
+</ul>
+<h3 id="phase-6-polish">Phase 6: Polish<a class="heading-anchor" href="#phase-6-polish" aria-hidden="true" aria-label="Link to Phase 6: Polish"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> Session persistence and restore</li>
+<li><input checked="" disabled="" type="checkbox"> Cursor blink (500ms timer, resets on keypress)</li>
+<li><input checked="" disabled="" type="checkbox"> Scrollback indicator (floating pill showing &quot;N lines up&quot;)</li>
+<li><input checked="" disabled="" type="checkbox"> Agent panel auto-scroll (ScrollHandle on messages container)</li>
+<li><input checked="" disabled="" type="checkbox"> Double-click word selection, triple-click line selection</li>
+<li><input checked="" disabled="" type="checkbox"> Theme-aware cursor and selection colors</li>
+<li><input checked="" disabled="" type="checkbox"> Sidebar synced with tab state, new session button</li>
+<li><input checked="" disabled="" type="checkbox"> Centered settings and command palette overlays with shadows</li>
+<li><input checked="" disabled="" type="checkbox"> Code block rendering in agent panel (triple-backtick fences)</li>
+<li><input checked="" disabled="" type="checkbox"> Shell mode refocuses terminal after command submit</li>
+<li><input checked="" disabled="" type="checkbox"> Unified input routing (smart mode classifies shell/agent/skill)</li>
+<li><input checked="" disabled="" type="checkbox"> Skills wired end-to-end (/explain, /fix, /commit, /test, /review)</li>
+<li><input checked="" disabled="" type="checkbox"> Command palette expanded (clear, focus, toggle sidebar, cycle mode)</li>
+<li><input checked="" disabled="" type="checkbox"> Terminal settings in Settings UI (font size, theme)</li>
+<li><input checked="" disabled="" type="checkbox"> Cmd+A select all, Cmd+K clear scrollback</li>
+<li><input checked="" disabled="" type="checkbox"> Configurable keybindings (config.toml keybindings section)</li>
+<li><input disabled="" type="checkbox"> Plugin system (Lua or WASM)</li>
+<li><input disabled="" type="checkbox"> Auto-update (Sparkle on macOS)</li>
+<li><input disabled="" type="checkbox"> CLI tool (<code>con</code> command for scripting)</li>
+</ul>
+<h3 id="phase-7-agent-capabilities-terminal-polish">Phase 7: Agent Capabilities &amp; Terminal Polish<a class="heading-anchor" href="#phase-7-agent-capabilities-terminal-polish" aria-hidden="true" aria-label="Link to Phase 7: Agent Capabilities &amp;amp; Terminal Polish"></a></h3><ul>
+<li><input checked="" disabled="" type="checkbox"> Rig 0.32 → 0.34 upgrade (stable API, <code>rustls</code> feature rename)</li>
+<li><input checked="" disabled="" type="checkbox"> Rich context injection (git diff, project structure, XML-tagged system prompt)</li>
+<li><input checked="" disabled="" type="checkbox"> Visible terminal tool (terminal_exec — commands execute in user&#39;s visible PTY)</li>
+<li><input checked="" disabled="" type="checkbox"> Surgical file editing tool (edit_file — find &amp; replace, not full overwrite)</li>
+<li><input checked="" disabled="" type="checkbox"> Directory listing tool (list_files — .gitignore-aware)</li>
+<li><input checked="" disabled="" type="checkbox"> Streaming cancellation (Stop button, partial response preserved)</li>
+<li><input checked="" disabled="" type="checkbox"> Resizable agent panel (drag divider, width persisted in session)</li>
+<li><input checked="" disabled="" type="checkbox"> Extended thinking display (collapsible sections in agent panel)</li>
+<li><input checked="" disabled="" type="checkbox"> Theme configurability (4 built-in themes, live switching, settings picker)</li>
+<li><input checked="" disabled="" type="checkbox"> Per-tab agent sessions (each tab owns its own conversation, context, and approval state)</li>
+</ul>
+<hr>
+<h2 id="agent-terminal-integration-design">Agent ↔ Terminal Integration Design<a class="heading-anchor" href="#agent-terminal-integration-design" aria-hidden="true" aria-label="Link to Agent ↔ Terminal Integration Design"></a></h2><p>This is what makes con different from &quot;terminal + chatbot sidebar.&quot;</p>
+<h3 id="terminal-context-awareness">Terminal Context Awareness<a class="heading-anchor" href="#terminal-context-awareness" aria-hidden="true" aria-label="Link to Terminal Context Awareness"></a></h3><pre><code>Terminal Output
+     │
+     ▼
+┌─────────────┐     ┌──────────────┐
+│ OSC 133     │────▶│ Command      │
+│ Detection   │     │ Block Parser │
+└─────────────┘     └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │ Context      │
+                    │ Extractor    │
+                    │ - cwd        │
+                    │ - last cmd   │
+                    │ - exit code  │
+                    │ - output     │
+                    │ - git branch │
+                    └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │ Agent        │
+                    │ Harness      │
+                    │ (Rig)        │
+                    └──────────────┘
+</code></pre>
+<p>The agent always knows:</p>
+<ul>
+<li>What directory the user is in</li>
+<li>What command they just ran and its output</li>
+<li>Whether they&#39;re in SSH/tmux/docker</li>
+<li>Git status if in a repo</li>
+</ul>
+<p>This is the current baseline. The next step is a runtime scope stack with evidence and confidence so the agent can distinguish shell metadata from the visible foreground runtime.</p>
+<h3 id="agent-tool-execution">Agent Tool Execution<a class="heading-anchor" href="#agent-tool-execution" aria-hidden="true" aria-label="Link to Agent Tool Execution"></a></h3><p>When the agent needs to run a command:</p>
+<ol>
+<li>Agent produces a <code>ShellExec</code> tool call via Rig</li>
+<li>con-core creates a new (or reuses) terminal pane</li>
+<li>Command is written to PTY</li>
+<li>Output is captured via Ghostty <code>COMMAND_FINISHED</code>, with bounded recent-output fallback when shell integration is unavailable</li>
+<li>Result is fed back to agent with exit code and duration metadata</li>
+</ol>
+<p>This means the user <strong>sees</strong> what the agent does — no hidden subprocess. Full transparency.</p>
+<h3 id="compatibility-with-existing-agents">Compatibility with Existing Agents<a class="heading-anchor" href="#compatibility-with-existing-agents" aria-hidden="true" aria-label="Link to Compatibility with Existing Agents"></a></h3><p>For agent CLIs and other tools that run <em>inside</em> the terminal:</p>
+<ul>
+<li>con should detect them through the pane runtime tracker, using strong evidence first:<ul>
+<li>shell/runtime transitions</li>
+<li>typed shell probes and reducer-backed action history</li>
+<li>backend facts such as command lifecycle and future alternate-screen exports</li>
+</ul>
+</li>
+<li>con must not promote pane-title or screen-structure heuristics into typed runtime state</li>
+<li>Provides enhanced UX: notification rings, focus management</li>
+<li>Does NOT try to &quot;take over&quot; — con is the host, not the agent</li>
+<li>Optional: pipe agent&#39;s stderr/notifications to con&#39;s notification system</li>
+</ul>
+<p>This is a product boundary, not a convenience feature. con must support these tools without pretending that con itself owns the pane.</p>
+<hr>
+<h2 id="build-development">Build &amp; Development<a class="heading-anchor" href="#build-development" aria-hidden="true" aria-label="Link to Build &amp;amp; Development"></a></h2><h3 id="prerequisites">Prerequisites<a class="heading-anchor" href="#prerequisites" aria-hidden="true" aria-label="Link to Prerequisites"></a></h3><pre><code class="language-bash"># macOS
+brew install rustup cmake
+</code></pre>
+<h3 id="build">Build<a class="heading-anchor" href="#build" aria-hidden="true" aria-label="Link to Build"></a></h3><pre><code class="language-bash">cargo build                    # debug build
+cargo build --release          # release build
+cargo run -p con               # run the terminal
+cargo test --workspace         # test everything
+</code></pre>
+<h3 id="build-pipeline">Build Pipeline<a class="heading-anchor" href="#build-pipeline" aria-hidden="true" aria-label="Link to Build Pipeline"></a></h3><ol>
+<li>Cargo resolves workspace deps from upstream git sources and crates.io as declared in the workspace manifest</li>
+<li>GPUI compiles Metal shaders at runtime (<code>runtime_shaders</code> feature — no Xcode.app needed for dev)</li>
+<li><code>cargo build</code> produces the <code>con</code> binary with all crates linked</li>
+</ol>
+<hr>
+<h2 id="config">Config<a class="heading-anchor" href="#config" aria-hidden="true" aria-label="Link to Config"></a></h2><pre><code class="language-toml"># ~/.config/con/config.toml
+
+[terminal]
+font-family = &quot;JetBrains Mono&quot;
+font-size = 14
+theme = &quot;catppuccin-mocha&quot;        # or any ghostty theme
+scrollback-lines = 10000
+cursor-style = &quot;block&quot;
+
+[agent]
+provider = &quot;anthropic&quot;             # anthropic, openai, openai-compatible, deepseek,
+                                   # groq, gemini, ollama, openrouter, mistral,
+                                   # together, cohere, perplexity, xai
+model = &quot;claude-sonnet-4-0&quot;        # leave empty for provider default
+api_key_env = &quot;ANTHROPIC_API_KEY&quot;  # reads from env var
+base_url = &quot;&quot;                      # optional: custom/proxy endpoint
+max_tokens = 4096
+max_turns = 10
+auto_context = true                # inject terminal context automatically
+auto_approve_tools = false         # require approval for shell_exec, file_write
+
+[keybindings]
+toggle-agent = &quot;cmd+l&quot;
+command-palette = &quot;cmd+shift+p&quot;
+new-tab = &quot;cmd+t&quot;
+</code></pre>
+<hr>
+<h2 id="why-this-stack-wins">Why This Stack Wins<a class="heading-anchor" href="#why-this-stack-wins" aria-hidden="true" aria-label="Link to Why This Stack Wins"></a></h2><ol>
+<li><strong>Ghostty&#39;s terminal correctness</strong> — full Ghostty embedded via libghostty, Metal GPU rendering, complete VT compliance including Kitty keyboard and OSC 133 shell integration</li>
+<li><strong>GPUI&#39;s rendering quality</strong> — Zed proves it handles text beautifully at scale</li>
+<li><strong>Rig&#39;s agent abstractions</strong> — swap providers, define tools in Rust, stream tokens</li>
+<li><strong>Rust&#39;s performance</strong> — sub-millisecond input latency, &lt;100MB RAM</li>
+<li><strong>One runtime, one behavior model</strong> — every pane uses Ghostty, which keeps terminal behavior and agent integration consistent</li>
+<li><strong>Open source</strong> — keep the product auditable, hackable, and durable</li>
+</ol>
+<hr>
+<h2 id="resolved-decisions">Resolved Decisions<a class="heading-anchor" href="#resolved-decisions" aria-hidden="true" aria-label="Link to Resolved Decisions"></a></h2><h3 id="1-terminal-backend-full-ghostty">1. Terminal Backend: Full Ghostty<a class="heading-anchor" href="#1-terminal-backend-full-ghostty" aria-hidden="true" aria-label="Link to 1. Terminal Backend: Full Ghostty"></a></h3><p><strong>Decision:</strong> Embed full Ghostty via libghostty C API as the only terminal runtime.</p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li>Ghostty provides production-grade VT compliance (Kitty keyboard, sixel, hyperlinks, OSC 133) without reimplementing it</li>
+<li>GPU-accelerated Metal rendering via native NSView — superior performance to software rasterization</li>
+<li>Action callback system gives us COMMAND_FINISHED (exit code + duration), eliminating blind timeouts for agent command execution</li>
+<li>The <code>con-ghostty</code> crate is a thin FFI wrapper (~800 lines), not a fork — upstream Ghostty updates flow through cleanly</li>
+<li><code>TerminalPane</code> remains as a stable pane-facing API for the workspace and agent layers</li>
+</ul>
+<h3 id="2-gpui-ime-production-ready">2. GPUI IME: Production-Ready<a class="heading-anchor" href="#2-gpui-ime-production-ready" aria-hidden="true" aria-label="Link to 2. GPUI IME: Production-Ready"></a></h3><p>GPUI implements the full <code>InputHandler</code> trait (modeled after <code>NSTextInputClient</code>):</p>
+<ul>
+<li><code>marked_text_range()</code> / <code>replace_and_mark_text_in_range()</code> for IME composition</li>
+<li><code>bounds_for_range()</code> for candidate window positioning</li>
+<li>GPUI has broader platform support, and con now ships macOS plus a
+Windows beta and a Linux preview; see <code>docs/impl/linux-port.md</code>.</li>
+<li>CJK input works. No blocker.</li>
+</ul>
+<h3 id="3-gpu-fallback-not-needed">3. GPU Fallback: Not Needed<a class="heading-anchor" href="#3-gpu-fallback-not-needed" aria-hidden="true" aria-label="Link to 3. GPU Fallback: Not Needed"></a></h3><p>Ghostty has no software renderer — GPU-only. Same for con.</p>
+<p><strong>Rationale:</strong> A desktop terminal emulator always has a GPU. The scenarios where it doesn&#39;t:</p>
+<ul>
+<li><strong>Headless servers</strong> — users SSH in, they use the remote machine&#39;s terminal, not con</li>
+<li><strong>Containers</strong> — con doesn&#39;t run inside Docker; it runs on the host</li>
+</ul>
+<p>If we ever need headless testing, we add a test-only software rasterizer. Not a user feature.</p>
+<h3 id="4-plugin-system-nodejs-python-via-sidecar-ipc">4. Plugin System: Node.js + Python via Sidecar IPC<a class="heading-anchor" href="#4-plugin-system-nodejs-python-via-sidecar-ipc" aria-hidden="true" aria-label="Link to 4. Plugin System: Node.js + Python via Sidecar IPC"></a></h3><p><strong>Decision:</strong> Plugins run as external processes. con communicates via JSON-RPC over Unix domain sockets.</p>
+<p><strong>Why Node.js + Python:</strong></p>
+<ul>
+<li>Largest developer ecosystems — lowest friction for plugin authors</li>
+<li>Runtimes installed by the user (system Node/Python, nvm, pyenv — their choice)</li>
+<li>No embedded runtime = no binary bloat, no version conflicts</li>
+<li>Security: plugins run in separate processes with explicit capability grants</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<pre><code>con (Rust)  ─── Unix socket (JSON-RPC) ───  plugin process (Node/Python/any)
+</code></pre>
+<ul>
+<li>con exposes a socket API: <code>notification.create</code>, <code>terminal.write</code>, <code>context.get</code>, etc.</li>
+<li>Plugin manifest declares: name, runtime, entry point, requested capabilities</li>
+<li>con spawns the plugin process, passes socket path via env var</li>
+<li>Plugin SDK: thin npm package (<code>@con/sdk</code>) and pip package (<code>con-sdk</code>) wrapping the JSON-RPC protocol</li>
+</ul>
+<p><strong>Phase 4 deliverable.</strong> Socket API comes from the same external automation work introduced earlier in the product plan.</p>
+<h3 id="5-licensing-mit">5. Licensing: MIT<a class="heading-anchor" href="#5-licensing-mit" aria-hidden="true" aria-label="Link to 5. Licensing: MIT"></a></h3><ul>
+<li><strong>GPUI</strong>: Apache 2.0 (compatible with MIT, allows sublicensing)</li>
+<li><strong>Ghostty libghostty</strong>: MIT</li>
+<li><strong>Rig</strong>: MIT</li>
+<li><strong>con</strong>: MIT (already in LICENSE)</li>
+</ul>
+<p>All clear. No copyleft, no GPL contamination.</p>
+<hr>
+<h2 id="key-insight">Key Insight<a class="heading-anchor" href="#key-insight" aria-hidden="true" aria-label="Link to Key Insight"></a></h2><p>The product should not depend on a built-in model to be useful. A socket control API for external agents keeps the system composable and lets built-in automation remain only one client of the platform.</p>
+<p><strong>con should have both:</strong></p>
+<ol>
+<li><strong>Built-in agent</strong> (via Rig) — for users who want native AI without installing anything else</li>
+<li><strong>Socket API</strong> — for external agents and plugins to control con</li>
+</ol>
+<p>The socket API is the foundation. The built-in agent is just the first client of that API.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#vision">Vision</a>
+      
+        <a class="docs-toc-item depth-2" href="#architecture-overview">Architecture Overview</a>
+      
+        <a class="docs-toc-item depth-2" href="#crate-structure">Crate Structure</a>
+      
+        <a class="docs-toc-item depth-2" href="#key-technical-decisions">Key Technical Decisions</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-ui-framework-gpui">1. UI Framework: GPUI</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-terminal-core-ghostty-only-runtime">2. Terminal Core: Ghostty-Only Runtime</a>
+      
+        <a class="docs-toc-item depth-3" href="#3-pane-runtime-observer">3. Pane Runtime Observer</a>
+      
+        <a class="docs-toc-item depth-3" href="#3b-agent-runtime-control-plane">3b. Agent Runtime Control Plane</a>
+      
+        <a class="docs-toc-item depth-3" href="#4-ai-agent-harness-rig">4. AI Agent Harness: Rig</a>
+      
+        <a class="docs-toc-item depth-3" href="#5-platform-strategy">5. Platform Strategy</a>
+      
+        <a class="docs-toc-item depth-2" href="#core-features-mvp-v01">Core Features (MVP → v0.1)</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-1-terminal-that-works">Phase 1: Terminal That Works</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-2-agent-harness">Phase 2: Agent Harness</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-3-agent-lifecycle-tool-transparency">Phase 3: Agent Lifecycle &amp;amp; Tool Transparency</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

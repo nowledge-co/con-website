@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study: Rig — Rust AI Agent Framework | con docs</title>
+<meta name="description" content="Study: Rig — Rust AI Agent Framework Overview Rig is the most mature Rust native AI agent framework."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/study/rig/"/>
+<meta property="og:title" content="Study: Rig — Rust AI Agent Framework | con docs"/>
+<meta property="og:description" content="Study: Rig — Rust AI Agent Framework Overview Rig is the most mature Rust native AI agent framework."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/study/rig/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Study: Rig — Rust AI Agent Framework | con docs"/>
+<meta name="twitter:description" content="Study: Rig — Rust AI Agent Framework Overview Rig is the most mature Rust native AI agent framework."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Study: Rig — Rust AI Agent Framework","description":"Study: Rig — Rust AI Agent Framework Overview Rig is the most mature Rust native AI agent framework.","url":"https://con.nowledge.co/docs/study/rig/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item active" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/study/rig.md" target="_blank" rel="noreferrer">docs/study/rig.md</a>
+    </div>
+    <h1 id="study-rig-rust-ai-agent-framework">Study: Rig — Rust AI Agent Framework<a class="heading-anchor" href="#study-rig-rust-ai-agent-framework" aria-hidden="true" aria-label="Link to Study: Rig — Rust AI Agent Framework"></a></h1><h2 id="overview">Overview<a class="heading-anchor" href="#overview" aria-hidden="true" aria-label="Link to Overview"></a></h2><p><a href="https://rig.rs/" target="_blank" rel="noreferrer">Rig</a> is the most mature Rust-native AI agent framework. MIT licensed.
+The current workspace pins <code>rig-core</code> to a maintained git revision in <code>wey-gu/rig</code> rather than a crates.io release. The architecture notes here still apply, but the exact provider surface is tied to that pinned revision.</p>
+<h2 id="core-architecture">Core Architecture<a class="heading-anchor" href="#core-architecture" aria-hidden="true" aria-label="Link to Core Architecture"></a></h2><h3 id="client-provider">Client + Provider<a class="heading-anchor" href="#client-provider" aria-hidden="true" aria-label="Link to Client + Provider"></a></h3><pre><code class="language-rust">use rig::providers::anthropic;
+use rig::client::CompletionClient;
+
+// From API key
+let client = anthropic::Client::new(&quot;sk-ant-...&quot;).unwrap();
+
+// From environment variable
+let client = anthropic::Client::from_env(); // reads ANTHROPIC_API_KEY
+
+// Model constants
+anthropic::completion::CLAUDE_4_SONNET   // &quot;claude-sonnet-4-0&quot;
+anthropic::completion::CLAUDE_4_OPUS     // &quot;claude-opus-4-0&quot;
+anthropic::completion::CLAUDE_3_5_SONNET // &quot;claude-3-5-sonnet-latest&quot;
+</code></pre>
+<h3 id="agent-builder">Agent Builder<a class="heading-anchor" href="#agent-builder" aria-hidden="true" aria-label="Link to Agent Builder"></a></h3><pre><code class="language-rust">let agent = client
+    .agent(anthropic::completion::CLAUDE_4_SONNET)
+    .preamble(&quot;You are a terminal assistant.&quot;)
+    .tool(ShellExecTool)
+    .tool(FileReadTool)
+    .max_tokens(4096)
+    .default_max_turns(10) // max tool call loops
+    .build();
+</code></pre>
+<h3 id="chat-multi-turn">Chat (multi-turn)<a class="heading-anchor" href="#chat-multi-turn" aria-hidden="true" aria-label="Link to Chat (multi-turn)"></a></h3><pre><code class="language-rust">use rig::completion::Chat;
+
+let response: String = agent
+    .chat(&quot;explain this error&quot;, chat_history)
+    .await?;
+</code></pre>
+<h3 id="prompt-single-turn">Prompt (single turn)<a class="heading-anchor" href="#prompt-single-turn" aria-hidden="true" aria-label="Link to Prompt (single turn)"></a></h3><pre><code class="language-rust">use rig::completion::Prompt;
+
+let response: String = agent
+    .prompt(&quot;list files in current dir&quot;)
+    .await?;
+</code></pre>
+<h2 id="tool-definition-rig-api">Tool Definition (Rig API)<a class="heading-anchor" href="#tool-definition-rig-api" aria-hidden="true" aria-label="Link to Tool Definition (Rig API)"></a></h2><pre><code class="language-rust">use rig::tool::Tool;
+use rig::completion::ToolDefinition;
+
+pub struct ShellExecTool;
+
+impl Tool for ShellExecTool {
+    const NAME: &amp;&#39;static str = &quot;shell_exec&quot;;
+    type Error = ToolError;        // must impl std::error::Error + Send + Sync
+    type Args = ShellExecArgs;     // must impl Deserialize
+    type Output = ShellExecOutput; // must impl Serialize
+
+    async fn definition(&amp;self, _prompt: String) -&gt; ToolDefinition {
+        ToolDefinition {
+            name: Self::NAME.to_string(),
+            description: &quot;Execute a shell command&quot;.to_string(),
+            parameters: serde_json::json!({ /* JSON schema */ }),
+        }
+    }
+
+    async fn call(&amp;self, args: Self::Args) -&gt; Result&lt;Self::Output, Self::Error&gt; {
+        // Execute the tool
+    }
+}
+</code></pre>
+<h2 id="prompthook-trait-lifecycle-callbacks">PromptHook Trait (lifecycle callbacks)<a class="heading-anchor" href="#prompthook-trait-lifecycle-callbacks" aria-hidden="true" aria-label="Link to PromptHook Trait (lifecycle callbacks)"></a></h2><pre><code class="language-rust">use rig::agent::PromptHook;
+
+impl PromptHook&lt;M&gt; for MyHook {
+    async fn on_text_delta(&amp;self, delta: &amp;str, aggregated: &amp;str) -&gt; HookAction {
+        // Stream token to UI
+        HookAction::cont()
+    }
+
+    async fn on_tool_call(&amp;self, name: &amp;str, ...) -&gt; ToolCallHookAction {
+        // Log or approve/deny tool calls
+        ToolCallHookAction::cont()
+    }
+
+    async fn on_tool_result(&amp;self, name: &amp;str, ...) -&gt; HookAction {
+        // Observe tool results
+        HookAction::cont()
+    }
+}
+</code></pre>
+<h2 id="message-types">Message Types<a class="heading-anchor" href="#message-types" aria-hidden="true" aria-label="Link to Message Types"></a></h2><pre><code class="language-rust">use rig::message::{Message, UserContent, AssistantContent, Text};
+use rig::OneOrMany;
+
+// User message
+Message::User {
+    content: OneOrMany::one(UserContent::Text(Text { text: &quot;hello&quot;.into() }))
+}
+
+// Assistant message
+Message::Assistant {
+    id: None,
+    content: OneOrMany::one(AssistantContent::Text(Text { text: &quot;hi&quot;.into() }))
+}
+</code></pre>
+<h2 id="streaming-rawstreamingchoice">Streaming (RawStreamingChoice)<a class="heading-anchor" href="#streaming-rawstreamingchoice" aria-hidden="true" aria-label="Link to Streaming (RawStreamingChoice)"></a></h2><pre><code class="language-rust">use rig::streaming::{StreamingCompletionResponse, RawStreamingChoice};
+
+// Streaming responses yield these variants:
+RawStreamingChoice::Message(String)       // text chunk
+RawStreamingChoice::ToolCall(...)         // complete tool call
+RawStreamingChoice::ToolCallDelta { .. }  // partial tool call
+RawStreamingChoice::Reasoning { .. }      // reasoning content
+RawStreamingChoice::FinalResponse(R)      // provider response object
+</code></pre>
+<h2 id="integration-with-con">Integration with con<a class="heading-anchor" href="#integration-with-con" aria-hidden="true" aria-label="Link to Integration with con"></a></h2><ol>
+<li><code>con-agent/provider.rs</code> creates <code>anthropic::Client</code> from config</li>
+<li>Builds an <code>Agent</code> with our 4 tool implementations</li>
+<li>Uses <code>Chat::chat()</code> for multi-turn conversation</li>
+<li><code>con-agent/conversation.rs</code> converts our Message types to Rig&#39;s <code>Vec&lt;Message&gt;</code></li>
+<li><code>con-core/harness.rs</code> runs agent work on a shared tokio runtime</li>
+</ol>
+<h2 id="key-differences-from-rig-010">Key Differences from Rig 0.10<a class="heading-anchor" href="#key-differences-from-rig-010" aria-hidden="true" aria-label="Link to Key Differences from Rig 0.10"></a></h2><ul>
+<li><code>Tool</code> trait now uses <code>const NAME</code>, associated types for Args/Output/Error</li>
+<li><code>definition()</code> and <code>call()</code> are now async methods (not derive macros)</li>
+<li>Client uses generic <code>Client&lt;Ext, H&gt;</code> architecture with <code>Capabilities</code> trait</li>
+<li><code>Chat::chat()</code> takes <code>impl Into&lt;Message&gt;</code> + <code>Vec&lt;Message&gt;</code> history</li>
+<li><code>PromptHook</code> replaces ad-hoc streaming callbacks</li>
+<li>Agent builder has typestate for tool configuration (NoToolConfig → WithBuilderTools)</li>
+</ul>
+<h2 id="workspace-integration-notes">Workspace Integration Notes<a class="heading-anchor" href="#workspace-integration-notes" aria-hidden="true" aria-label="Link to Workspace Integration Notes"></a></h2><p>Rig-core uses <code>workspace = true</code> for its deps. Since it lives inside our repo (at <code>3pp/rig/</code>),
+Cargo resolves those against OUR workspace root. We added rig-core&#39;s transitive workspace deps
+(as-any, async-stream, bytes, etc.) to our workspace Cargo.toml to satisfy these references.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#overview">Overview</a>
+      
+        <a class="docs-toc-item depth-2" href="#core-architecture">Core Architecture</a>
+      
+        <a class="docs-toc-item depth-3" href="#client-provider">Client + Provider</a>
+      
+        <a class="docs-toc-item depth-3" href="#agent-builder">Agent Builder</a>
+      
+        <a class="docs-toc-item depth-3" href="#chat-multi-turn">Chat (multi-turn)</a>
+      
+        <a class="docs-toc-item depth-3" href="#prompt-single-turn">Prompt (single turn)</a>
+      
+        <a class="docs-toc-item depth-2" href="#tool-definition-rig-api">Tool Definition (Rig API)</a>
+      
+        <a class="docs-toc-item depth-2" href="#prompthook-trait-lifecycle-callbacks">PromptHook Trait (lifecycle callbacks)</a>
+      
+        <a class="docs-toc-item depth-2" href="#message-types">Message Types</a>
+      
+        <a class="docs-toc-item depth-2" href="#streaming-rawstreamingchoice">Streaming (RawStreamingChoice)</a>
+      
+        <a class="docs-toc-item depth-2" href="#integration-with-con">Integration with con</a>
+      
+        <a class="docs-toc-item depth-2" href="#key-differences-from-rig-010">Key Differences from Rig 0.10</a>
+      
+        <a class="docs-toc-item depth-2" href="#workspace-integration-notes">Workspace Integration Notes</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

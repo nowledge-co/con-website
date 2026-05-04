@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study: Ghostty Windows port (PR ghostty-org/ghostty12167) | con docs</title>
+<meta name="description" content="Study: Ghostty Windows port (PR ghostty org/ghostty 12167) Status : unmerged upstream."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/study/pr-12167-windows-apprt-reference/"/>
+<meta property="og:title" content="Study: Ghostty Windows port (PR ghostty-org/ghostty12167) | con docs"/>
+<meta property="og:description" content="Study: Ghostty Windows port (PR ghostty org/ghostty 12167) Status : unmerged upstream."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/study/pr-12167-windows-apprt-reference/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Study: Ghostty Windows port (PR ghostty-org/ghostty12167) | con docs"/>
+<meta name="twitter:description" content="Study: Ghostty Windows port (PR ghostty org/ghostty 12167) Status : unmerged upstream."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Study: Ghostty Windows port (PR ghostty-org/ghostty12167)","description":"Study: Ghostty Windows port (PR ghostty org/ghostty 12167) Status : unmerged upstream.","url":"https://con.nowledge.co/docs/study/pr-12167-windows-apprt-reference/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item active" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/study/pr-12167-windows-apprt-reference.md" target="_blank" rel="noreferrer">docs/study/pr-12167-windows-apprt-reference.md</a>
+    </div>
+    <h1 id="study-ghostty-windows-port-pr-ghostty-orgghostty12167">Study: Ghostty Windows port (PR ghostty-org/ghostty#12167)<a class="heading-anchor" href="#study-ghostty-windows-port-pr-ghostty-orgghostty12167" aria-hidden="true" aria-label="Link to Study: Ghostty Windows port (PR ghostty-org/ghostty#12167)"></a></h1><p><strong>Status</strong>: unmerged upstream. This doc captures what&#39;s there, why we
+aren&#39;t pulling it in directly, and what we may want to borrow.</p>
+<h2 id="the-pr">The PR<a class="heading-anchor" href="#the-pr" aria-hidden="true" aria-label="Link to The PR"></a></h2><ul>
+<li>Upstream: <a href="https://github.com/ghostty-org/ghostty/pull/12167" target="_blank" rel="noreferrer">https://github.com/ghostty-org/ghostty/pull/12167</a></li>
+<li>Authors: contributors led by the Ghostty community (per the PR
+thread and follow-up work). Credit individual authors explicitly
+if any of their code lands in this repo — they did the hard
+archeology on Win32 terminal hosting that we&#39;re benefiting from by
+reading, even if we don&#39;t copy code verbatim.</li>
+<li>Scope: implements a Windows application runtime (<code>apprt=win32</code>)
+for Ghostty — a full native <code>.exe</code> with a DWM-composed window,
+D3D11 renderer, DirectWrite font stack, ConPTY, and the surface
+lifecycle upstream&#39;s embedded C API expects. Thousands of lines.</li>
+</ul>
+<h2 id="why-we-arent-pulling-it-in">Why we aren&#39;t pulling it in<a class="heading-anchor" href="#why-we-arent-pulling-it-in" aria-hidden="true" aria-label="Link to Why we aren&amp;#39;t pulling it in"></a></h2><ul>
+<li><strong>Different embedding model.</strong> PR #12167 produces a <em>standalone</em>
+Ghostty.exe. con needs <code>libghostty-vt</code> usable as a library inside
+a GPUI host window — a different decomposition. The PR&#39;s apprt
+owns the window and renderer; we own the window and want to feed
+libghostty-vt the bytes and render via our own D3D11 path inside a
+child HWND.</li>
+<li><strong>Closed unmerged.</strong> The PR thread shows maintainers wanting more
+convergence work before accepting; the author continued pushing
+updates after the close. Pulling in &quot;whatever state it&#39;s in&quot;
+would couple us to a moving fork of Ghostty.</li>
+<li><strong>License / attribution.</strong> Ghostty is MIT; we can reuse code with
+attribution. If/when we do, each file we borrow or adapt gets a
+header comment naming the original author and linking the PR or
+commit.</li>
+</ul>
+<h2 id="whats-worth-borrowing-patterns-not-necessarily-code">What&#39;s worth borrowing (patterns, not necessarily code)<a class="heading-anchor" href="#whats-worth-borrowing-patterns-not-necessarily-code" aria-hidden="true" aria-label="Link to What&amp;#39;s worth borrowing (patterns, not necessarily code)"></a></h2><p>These are the places where PR #12167 likely solved things we&#39;ll hit
+too. Look at its code for reference before inventing our own
+solution:</p>
+<ol>
+<li><strong>ConPTY lifecycle details.</strong> Ours works (spawns, reads, writes),
+but there are edge cases around clean shutdown on parent exit,
+<code>ClosePseudoConsole</code> ordering, and the background output reader
+thread termination that are easy to get wrong. Cross-check ours
+against the PR before shipping beta.</li>
+<li><strong>D3D11 renderer structure.</strong> The PR implements the full Ghostty
+renderer (not just a VT cell grid). Cell-grid rendering we&#39;ve
+done ourselves from the AtlasEngine pattern; for future work like
+background images, sixel, and cursor animation, the PR is the
+reference for the Ghostty-native look.</li>
+<li><strong>DirectWrite font fallback &amp; metrics.</strong> We use a 0.6×fs heuristic
+for cell width today; real DWrite <code>IDWriteFontFace::GetMetrics</code>
+is in the PR. Adopt that pattern when Phase 3b-2 wires up real
+font metrics.</li>
+<li><strong>IME handling.</strong> We have <code>WM_CHAR</code> forwarding; real IME (Chinese,
+Japanese, Korean input composition) needs <code>WM_IME_*</code> messages,
+candidate window placement, and cursor-rect reporting back to
+Windows. The PR has this working.</li>
+<li><strong>Clipboard.</strong> OSC 52 + Win32 clipboard interop is a classic
+get-the-Unicode-surrogate-pairs-right trap; see how the PR does it.</li>
+<li><strong>DWM / DComposition integration.</strong> If we ever pursue the
+&quot;DComp sibling visual inside GPUI&quot; path (<code>docs/study/gpui-external-swapchain-upstream-pr.md</code>),
+the PR is the nearest prior art for how Ghostty&#39;s visuals should
+behave in a DWM-composed window.</li>
+</ol>
+<h2 id="when-to-look-at-it">When to look at it<a class="heading-anchor" href="#when-to-look-at-it" aria-hidden="true" aria-label="Link to When to look at it"></a></h2><p>We don&#39;t need to reference PR #12167 for bring-up. Everything in
+Phase 3a/3b is self-contained against the upstream libghostty-vt C
+API. Revisit when:</p>
+<ul>
+<li>Polishing input (IME, dead keys, international keyboards) — Phase 4.</li>
+<li>Matching Ghostty&#39;s exact pixel-level look (font rendering, cursor
+shapes, underline styles) — Phase 4.</li>
+<li>Doing the DComp-sibling-visual upstream work in GPUI — Phase 3d.</li>
+<li>Investigating any Win32 edge case we don&#39;t understand — always a
+good starting point.</li>
+</ul>
+<h2 id="notes">Notes<a class="heading-anchor" href="#notes" aria-hidden="true" aria-label="Link to Notes"></a></h2><ul>
+<li>If a function, constant, or algorithm in our codebase comes from
+reading the PR (not just inspired by it), add a <code>// Derived from PR ghostty#12167 by &lt;author&gt;, commit &lt;sha&gt; — MIT license</code> comment.</li>
+<li>Keep this doc updated with specific patterns we adopt so the
+attribution trail is clear.</li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#the-pr">The PR</a>
+      
+        <a class="docs-toc-item depth-2" href="#why-we-arent-pulling-it-in">Why we aren&amp;#39;t pulling it in</a>
+      
+        <a class="docs-toc-item depth-2" href="#whats-worth-borrowing-patterns-not-necessarily-code">What&amp;#39;s worth borrowing (patterns, not necessarily code)</a>
+      
+        <a class="docs-toc-item depth-2" href="#when-to-look-at-it">When to look at it</a>
+      
+        <a class="docs-toc-item depth-2" href="#notes">Notes</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Agent Runtime Control Plane | con docs</title>
+<meta name="description" content="Agent Runtime Control Plane Why this exists con now has a usable pane runtime tracker."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/agent-runtime-control-plane/"/>
+<meta property="og:title" content="Agent Runtime Control Plane | con docs"/>
+<meta property="og:description" content="Agent Runtime Control Plane Why this exists con now has a usable pane runtime tracker."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/agent-runtime-control-plane/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Agent Runtime Control Plane | con docs"/>
+<meta name="twitter:description" content="Agent Runtime Control Plane Why this exists con now has a usable pane runtime tracker."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Agent Runtime Control Plane","description":"Agent Runtime Control Plane Why this exists con now has a usable pane runtime tracker.","url":"https://con.nowledge.co/docs/impl/agent-runtime-control-plane/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item active" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/agent-runtime-control-plane.md" target="_blank" rel="noreferrer">docs/impl/agent-runtime-control-plane.md</a>
+    </div>
+    <h1 id="agent-runtime-control-plane">Agent Runtime Control Plane<a class="heading-anchor" href="#agent-runtime-control-plane" aria-hidden="true" aria-label="Link to Agent Runtime Control Plane"></a></h1><h2 id="why-this-exists">Why this exists<a class="heading-anchor" href="#why-this-exists" aria-hidden="true" aria-label="Link to Why this exists"></a></h2><p>con now has a usable pane runtime tracker.</p>
+<p>That solves only half of the problem.</p>
+<p>The harder half is control.</p>
+<p>The built-in agent must answer three different questions correctly before it acts:</p>
+<ol>
+<li>what runtime is visible right now</li>
+<li>what target the user actually means</li>
+<li>what control channel can operate on that target safely</li>
+</ol>
+<p>Current con tools do not separate those questions strongly enough.</p>
+<p>That is why the agent can still drift into failures such as:</p>
+<ul>
+<li>running <code>shell_exec</code> locally while the user means a remote tmux workflow</li>
+<li>confusing a con pane index with a tmux pane/window index</li>
+<li>typing a shell command into <code>nvim</code></li>
+<li>treating &quot;I can see tmux&quot; as &quot;I can safely execute inside tmux&quot;</li>
+</ul>
+<p>The fix is not more prompt text.</p>
+<p>The fix is a first-class control plane.</p>
+<p>See also:</p>
+<ul>
+<li><code>docs/study/terminal-control-plane.md</code></li>
+</ul>
+<h2 id="current-foundation">Current foundation<a class="heading-anchor" href="#current-foundation" aria-hidden="true" aria-label="Link to Current foundation"></a></h2><p>con now ships the first typed control-plane layer:</p>
+<ul>
+<li>every observed pane can be reduced to a <code>PaneControlState</code></li>
+<li>every pane now keeps a reducer-backed runtime tracker instead of recomputing state from one frame</li>
+<li><code>list_panes</code> exposes address space, visible target, nested target stack, explicit control attachments, control channels, capabilities, and notes</li>
+<li>the system prompt embeds the same control state for the focused pane and peer panes</li>
+<li>the system prompt now also embeds a deterministic whole-tab pane layout summary so session-state answers can distinguish materially different peer panes without treating every question as focused-pane-only</li>
+<li>the tool surface now includes a typed work-target resolver so the model can ask con which pane or tmux target is best for a given task instead of rebuilding that judgment from raw pane metadata</li>
+<li>the prompt now also carries typed work-target hints for the current tab, so the model sees the best visible shell target and best tmux workspace target before it makes a selection</li>
+<li>visible execution is gated by <code>exec_visible_shell</code>, not by ad hoc prompt wording</li>
+<li>panes with a proven fresh shell prompt now expose a read-only <code>probe_shell_context</code> capability for typed shell-scoped facts</li>
+<li>before each agent turn, the harness now gathers the strongest safe non-intrusive facts available on the focused pane: it never types a visible shell probe into the terminal automatically, but it does preload tmux inventory when a real tmux query attachment already exists</li>
+<li>typed shell probes and con-originated actions are preserved as causal history on the pane, with freshness and invalidation rules</li>
+<li>current verified foreground state is now modeled separately from the last verified shell frame, so stale shell history cannot masquerade as the live visible target</li>
+<li>the prompt now carries a typed <code>remote_workspaces</code> inventory for the whole tab, so follow-up SSH work can reuse existing host panes from proven host facts or con-managed SSH continuity instead of re-creating them</li>
+</ul>
+<p>This is still phase one.</p>
+<p>What it solves:</p>
+<ul>
+<li>the model can see that a con pane showing tmux is still only addressable as a con pane</li>
+<li>the model can represent nested situations such as <code>remote shell -&gt; tmux -&gt; agent CLI</code> instead of flattening them into one label</li>
+<li>a fresh shell prompt inside tmux can now be modeled as <code>remote shell -&gt; tmux -&gt; shell</code>, which keeps visible shell execution safe without pretending con has tmux-native control</li>
+<li>shell execution safety is computed from typed capability data</li>
+<li>shell-scoped probing is explicit instead of being hidden behind generic terminal execution</li>
+<li>prompt, tools, and runtime guards share one vocabulary</li>
+<li>tmux now has an explicit inspectable adapter slot, rather than being implied only through generic pane metadata</li>
+<li>pane and tmux target choice can now be delegated back to con through a typed resolver instead of staying implicit in model reasoning</li>
+<li>recent con actions stay available as causal evidence so the agent can understand how a pane was reached without treating history as present-tense truth</li>
+<li>when the current foreground target is unproven, control falls back to <code>unknown</code> while <code>last_verified_shell_stack</code> remains available as historical orientation</li>
+<li>con-managed SSH continuity is now a first-class middle layer for remote shell work: if con created or recently drove an SSH pane, and the current screen still looks prompt-like without tmux/TUI contradictions, that pane stays reusable for follow-up host work even when fresh shell integration is absent</li>
+<li>that continuity now has explicit stop conditions too: if the current screen shows a closed SSH connection, or if the pane only looks tmux-like rather than plain-shell-like, con keeps the host history for orientation but stops treating that pane as a reusable plain remote shell target</li>
+<li>tmux-like titles and screens now live in the observation tier, not the fact tier. They can influence summaries and target suggestions, but they do not create tmux-native control by themselves</li>
+</ul>
+<p>con now also ships the first true protocol attachment beyond raw pane observation:</p>
+<ul>
+<li>if a pane has a fresh shell prompt</li>
+<li>and a typed shell probe confirms same-session tmux</li>
+</ul>
+<p>then con can expose a native tmux control attachment for that pane.</p>
+<p>con now also accepts one more truthful tmux-anchor source:</p>
+<ul>
+<li>if the visible shell prompt is still fresh</li>
+<li>and con itself just created or targeted a tmux session from that same shell</li>
+</ul>
+<p>then that shell can become a tmux control anchor immediately, even before a later shell probe re-enters tmux.</p>
+<p>con now retains one more honest tmux-anchor state too:</p>
+<ul>
+<li>if con recently prepared or targeted a tmux session from this pane</li>
+<li>and the visible screen still looks like a prompt inside that tmux workspace</li>
+<li>and the pane does not currently look disconnected</li>
+</ul>
+<p>then tmux-native query/send/run can remain available through that prompt-like tmux shell, even though Ghostty no longer proves a fresh outer shell-integrated prompt.</p>
+<p>That attachment currently supports:</p>
+<ul>
+<li>tmux target discovery</li>
+<li>tmux target discovery helpers for likely shell and agent-cli panes</li>
+<li>tmux pane capture</li>
+<li>tmux shell-target preparation</li>
+<li>remote <code>ssh -&gt; tmux -&gt; shell-target</code> preparation in one typed step</li>
+<li>tmux agent-target preparation for Codex CLI, Claude Code, and OpenCode</li>
+<li>tmux-native command launch into a new window or split pane</li>
+<li>tmux-native send-keys to a chosen tmux target</li>
+<li>remote-shell target preparation for SSH workspaces, so con can reuse an existing host pane or create one with explicit split placement instead of duplicating remote panes across turns</li>
+<li>disconnected remote-shell recovery hints, so typed target resolution can preserve host identity and point the agent at selective recovery for only the affected SSH workspace</li>
+<li>local paired-workspace preparation for local coding-agent workflows, so con can reuse or create the full local coding pair in one step: one interactive Codex / Claude Code / OpenCode pane plus one separate shell pane</li>
+<li>local-shell target preparation for local coding-agent workflows, so Codex / Claude Code / OpenCode can stay in one pane while shell-oriented file/test work happens in a separate reusable local shell pane</li>
+<li>local agent-target preparation for local coding-agent workflows, so Codex / Claude Code / OpenCode can be reused or launched intentionally instead of being inferred only from the visible pane</li>
+<li>interactive agent-cli turns for local and tmux workflows, so con can send a prompt into an existing Codex / Claude Code / OpenCode target, wait for that target to settle, and return a fresh snapshot without dropping back to raw keystroke timing guesses</li>
+</ul>
+<p>This is the right abstraction because it scales across:</p>
+<ul>
+<li>local tmux</li>
+<li>ssh -&gt; tmux</li>
+<li>tmux panes running Codex CLI / Claude Code / OpenCode</li>
+</ul>
+<p>without needing app-specific screen scraping.</p>
+<p>For external agent CLIs, the control rule is now explicit:</p>
+<ul>
+<li>a normal Codex / Claude Code / OpenCode session inside tmux is a tmux target first</li>
+<li>con may reuse or create those targets through tmux-native helpers</li>
+<li>con must not pretend it has app-native Codex/OpenCode control unless a separate explicit attachment is proven</li>
+<li>Codex app-server mode and OpenCode server mode are future attachment surfaces, not assumptions</li>
+</ul>
+<p>What it does not solve yet:</p>
+<ul>
+<li>authoritative foreground-process truth inside arbitrary tmux targets after manual user interaction</li>
+<li>editor-native control</li>
+<li>foreground-process truth from Ghostty for nested remote runtimes</li>
+<li>manual tmux/editor detection on the current embedded Ghostty backend when command text and alternate-screen state are not exported</li>
+</ul>
+<h2 id="first-principles">First principles<a class="heading-anchor" href="#first-principles" aria-hidden="true" aria-label="Link to First principles"></a></h2><h3 id="1-observation-is-not-control">1. Observation is not control<a class="heading-anchor" href="#1-observation-is-not-control" aria-hidden="true" aria-label="Link to 1. Observation is not control"></a></h3><p>Seeing <code>ssh -&gt; tmux -&gt; nvim</code> is not the same as being able to operate on it.</p>
+<p>The runtime tracker says what con currently believes is visible.
+The control plane says what con can safely do.</p>
+<h3 id="2-addressing-is-not-identity">2. Addressing is not identity<a class="heading-anchor" href="#2-addressing-is-not-identity" aria-hidden="true" aria-label="Link to 2. Addressing is not identity"></a></h3><p><code>pane_index=1</code> is a con pane address snapshot.</p>
+<p><code>pane_id=17</code> is the stable con-pane identity for that pane while it exists in the tab.</p>
+<p>It is not:</p>
+<ul>
+<li>a tmux pane id</li>
+<li>a tmux window index</li>
+<li>a remote host identity</li>
+<li>an editor buffer</li>
+</ul>
+<p>Every target layer needs its own address space.</p>
+<p>Product rule:</p>
+<ul>
+<li>use <code>pane_index</code> for immediate, human-readable layout descriptions</li>
+<li>use <code>pane_id</code> for follow-up control and reuse</li>
+<li>if both are present and disagree, stop and re-run <code>list_panes</code></li>
+</ul>
+<h3 id="3-execution-must-match-the-runtime-layer">3. Execution must match the runtime layer<a class="heading-anchor" href="#3-execution-must-match-the-runtime-layer" aria-hidden="true" aria-label="Link to 3. Execution must match the runtime layer"></a></h3><p>There are multiple kinds of action:</p>
+<ul>
+<li>local hidden execution</li>
+<li>visible shell execution</li>
+<li>remote shell execution</li>
+<li>tmux-native execution</li>
+<li>raw TUI input</li>
+<li>editor-native mutation</li>
+</ul>
+<p>Those are different operations and must not share one generic &quot;run command&quot; path.</p>
+<h3 id="4-capability-discovery-must-precede-action">4. Capability discovery must precede action<a class="heading-anchor" href="#4-capability-discovery-must-precede-action" aria-hidden="true" aria-label="Link to 4. Capability discovery must precede action"></a></h3><p>Before the agent acts, it must know whether the target supports:</p>
+<ul>
+<li>shell execution</li>
+<li>tmux control</li>
+<li>raw key input</li>
+<li>editor-native control</li>
+<li>safe file access</li>
+</ul>
+<p>If the capability is absent, the tool must refuse.</p>
+<h3 id="5-unknown-is-a-valid-state">5. Unknown is a valid state<a class="heading-anchor" href="#5-unknown-is-a-valid-state" aria-hidden="true" aria-label="Link to 5. Unknown is a valid state"></a></h3><p>If con cannot prove a target or control channel, it must say <code>unknown</code> and stop.</p>
+<p>False confidence is the worst product failure here.</p>
+<h3 id="6-attachments-are-first-class">6. Attachments are first-class<a class="heading-anchor" href="#6-attachments-are-first-class" aria-hidden="true" aria-label="Link to 6. Attachments are first-class"></a></h3><p>The terminal world does not have one universal protocol like CDP.</p>
+<p>So con needs explicit protocol attachments.</p>
+<p>Examples:</p>
+<ul>
+<li>Ghostty surface attachment</li>
+<li>shell prompt attachment</li>
+<li>tmux control attachment</li>
+<li>Neovim RPC attachment</li>
+</ul>
+<p>An attachment is the real unit of authority.</p>
+<p>Observation says what may be visible.
+An attachment says what con can actually talk to.</p>
+<h3 id="7-causality-matters-but-it-is-not-truth">7. Causality matters, but it is not truth<a class="heading-anchor" href="#7-causality-matters-but-it-is-not-truth" aria-hidden="true" aria-label="Link to 7. Causality matters, but it is not truth"></a></h3><p>con often knows how it entered a pane:</p>
+<ul>
+<li>it created the pane with <code>ssh haswell</code></li>
+<li>it executed <code>tmux attach -t work</code></li>
+<li>it sent raw input to a TUI</li>
+<li>it ran a typed shell probe</li>
+</ul>
+<p>That causality is extremely useful. But it must stay source-tagged and freshness-tagged.</p>
+<p>The correct product rule is:</p>
+<ul>
+<li>current backend facts and fresh typed probes define active runtime truth</li>
+<li>con action history explains how the pane got here</li>
+<li>historical action history must never unlock control by itself</li>
+</ul>
+<h3 id="8-current-state-and-historical-shell-state-are-different-products">8. Current state and historical shell state are different products<a class="heading-anchor" href="#8-current-state-and-historical-shell-state-are-different-products" aria-hidden="true" aria-label="Link to 8. Current state and historical shell state are different products"></a></h3><p>The current foreground target answers:</p>
+<p><code>what can con safely act on right now?</code></p>
+<p>The last verified shell frame answers:</p>
+<p><code>what shell context did con last verify in this pane?</code></p>
+<p>Those are both valuable, but they are not interchangeable.</p>
+<p>Examples:</p>
+<ul>
+<li>If con verified <code>remote_shell -&gt; tmux -&gt; shell</code> and the user then opened <code>nvim</code>, the current target must become <code>unknown</code> until the backend or a fresh probe proves more.</li>
+<li>If con still has the old shell frame, it should keep it as historical orientation for the model and the user, not as the live control target.</li>
+</ul>
+<h2 id="core-model">Core model<a class="heading-anchor" href="#core-model" aria-hidden="true" aria-label="Link to Core model"></a></h2><p>The correct abstraction is a runtime graph plus a control-channel graph.</p>
+<h3 id="runtime-graph">Runtime graph<a class="heading-anchor" href="#runtime-graph" aria-hidden="true" aria-label="Link to Runtime graph"></a></h3><p>This graph answers:</p>
+<p><code>what nested runtimes are visible?</code></p>
+<p>Example:</p>
+<pre><code class="language-text">ConPane(tab=2,pane=1)
+  -&gt; SshConnection(host=haswell)
+  -&gt; RemoteShell(kind=zsh)
+  -&gt; TmuxSession(name=model-serving)
+  -&gt; TmuxWindow(index=4,name=nvim)
+  -&gt; TmuxPane(id=%17)
+  -&gt; Editor(kind=neovim,file=test.sh)
+</code></pre>
+<p>Every node should carry:</p>
+<ul>
+<li><code>target_id</code></li>
+<li><code>parent_target_id</code></li>
+<li><code>kind</code></li>
+<li><code>confidence</code></li>
+<li><code>freshness</code></li>
+<li><code>metadata</code></li>
+<li><code>evidence</code></li>
+<li><code>capabilities</code></li>
+</ul>
+<h3 id="control-channel-graph">Control-channel graph<a class="heading-anchor" href="#control-channel-graph" aria-hidden="true" aria-label="Link to Control-channel graph"></a></h3><p>This graph answers:</p>
+<p><code>how can con safely act on this runtime?</code></p>
+<p>Example channels:</p>
+<ul>
+<li><code>LocalHiddenExec</code></li>
+<li><code>VisibleConShell</code></li>
+<li><code>RemoteShellAnchor</code></li>
+<li><code>TmuxCommandChannel</code></li>
+<li><code>TmuxPaneInput</code></li>
+<li><code>EditorRpc</code></li>
+<li><code>RawKeyInput</code></li>
+</ul>
+<p>Every channel should carry:</p>
+<ul>
+<li><code>channel_id</code></li>
+<li><code>target_scope</code></li>
+<li><code>transport</code></li>
+<li><code>safety_level</code></li>
+<li><code>latency_expectation</code></li>
+<li><code>requires_confirmation</code></li>
+<li><code>capabilities</code></li>
+<li><code>last_verified_at</code></li>
+</ul>
+<h3 id="attachment-graph">Attachment graph<a class="heading-anchor" href="#attachment-graph" aria-hidden="true" aria-label="Link to Attachment graph"></a></h3><p>This graph answers:</p>
+<p><code>what protocol session is attached to what target?</code></p>
+<p>Suggested attachment kinds:</p>
+<ul>
+<li><code>GhosttySurfaceAttachment</code></li>
+<li><code>GhosttyVtAttachment</code></li>
+<li><code>ShellPromptAttachment</code></li>
+<li><code>TmuxControlAttachment</code></li>
+<li><code>NeovimRpcAttachment</code></li>
+<li><code>OsPtyAttachment</code></li>
+</ul>
+<p>Every attachment should carry:</p>
+<ul>
+<li><code>attachment_id</code></li>
+<li><code>target_id</code></li>
+<li><code>transport</code></li>
+<li><code>authority_level</code></li>
+<li><code>visibility_policy</code></li>
+<li><code>capabilities</code></li>
+<li><code>last_verified_at</code></li>
+<li><code>invalidates_on</code></li>
+</ul>
+<h2 id="target-kinds">Target kinds<a class="heading-anchor" href="#target-kinds" aria-hidden="true" aria-label="Link to Target kinds"></a></h2><p>These should be explicit product-level types, not just strings in prompt XML.</p>
+<h3 id="container-targets">Container targets<a class="heading-anchor" href="#container-targets" aria-hidden="true" aria-label="Link to Container targets"></a></h3><ul>
+<li><code>ConPane</code></li>
+<li><code>SshConnection</code></li>
+<li><code>RemoteShell</code></li>
+<li><code>TmuxSession</code></li>
+<li><code>TmuxWindow</code></li>
+<li><code>TmuxPane</code></li>
+</ul>
+<h3 id="interactive-app-targets">Interactive app targets<a class="heading-anchor" href="#interactive-app-targets" aria-hidden="true" aria-label="Link to Interactive app targets"></a></h3><ul>
+<li><code>ShellPrompt</code></li>
+<li><code>Editor</code></li>
+<li><code>AgentCli</code></li>
+<li><code>Dashboard</code></li>
+<li><code>Pager</code></li>
+<li><code>Unknown</code></li>
+</ul>
+<h3 id="execution-targets">Execution targets<a class="heading-anchor" href="#execution-targets" aria-hidden="true" aria-label="Link to Execution targets"></a></h3><ul>
+<li><code>LocalWorkspace</code></li>
+<li><code>ShellTarget</code></li>
+<li><code>TmuxTarget</code></li>
+<li><code>EditorTarget</code></li>
+</ul>
+<h2 id="capability-model">Capability model<a class="heading-anchor" href="#capability-model" aria-hidden="true" aria-label="Link to Capability model"></a></h2><p>Every runtime target should expose a capability set.</p>
+<p>Suggested capabilities:</p>
+<ul>
+<li><code>read_screen</code></li>
+<li><code>search_scrollback</code></li>
+<li><code>send_raw_input</code></li>
+<li><code>exec_visible_shell</code></li>
+<li><code>exec_hidden_local</code></li>
+<li><code>exec_remote_shell</code></li>
+<li><code>tmux_query</code></li>
+<li><code>tmux_capture</code></li>
+<li><code>tmux_send_keys</code></li>
+<li><code>tmux_exec</code></li>
+<li><code>editor_query</code></li>
+<li><code>editor_apply_edit</code></li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li>capabilities come from adapters, not prompt inference</li>
+<li>capabilities may be absent even when the runtime is visible</li>
+<li>tools must check capabilities before running</li>
+</ul>
+<h2 id="control-adapters">Control adapters<a class="heading-anchor" href="#control-adapters" aria-hidden="true" aria-label="Link to Control adapters"></a></h2><p>The control plane needs explicit adapters.</p>
+<h3 id="0-shellprobeadapter">0. <code>ShellProbeAdapter</code><a class="heading-anchor" href="#0-shellprobeadapter" aria-hidden="true" aria-label="Link to 0. ShellProbeAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>collect read-only shell-scope truth when a fresh prompt is proven</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>$TMUX</code></li>
+<li><code>$SSH_CONNECTION</code></li>
+<li>hostname</li>
+<li>tmux socket discovery</li>
+<li><code>NVIM_LISTEN_ADDRESS</code></li>
+</ul>
+<p>Constraint:</p>
+<ul>
+<li>only valid at a proven shell prompt</li>
+<li>must not be promoted into visible-target truth once the pane leaves shell ownership</li>
+</ul>
+<h3 id="1-paneshelladapter">1. <code>PaneShellAdapter</code><a class="heading-anchor" href="#1-paneshelladapter" aria-hidden="true" aria-label="Link to 1. PaneShellAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>execute in a visible shell when the active target is a fresh shell prompt</li>
+</ul>
+<p>Maps to:</p>
+<ul>
+<li>current <code>terminal_exec</code></li>
+</ul>
+<p>Constraint:</p>
+<ul>
+<li>invalid for tmux/TUI/editor targets</li>
+</ul>
+<h3 id="2-localexecadapter">2. <code>LocalExecAdapter</code><a class="heading-anchor" href="#2-localexecadapter" aria-hidden="true" aria-label="Link to 2. LocalExecAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>run hidden local subprocesses inside the con workspace machine</li>
+</ul>
+<p>Maps to:</p>
+<ul>
+<li>current <code>shell_exec</code></li>
+</ul>
+<p>Constraint:</p>
+<ul>
+<li>never substitutes for remote intent</li>
+</ul>
+<h3 id="3-tmuxcontroladapter">3. <code>TmuxControlAdapter</code><a class="heading-anchor" href="#3-tmuxcontroladapter" aria-hidden="true" aria-label="Link to 3. TmuxControlAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>query sessions, windows, panes</li>
+<li>capture pane output</li>
+<li>send keys to a specific tmux pane</li>
+<li>execute a shell command in a specific tmux pane that is known to be a shell</li>
+</ul>
+<p>Important:</p>
+<p>this is not the same as raw input into the currently visible pane.</p>
+<p>It needs a control channel anchored in the same tmux scope.</p>
+<p>Possible channel sources:</p>
+<ul>
+<li>an existing shell prompt inside the same remote scope</li>
+<li>a dedicated con-managed tmux control anchor</li>
+<li>a future remote helper</li>
+</ul>
+<p>Without one of those, tmux should be inspect-only.</p>
+<h3 id="4-editoradapter">4. <code>EditorAdapter</code><a class="heading-anchor" href="#4-editoradapter" aria-hidden="true" aria-label="Link to 4. EditorAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>reason about <code>vim</code> / <code>nvim</code> / future editors without shell injection</li>
+</ul>
+<p>Near-term reality:</p>
+<ul>
+<li>likely inspect-only unless a stronger channel exists</li>
+</ul>
+<p>Long-term:</p>
+<ul>
+<li>Neovim RPC or editor-native integration</li>
+</ul>
+<h3 id="5-rawinputadapter">5. <code>RawInputAdapter</code><a class="heading-anchor" href="#5-rawinputadapter" aria-hidden="true" aria-label="Link to 5. RawInputAdapter"></a></h3><p>Purpose:</p>
+<ul>
+<li>fallback for user-approved, intentional TUI interaction</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>&lt;Esc&gt;</code></li>
+<li><code>:w</code></li>
+<li><code>Ctrl-C</code></li>
+<li>arrow keys</li>
+</ul>
+<p>Constraint:</p>
+<ul>
+<li>never used as a hidden substitute for shell execution</li>
+</ul>
+<h2 id="tool-families">Tool families<a class="heading-anchor" href="#tool-families" aria-hidden="true" aria-label="Link to Tool families"></a></h2><p>The current tool set is too flat.</p>
+<p>The future tool surface should be grouped by control layer.</p>
+<h3 id="discovery-tools">Discovery tools<a class="heading-anchor" href="#discovery-tools" aria-hidden="true" aria-label="Link to Discovery tools"></a></h3><ul>
+<li><code>list_runtime_targets</code></li>
+<li><code>inspect_target</code></li>
+<li><code>list_control_channels</code></li>
+<li><code>resolve_target</code></li>
+<li><code>resolve_work_target</code></li>
+</ul>
+<p>These answer:</p>
+<ul>
+<li>what exists</li>
+<li>what it is</li>
+<li>how certain con is</li>
+<li>what con can safely do with it</li>
+<li>which existing pane or tmux target is the best fit for the requested work</li>
+</ul>
+<h3 id="shell-tools">Shell tools<a class="heading-anchor" href="#shell-tools" aria-hidden="true" aria-label="Link to Shell tools"></a></h3><ul>
+<li><code>exec_local</code></li>
+<li><code>exec_in_shell_target</code></li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li><code>exec_local</code> is always local</li>
+<li><code>exec_in_shell_target</code> requires a shell capability</li>
+<li>neither tool may target tmux/editor/TUI targets implicitly</li>
+</ul>
+<h3 id="tmux-tools">Tmux tools<a class="heading-anchor" href="#tmux-tools" aria-hidden="true" aria-label="Link to Tmux tools"></a></h3><ul>
+<li><code>tmux_list_sessions</code></li>
+<li><code>tmux_list_windows</code></li>
+<li><code>tmux_list_panes</code></li>
+<li><code>tmux_find_targets</code></li>
+<li><code>tmux_capture_pane</code></li>
+<li><code>tmux_ensure_shell_target</code></li>
+<li><code>tmux_send_keys</code></li>
+<li><code>tmux_exec_in_pane</code></li>
+<li><code>tmux_new_window</code></li>
+<li><code>tmux_split_pane</code></li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li>all tmux tools address tmux targets, not con panes</li>
+<li>helper tools such as <code>tmux_find_targets</code> and <code>tmux_ensure_shell_target</code> may start from a con pane, but they must resolve down to explicit tmux targets before any mutation happens</li>
+<li><code>tmux_exec_in_pane</code> requires a tmux control channel plus a shell-capable tmux pane target</li>
+<li><code>tmux_send_keys</code> is explicit TUI input, not a generic exec fallback</li>
+</ul>
+<h3 id="editor-tools">Editor tools<a class="heading-anchor" href="#editor-tools" aria-hidden="true" aria-label="Link to Editor tools"></a></h3><ul>
+<li><code>inspect_editor</code></li>
+<li><code>list_buffers</code></li>
+<li><code>apply_editor_edit</code></li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li>only available when an editor-native channel exists</li>
+<li>otherwise the agent must stay inspect-only or ask the user to leave the editor</li>
+</ul>
+<h3 id="generic-tui-tools">Generic TUI tools<a class="heading-anchor" href="#generic-tui-tools" aria-hidden="true" aria-label="Link to Generic TUI tools"></a></h3><ul>
+<li><code>send_input</code></li>
+<li><code>send_control_key</code></li>
+<li><code>wait_for_target_state</code></li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li>these are interaction tools, not shell tools</li>
+<li>they should be clearly marked as destructive/high-risk when they change editor/TUI state</li>
+</ul>
+<h2 id="prompt-contract">Prompt contract<a class="heading-anchor" href="#prompt-contract" aria-hidden="true" aria-label="Link to Prompt contract"></a></h2><p>The prompt should stop framing all mutation as &quot;run a command in a pane.&quot;</p>
+<p>The built-in agent should follow this sequence:</p>
+<ol>
+<li>identify the intended runtime target</li>
+<li>inspect the target capabilities</li>
+<li>choose the least-destructive control channel</li>
+<li>refuse if no safe channel exists</li>
+</ol>
+<p>Mandatory prompt rules:</p>
+<ul>
+<li><code>pane_index</code> always means a con pane</li>
+<li><code>pane_id</code> is the stable identity of that con pane for the life of the pane</li>
+<li>tmux panes/windows use tmux-specific target ids</li>
+<li><code>shell_exec</code> is always local</li>
+<li>do not substitute local execution for remote intent</li>
+<li>do not substitute raw key input for shell execution</li>
+<li>if the visible target is an editor or unknown TUI, con is inspect-only unless an explicit editor/tmux channel exists</li>
+</ul>
+<h2 id="approval-model">Approval model<a class="heading-anchor" href="#approval-model" aria-hidden="true" aria-label="Link to Approval model"></a></h2><p>Approvals should reflect the control plane, not just the tool name.</p>
+<p>Suggested approval classes:</p>
+<ul>
+<li><code>LocalHiddenExec</code></li>
+<li><code>VisibleShellExec</code></li>
+<li><code>RemoteShellExec</code></li>
+<li><code>TmuxExec</code></li>
+<li><code>TmuxSendKeys</code></li>
+<li><code>EditorMutation</code></li>
+<li><code>RawTuiInput</code></li>
+</ul>
+<p>Approval copy must state:</p>
+<ul>
+<li>machine scope</li>
+<li>runtime scope</li>
+<li>target id</li>
+<li>control channel</li>
+<li>whether the action is visible or hidden</li>
+</ul>
+<h2 id="state-wiring">State wiring<a class="heading-anchor" href="#state-wiring" aria-hidden="true" aria-label="Link to State wiring"></a></h2><p>The app should wire this in one direction:</p>
+<pre><code class="language-text">Ghostty facts
+  -&gt; PaneRuntimeTracker
+  -&gt; RuntimeGraphBuilder
+  -&gt; CapabilityResolver
+  -&gt; Tool/Prompt/UI consumers
+</code></pre>
+<p>Consumers must not skip layers.</p>
+<p>That means:</p>
+<ul>
+<li>sidebar naming reads resolved targets</li>
+<li><code>list_panes</code> becomes a con-pane summary only</li>
+<li><code>list_runtime_targets</code> becomes the real nested runtime view</li>
+<li>execution tools resolve through capabilities, not raw pane state</li>
+</ul>
+<h2 id="implementation-phases">Implementation phases<a class="heading-anchor" href="#implementation-phases" aria-hidden="true" aria-label="Link to Implementation phases"></a></h2><h3 id="phase-1-target-graph">Phase 1: Target graph<a class="heading-anchor" href="#phase-1-target-graph" aria-hidden="true" aria-label="Link to Phase 1: Target graph"></a></h3><ul>
+<li>add <code>RuntimeTarget</code>, <code>ControlChannel</code>, <code>CapabilitySet</code>, and <code>TargetId</code></li>
+<li>keep current pane tracker as the source for top-level runtime facts and causal history</li>
+</ul>
+<h3 id="phase-2-tool-split">Phase 2: Tool split<a class="heading-anchor" href="#phase-2-tool-split" aria-hidden="true" aria-label="Link to Phase 2: Tool split"></a></h3><ul>
+<li>replace the flat &quot;pane + command&quot; model with shell/tmux/tui tool families</li>
+<li>keep <code>terminal_exec</code> only as a shell-target adapter</li>
+</ul>
+<h3 id="phase-3-tmux-adapter">Phase 3: Tmux adapter<a class="heading-anchor" href="#phase-3-tmux-adapter" aria-hidden="true" aria-label="Link to Phase 3: Tmux adapter"></a></h3><ul>
+<li>add inspect-only tmux tools first</li>
+<li>add tmux execution only when a real tmux control channel exists</li>
+</ul>
+<h3 id="phase-4-prompt-and-approvals">Phase 4: Prompt and approvals<a class="heading-anchor" href="#phase-4-prompt-and-approvals" aria-hidden="true" aria-label="Link to Phase 4: Prompt and approvals"></a></h3><ul>
+<li>rewrite prompt around target resolution and channel choice</li>
+<li>rewrite approval UI around control-channel classes</li>
+</ul>
+<h3 id="phase-5-editor-native-control">Phase 5: Editor-native control<a class="heading-anchor" href="#phase-5-editor-native-control" aria-hidden="true" aria-label="Link to Phase 5: Editor-native control"></a></h3><ul>
+<li>add Neovim-native integration if and when a credible control path exists</li>
+</ul>
+<h2 id="success-criteria">Success criteria<a class="heading-anchor" href="#success-criteria" aria-hidden="true" aria-label="Link to Success criteria"></a></h2><p>con is credible here when all of the following are true:</p>
+<ul>
+<li>it never confuses a con pane with a tmux pane</li>
+<li>it never runs local hidden execution for a remote task unless the user explicitly asks</li>
+<li>it never types shell commands into <code>vim</code> / <code>nvim</code></li>
+<li>it can inspect nested <code>ssh -&gt; tmux -&gt; editor/agent-cli</code> state honestly</li>
+<li>it can execute inside tmux only through an explicit tmux control path</li>
+<li>approvals make the machine, runtime, and control channel obvious</li>
+</ul>
+<p>That is the minimum bar for a world-class terminal-native agent.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#why-this-exists">Why this exists</a>
+      
+        <a class="docs-toc-item depth-2" href="#current-foundation">Current foundation</a>
+      
+        <a class="docs-toc-item depth-2" href="#first-principles">First principles</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-observation-is-not-control">1. Observation is not control</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-addressing-is-not-identity">2. Addressing is not identity</a>
+      
+        <a class="docs-toc-item depth-3" href="#3-execution-must-match-the-runtime-layer">3. Execution must match the runtime layer</a>
+      
+        <a class="docs-toc-item depth-3" href="#4-capability-discovery-must-precede-action">4. Capability discovery must precede action</a>
+      
+        <a class="docs-toc-item depth-3" href="#5-unknown-is-a-valid-state">5. Unknown is a valid state</a>
+      
+        <a class="docs-toc-item depth-3" href="#6-attachments-are-first-class">6. Attachments are first-class</a>
+      
+        <a class="docs-toc-item depth-3" href="#7-causality-matters-but-it-is-not-truth">7. Causality matters, but it is not truth</a>
+      
+        <a class="docs-toc-item depth-3" href="#8-current-state-and-historical-shell-state-are-different-products">8. Current state and historical shell state are different products</a>
+      
+        <a class="docs-toc-item depth-2" href="#core-model">Core model</a>
+      
+        <a class="docs-toc-item depth-3" href="#runtime-graph">Runtime graph</a>
+      
+        <a class="docs-toc-item depth-3" href="#control-channel-graph">Control-channel graph</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

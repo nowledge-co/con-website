@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Markdown Renderer Architecture | con docs</title>
+<meta name="description" content="Markdown Renderer Architecture Decision con should use the markdown crate's mdast parser for agent panel Markdown and continue building a Con owned renderer/s"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/study/markdown-renderer-architecture/"/>
+<meta property="og:title" content="Markdown Renderer Architecture | con docs"/>
+<meta property="og:description" content="Markdown Renderer Architecture Decision con should use the markdown crate's mdast parser for agent panel Markdown and continue building a Con owned renderer/s"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/study/markdown-renderer-architecture/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Markdown Renderer Architecture | con docs"/>
+<meta name="twitter:description" content="Markdown Renderer Architecture Decision con should use the markdown crate's mdast parser for agent panel Markdown and continue building a Con owned renderer/s"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Markdown Renderer Architecture","description":"Markdown Renderer Architecture Decision con should use the markdown crate's mdast parser for agent panel Markdown and continue building a Con owned renderer/s","url":"https://con.nowledge.co/docs/study/markdown-renderer-architecture/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item active" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/study/markdown-renderer-architecture.md" target="_blank" rel="noreferrer">docs/study/markdown-renderer-architecture.md</a>
+    </div>
+    <h1 id="markdown-renderer-architecture">Markdown Renderer Architecture<a class="heading-anchor" href="#markdown-renderer-architecture" aria-hidden="true" aria-label="Link to Markdown Renderer Architecture"></a></h1><h2 id="decision">Decision<a class="heading-anchor" href="#decision" aria-hidden="true" aria-label="Link to Decision"></a></h2><p>con should use the <code>markdown</code> crate&#39;s mdast parser for agent-panel Markdown and continue building a Con-owned renderer/style system on top of it.</p>
+<p>con should not import Zed&#39;s markdown crate directly.</p>
+<p>The mdast parser choice is intentional now: GFM tables, display math, and inline math are product requirements, and the renderer benefits from a stable block/inline tree with per-node caches.</p>
+<h2 id="why">Why<a class="heading-anchor" href="#why" aria-hidden="true" aria-label="Link to Why"></a></h2><h3 id="1-parsing-and-rendering-are-different-problems">1. Parsing and rendering are different problems<a class="heading-anchor" href="#1-parsing-and-rendering-are-different-problems" aria-hidden="true" aria-label="Link to 1. Parsing and rendering are different problems"></a></h3><p>The current quality gap in Con&#39;s chat panel is not Markdown parsing correctness. It is rendering and typesetting:</p>
+<ul>
+<li>inline code chips need dedicated typography and spacing</li>
+<li>fenced code blocks need their own surface, language label, and mono treatment</li>
+<li>lists, blockquotes, and headings need a cleaner style ladder</li>
+</ul>
+<p>The <code>markdown</code> crate gives us a normalized mdast tree with GFM and math constructs, while keeping parsing and rendering separated. That is the right fit for Con&#39;s UI renderer because parsed block entities can own cache state without reparsing during ordinary GPUI paints.</p>
+<h3 id="2-zed-is-not-reusable-as-is">2. Zed is not reusable as-is<a class="heading-anchor" href="#2-zed-is-not-reusable-as-is" aria-hidden="true" aria-label="Link to 2. Zed is not reusable as-is"></a></h3><p>Zed&#39;s markdown renderer is better, but the crate we studied is GPL-3.0-or-later and is tightly coupled to Zed workspace crates. It is useful as a design reference, not as a dependency we can ship in Con.</p>
+<p>That makes the long-term answer straightforward:</p>
+<ul>
+<li>keep the parser layer we already have</li>
+<li>build the missing renderer/style abstraction ourselves</li>
+<li>borrow ideas from Zed&#39;s API shape, not its code</li>
+</ul>
+<h3 id="3-a-heavier-parser-would-not-solve-the-ui-problem">3. A heavier parser would not solve the UI problem<a class="heading-anchor" href="#3-a-heavier-parser-would-not-solve-the-ui-problem" aria-hidden="true" aria-label="Link to 3. A heavier parser would not solve the UI problem"></a></h3><p><code>comrak</code> is a reasonable Rust Markdown library when you need HTML rendering or deeper AST mutation, but Con&#39;s current problem is not HTML generation. It is &quot;our renderer must turn a known Markdown tree into cached GPUI text/image blocks without stalling the app.&quot;</p>
+<p>Switching parsers again would add cost and churn without solving the typography and cache-boundary problem by itself.</p>
+<h2 id="recommended-con-design">Recommended Con design<a class="heading-anchor" href="#recommended-con-design" aria-hidden="true" aria-label="Link to Recommended Con design"></a></h2><h3 id="parser-layer">Parser layer<a class="heading-anchor" href="#parser-layer" aria-hidden="true" aria-label="Link to Parser layer"></a></h3><p>Keep:</p>
+<ul>
+<li><code>markdown</code></li>
+</ul>
+<p>Use it for:</p>
+<ul>
+<li>mdast parsing</li>
+<li>GFM tables</li>
+<li>fenced code blocks</li>
+<li>math flow and math text constructs</li>
+</ul>
+<h3 id="con-owned-intermediate-representation">Con-owned intermediate representation<a class="heading-anchor" href="#con-owned-intermediate-representation" aria-hidden="true" aria-label="Link to Con-owned intermediate representation"></a></h3><p>Keep or evolve the current custom block/inline model in <code>chat_markdown.rs</code> into an explicit renderer IR:</p>
+<ul>
+<li>block nodes:<ul>
+<li>paragraph</li>
+<li>heading</li>
+<li>list</li>
+<li>list item</li>
+<li>blockquote</li>
+<li>fenced code block</li>
+<li>mermaid diagram</li>
+<li>display math</li>
+<li>thematic break</li>
+</ul>
+</li>
+<li>inline nodes:<ul>
+<li>text</li>
+<li>code</li>
+<li>math</li>
+<li>emphasis</li>
+<li>strong</li>
+<li>strikethrough</li>
+<li>link</li>
+<li>soft break</li>
+<li>hard break</li>
+</ul>
+</li>
+</ul>
+<p>This is enough for the current chat surface.</p>
+<h3 id="style-system">Style system<a class="heading-anchor" href="#style-system" aria-hidden="true" aria-label="Link to Style system"></a></h3><p>Build a dedicated <code>MarkdownStyle</code> layer with explicit slots, instead of ad hoc <code>div()</code> tweaks scattered through rendering code:</p>
+<ul>
+<li><code>paragraph</code></li>
+<li><code>heading_h1</code> ... <code>heading_h6</code></li>
+<li><code>list_marker</code></li>
+<li><code>blockquote_shell</code></li>
+<li><code>blockquote_bar</code></li>
+<li><code>inline_code</code></li>
+<li><code>code_block_shell</code></li>
+<li><code>code_block_label</code></li>
+<li><code>code_block_text</code></li>
+<li><code>link</code></li>
+<li><code>rule</code></li>
+</ul>
+<p>Each slot should own:</p>
+<ul>
+<li>font family</li>
+<li>font size</li>
+<li>line height</li>
+<li>weight/style</li>
+<li>text color</li>
+<li>background color</li>
+<li>padding</li>
+<li>corner radius</li>
+<li>spacing above/below</li>
+</ul>
+<p>That is the abstraction Zed effectively has and Con currently lacks.</p>
+<h3 id="layout-rules">Layout rules<a class="heading-anchor" href="#layout-rules" aria-hidden="true" aria-label="Link to Layout rules"></a></h3><p>The renderer should make these rules explicit:</p>
+<ul>
+<li>inline code is rendered as a real mono chip with horizontal breathing room</li>
+<li>fenced code is rendered as a dedicated mono block, not paragraph text on a tinted box</li>
+<li>lists use one consistent marker gutter</li>
+<li>nested blocks use a clear but restrained spacing scale</li>
+<li>prose, thinking text, and trace output can share structure while differing in tone</li>
+</ul>
+<p>Performance rule:</p>
+<ul>
+<li>long-form chat content must prefer one text layout with styled runs over per-token element trees</li>
+<li>fenced code blocks must prefer one highlighted text layout per block over one UI row per line</li>
+<li>mermaid diagram rendering must happen off the UI thread and cache the rendered image by source text + scale</li>
+<li>display math rendering must happen off the UI thread and cache the rendered image by source text + font-size key</li>
+<li>nested rich blocks must use the same async image pipeline as top-level rich blocks; source-text fallback is only an error/loading path</li>
+<li>inline math should use a conservative false-positive filter so normal prose such as prices does not become math</li>
+<li><code>mathjax-svg-rs</code> pulls in a real JavaScript/MathJax engine; keep it isolated to the UI crate, render only on a background executor, and revisit only with measured binary-size or cold-start data</li>
+<li>inline code inside dense prose, lists, or table cells should not force flex-wrapped chip segmentation at chat-message scale</li>
+<li>decorative inline-code chips are acceptable for short UI copy, not for large agent replies</li>
+<li>cache parsed/flattened text-run transforms at the markdown data layer before trying view-level caching</li>
+<li>isolate expensive message documents behind their own entities before reaching for whole-document cached views</li>
+<li>if the parent chat surface still rerenders too broadly, isolate the full assistant row behind its own entity so live streaming only repaints the active row</li>
+<li>do not keep the entire transcript on one <code>overflow_y_scroll()</code> flex column once replies become rich or long; move the conversation surface to GPUI <code>ListState</code> so visibility, remeasurement, and follow-tail behavior happen at the list layer</li>
+<li>use GPUI cached child views only for size-stable subtrees; intrinsic-height rich text is not a safe first cache boundary</li>
+</ul>
+<h2 id="migration-path">Migration path<a class="heading-anchor" href="#migration-path" aria-hidden="true" aria-label="Link to Migration path"></a></h2><h3 id="phase-1">Phase 1<a class="heading-anchor" href="#phase-1" aria-hidden="true" aria-label="Link to Phase 1"></a></h3><p>Refactor <code>chat_markdown.rs</code> so styling is driven by explicit markdown-style slots instead of embedded one-off values.</p>
+<h3 id="phase-2">Phase 2<a class="heading-anchor" href="#phase-2" aria-hidden="true" aria-label="Link to Phase 2"></a></h3><p>Split rendering into smaller block/inline renderers:</p>
+<ul>
+<li>block renderer</li>
+<li>inline renderer</li>
+<li>code renderer</li>
+</ul>
+<p>This reduces the current single-file fragility and makes typography changes less risky.</p>
+<h3 id="phase-3">Phase 3<a class="heading-anchor" href="#phase-3" aria-hidden="true" aria-label="Link to Phase 3"></a></h3><p>Add source-range support if needed for:</p>
+<ul>
+<li>selection</li>
+<li>hover actions</li>
+<li>future copy/open behaviors on links or code blocks</li>
+</ul>
+<p>The mdast layer can be extended with source-position tracking if we need this later.</p>
+<h2 id="conclusion">Conclusion<a class="heading-anchor" href="#conclusion" aria-hidden="true" aria-label="Link to Conclusion"></a></h2><p>The long-term elegant path is:</p>
+<ul>
+<li>keep <code>markdown</code> mdast parsing</li>
+<li>keep a Con-owned renderer</li>
+<li>formalize a real markdown style/render abstraction</li>
+<li>do not import Zed&#39;s GPL markdown crate</li>
+<li>do not switch parsers just to compensate for missing renderer design</li>
+</ul>
+<p>That is the lowest-redundancy, license-safe, long-term architecture.</p>
+<h2 id="primary-sources">Primary sources<a class="heading-anchor" href="#primary-sources" aria-hidden="true" aria-label="Link to Primary sources"></a></h2><ul>
+<li><code>markdown</code> Rust docs: <a href="https://docs.rs/markdown/latest/markdown/" target="_blank" rel="noreferrer">https://docs.rs/markdown/latest/markdown/</a></li>
+<li><code>comrak</code> Rust docs: <a href="https://docs.rs/comrak/latest/comrak/" target="_blank" rel="noreferrer">https://docs.rs/comrak/latest/comrak/</a></li>
+<li>CommonMark spec: <a href="https://spec.commonmark.org/" target="_blank" rel="noreferrer">https://spec.commonmark.org/</a></li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#decision">Decision</a>
+      
+        <a class="docs-toc-item depth-2" href="#why">Why</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-parsing-and-rendering-are-different-problems">1. Parsing and rendering are different problems</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-zed-is-not-reusable-as-is">2. Zed is not reusable as-is</a>
+      
+        <a class="docs-toc-item depth-3" href="#3-a-heavier-parser-would-not-solve-the-ui-problem">3. A heavier parser would not solve the UI problem</a>
+      
+        <a class="docs-toc-item depth-2" href="#recommended-con-design">Recommended Con design</a>
+      
+        <a class="docs-toc-item depth-3" href="#parser-layer">Parser layer</a>
+      
+        <a class="docs-toc-item depth-3" href="#con-owned-intermediate-representation">Con-owned intermediate representation</a>
+      
+        <a class="docs-toc-item depth-3" href="#style-system">Style system</a>
+      
+        <a class="docs-toc-item depth-3" href="#layout-rules">Layout rules</a>
+      
+        <a class="docs-toc-item depth-2" href="#migration-path">Migration path</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-1">Phase 1</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-2">Phase 2</a>
+      
+        <a class="docs-toc-item depth-3" href="#phase-3">Phase 3</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

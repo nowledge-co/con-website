@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study: upstream GPUI PR — attachexternalswapchainhandle | con docs</title>
+<meta name="description" content="Study: upstream GPUI PR — attach external swap chain handle Status : not started."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/study/gpui-external-swapchain-upstream-pr/"/>
+<meta property="og:title" content="Study: upstream GPUI PR — attachexternalswapchainhandle | con docs"/>
+<meta property="og:description" content="Study: upstream GPUI PR — attach external swap chain handle Status : not started."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/study/gpui-external-swapchain-upstream-pr/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Study: upstream GPUI PR — attachexternalswapchainhandle | con docs"/>
+<meta name="twitter:description" content="Study: upstream GPUI PR — attach external swap chain handle Status : not started."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Study: upstream GPUI PR — attachexternalswapchainhandle","description":"Study: upstream GPUI PR — attach external swap chain handle Status : not started.","url":"https://con.nowledge.co/docs/study/gpui-external-swapchain-upstream-pr/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item active" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/study/gpui-external-swapchain-upstream-pr.md" target="_blank" rel="noreferrer">docs/study/gpui-external-swapchain-upstream-pr.md</a>
+    </div>
+    <h1 id="study-upstream-gpui-pr-attachexternalswapchainhandle">Study: upstream GPUI PR — <code>attach_external_swap_chain_handle</code><a class="heading-anchor" href="#study-upstream-gpui-pr-attachexternalswapchainhandle" aria-hidden="true" aria-label="Link to Study: upstream GPUI PR — attach_external_swap_chain_handle"></a></h1><p><strong>Status</strong>: not started. Self-contained brief so a fresh session in a
+Zed worktree can draft the PR.</p>
+<h2 id="why">Why<a class="heading-anchor" href="#why" aria-hidden="true" aria-label="Link to Why"></a></h2><p>con renders the Windows terminal via a dedicated D3D11 renderer
+(libghostty-vt → ConPTY → DirectWrite glyph atlas). Phase 3a hosts the
+renderer in a <code>WS_CHILD</code> HWND parented to GPUI&#39;s main HWND. That
+works — GPUI already binds the topmost DComposition target on the HWND,
+so popups draw correctly over the child HWND — but it has three real
+drawbacks vs. a first-class DComposition sibling visual:</p>
+<ol>
+<li><strong>No blending with GPUI effects.</strong> HWND children are opaque rects;
+rounded corners, drop shadows, and blur don&#39;t apply. We live with
+this today because con&#39;s design language is flat/borderless, but it
+precludes future effects on the terminal pane.</li>
+<li><strong>Flickering DPI transitions</strong> when dragging across monitors.</li>
+<li><strong>Focus/IME/resize coordination</strong> between two windowing layers.</li>
+</ol>
+<p>The cleaner architecture: render the terminal to a
+<code>DCompositionCreateSurfaceHandle</code>-backed swapchain (a kernel HANDLE,
+not an HWND), and hand the handle to GPUI so it attaches the handle to
+a child <code>IDCompositionVisual</code> under its existing compositor tree. DWM
+then composites our content with GPUI&#39;s as siblings in one pass.</p>
+<p>This is exactly the pattern Windows Terminal uses internally
+(microsoft/terminal#10023) and what WebView2&#39;s composition-hosting API
+exposes publicly
+(<code>ICoreWebView2CompositionController::put_RootVisualTarget</code>).</p>
+<h2 id="the-pr">The PR<a class="heading-anchor" href="#the-pr" aria-hidden="true" aria-label="Link to The PR"></a></h2><p><strong>Scope</strong>: add one method to GPUI&#39;s Windows <code>WindowsWindow</code>:</p>
+<pre><code class="language-rust">impl WindowsWindow {
+    /// Attach an external D3D11 swapchain, identified by a kernel
+    /// HANDLE from `DCompositionCreateSurfaceHandle`, as a child
+    /// DComposition visual inside this window at the given bounds.
+    /// The handle is duplicated; the caller retains ownership of the
+    /// original.
+    ///
+    /// Used by hosts that render their own content (terminals, video,
+    /// custom GL surfaces) and want DWM to composite that content
+    /// seamlessly with GPUI&#39;s own rendering (correct Z-order against
+    /// popups, consistent present timing, unified DPI/resize).
+    pub fn attach_external_swap_chain_handle(
+        &amp;self,
+        handle: windows::Win32::Foundation::HANDLE,
+        bounds: Bounds&lt;Pixels&gt;,
+    ) -&gt; Result&lt;ExternalSurfaceHandle&gt;;
+}
+</code></pre>
+<p><code>ExternalSurfaceHandle</code> is an opaque token the caller keeps to
+reposition (<code>.set_bounds(...)</code>) and detach (<code>Drop</code>).</p>
+<p><strong>Estimated diff</strong>: ~50–80 LOC in <code>crates/gpui_windows/src/directx_renderer.rs</code>
+(extend <code>DirectComposition</code> to track child visuals), ~30 LOC in
+<code>crates/gpui_windows/src/window.rs</code> (public API), ~40 LOC of tests.</p>
+<h2 id="files-to-touch-in-zed-industrieszed">Files to touch in <code>zed-industries/zed</code><a class="heading-anchor" href="#files-to-touch-in-zed-industrieszed" aria-hidden="true" aria-label="Link to Files to touch in zed-industries/zed"></a></h2><ul>
+<li><code>crates/gpui_windows/src/directx_renderer.rs:99-103</code><ul>
+<li><code>DirectComposition</code> struct: add <code>child_visuals: HashMap&lt;SurfaceId, (IDCompositionVisual, Bounds&lt;Pixels&gt;)&gt;</code>.</li>
+</ul>
+</li>
+<li><code>crates/gpui_windows/src/directx_renderer.rs:894-914</code><ul>
+<li><code>DirectComposition::new</code> / <code>set_swap_chain</code>: the existing single
+root-visual flow stays; add helpers to create extra child visuals
+and commit them.</li>
+</ul>
+</li>
+<li><code>crates/gpui_windows/src/window.rs:533-541</code><ul>
+<li>Near the existing <code>impl HasWindowHandle</code>: add the public methods
+(<code>attach_external_swap_chain_handle</code>, and an
+<code>ExternalSurfaceHandle</code> type with <code>set_bounds</code> + <code>Drop</code>).</li>
+</ul>
+</li>
+<li><code>crates/gpui_windows/src/gpui_windows.rs:24-26</code><ul>
+<li>Re-export the new public types from the <code>gpui_windows</code> crate root.</li>
+</ul>
+</li>
+<li><code>crates/gpui_windows/examples/external_surface.rs</code> (new)<ul>
+<li>Minimal repro: a tiny example that hands GPUI a red D3D11
+swapchain and positions it inside a window.</li>
+</ul>
+</li>
+<li><code>crates/gpui/src/platform.rs</code><ul>
+<li>The cross-platform trait signature — add a placeholder method
+returning <code>Err(NotImplemented)</code> on macOS/Linux for now.
+macOS&#39;s CVPixelBuffer path is a future symmetric extension.</li>
+</ul>
+</li>
+</ul>
+<h2 id="upstream-concerns-to-pre-empt">Upstream concerns to pre-empt<a class="heading-anchor" href="#upstream-concerns-to-pre-empt" aria-hidden="true" aria-label="Link to Upstream concerns to pre-empt"></a></h2><p>mikayla-maki closed PR zed-industries/zed#24330 for being
+Windows-only when a cross-platform story wasn&#39;t sketched. To avoid the
+same fate:</p>
+<ul>
+<li>Present the macOS analog up front. On macOS the same contract can be
+implemented with <code>CAMetalLayer</code> via the existing <code>CVPixelBuffer</code>
+branch of <code>PaintSurface</code>. You don&#39;t have to implement macOS in this
+PR, but the API shape has to work for macOS — document it in the PR
+description and stub the method on macOS with a <code>// TODO</code> pointing
+at the CAMetalLayer approach.</li>
+<li>Linux: <code>wgpu::Texture</code> or dmabuf. Same stub + TODO.</li>
+<li>Show a concrete downstream consumer (con) that&#39;s blocked on this.
+Link to the con repo&#39;s <code>docs/impl/windows-port.md</code> Phase 3d row.</li>
+</ul>
+<h2 id="implementation-steps">Implementation steps<a class="heading-anchor" href="#implementation-steps" aria-hidden="true" aria-label="Link to Implementation steps"></a></h2><ol>
+<li><code>git clone https://github.com/&lt;your-user&gt;/zed.git</code> and branch
+<code>feat/windows-external-swapchain</code>.</li>
+<li>Read <code>crates/gpui_windows/src/directx_renderer.rs</code> end-to-end. The
+swapchain + DComp plumbing lives in one file; no spelunking needed.</li>
+<li>Mirror the existing <code>set_swap_chain</code> path for a child visual:
+<code>comp_device.CreateVisual()</code> → <code>visual.SetContent(swapchain_from_handle)</code>
+→ <code>comp_visual.AddVisual(child_visual, /*insertAbove=*/true, None)</code>
+→ <code>comp_device.Commit()</code>.</li>
+<li>The kernel HANDLE → swapchain conversion uses
+<code>IDXGIFactoryMedia::CreateSwapChainForCompositionSurfaceHandle</code>
+(see <code>microsoft/terminal</code> PR #10023 for the exact invocation).</li>
+<li>Add the example + a smoke test.</li>
+<li>Write the PR description citing: con&#39;s Phase 3d (this doc), the
+WebView2 composition-hosting precedent, Windows Terminal #10023,
+the closed PR #24330 and why this is scoped differently.</li>
+</ol>
+<h2 id="once-merged">Once merged<a class="heading-anchor" href="#once-merged" aria-hidden="true" aria-label="Link to Once merged"></a></h2><p>In con, Phase 3d swap:</p>
+<pre><code class="language-rust">// crates/con-ghostty/src/windows/render.rs
+// Before (Phase 3a/3b):
+let swapchain = dxgi_factory.CreateSwapChainForHwnd(&amp;device, hwnd, &amp;desc, ...)?;
+
+// After (Phase 3d):
+let surface_handle = DCompositionCreateSurfaceHandle(COMPOSITIONOBJECT_ALL_ACCESS, None)?;
+let swapchain = dxgi_factory
+    .CreateSwapChainForCompositionSurfaceHandle(&amp;device, surface_handle, &amp;desc, None)?;
+// Hand the handle to GPUI:
+window.attach_external_swap_chain_handle(surface_handle, pane_bounds)?;
+</code></pre>
+<p>The WS_CHILD HWND and <code>host_view.rs</code> become unnecessary; all Win32
+window-proc plumbing goes away; focus and input come through GPUI&#39;s
+normal event stream. This is the Phase 3d endgame.</p>
+<h2 id="references">References<a class="heading-anchor" href="#references" aria-hidden="true" aria-label="Link to References"></a></h2><ul>
+<li>Windows Terminal handle handoff pattern:
+<a href="https://github.com/microsoft/terminal/pull/10023" target="_blank" rel="noreferrer">https://github.com/microsoft/terminal/pull/10023</a></li>
+<li><code>DCompositionCreateSurfaceHandle</code>:
+<a href="https://learn.microsoft.com/en-us/windows/win32/api/dcomp/nf-dcomp-dcompositioncreatesurfacehandle" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/windows/win32/api/dcomp/nf-dcomp-dcompositioncreatesurfacehandle</a></li>
+<li><code>IDXGIFactoryMedia::CreateSwapChainForCompositionSurfaceHandle</code>:
+<a href="https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-idxgifactorymedia-createswapchainforcompositionsurfacehandle" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-idxgifactorymedia-createswapchainforcompositionsurfacehandle</a></li>
+<li>WebView2 composition hosting (precedent for &quot;host owns compositor,
+embed hands a visual in&quot;):
+<a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/windowed-vs-visual-hosting" target="_blank" rel="noreferrer">https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/windowed-vs-visual-hosting</a></li>
+<li>PR that was closed (lessons on what to avoid):
+<a href="https://github.com/zed-industries/zed/pull/24330" target="_blank" rel="noreferrer">https://github.com/zed-industries/zed/pull/24330</a></li>
+<li>con Phase 3 plan: <code>docs/impl/windows-port.md</code></li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#why">Why</a>
+      
+        <a class="docs-toc-item depth-2" href="#the-pr">The PR</a>
+      
+        <a class="docs-toc-item depth-2" href="#files-to-touch-in-zed-industrieszed">Files to touch in zed-industries/zed</a>
+      
+        <a class="docs-toc-item depth-2" href="#upstream-concerns-to-pre-empt">Upstream concerns to pre-empt</a>
+      
+        <a class="docs-toc-item depth-2" href="#implementation-steps">Implementation steps</a>
+      
+        <a class="docs-toc-item depth-2" href="#once-merged">Once merged</a>
+      
+        <a class="docs-toc-item depth-2" href="#references">References</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

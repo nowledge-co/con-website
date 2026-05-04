@@ -72,7 +72,7 @@
     <circle cx="55" cy="28" r="7" fill="#f4be4f"/>
     <circle cx="79" cy="28" r="7" fill="#61c555"/>
     <rect x="118" y="17" width="198" height="24" rx="8" fill="#202026"/>
-    <text x="144" y="34" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="12" fill="#9a948e">~/nowledge/con</text>
+    <text x="144" y="34" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="12" fill="#9a948e">~/project</text>
 
     <text x="32" y="92" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#8a85ff">❯</text>
     <text x="62" y="92" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#e4ddd5">kubectl get pods -n prod</text>

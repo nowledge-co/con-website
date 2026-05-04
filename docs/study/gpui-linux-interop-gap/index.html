@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Study: GPUI Linux interop gap | con docs</title>
+<meta name="description" content="Study: GPUI Linux interop gap This note narrows Linux Phase 2b from: &quot;figure out how con could display a Linux terminal surface inside a GPUI window&quot; to: &quot;wha"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/study/gpui-linux-interop-gap/"/>
+<meta property="og:title" content="Study: GPUI Linux interop gap | con docs"/>
+<meta property="og:description" content="Study: GPUI Linux interop gap This note narrows Linux Phase 2b from: &quot;figure out how con could display a Linux terminal surface inside a GPUI window&quot; to: &quot;wha"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/study/gpui-linux-interop-gap/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Study: GPUI Linux interop gap | con docs"/>
+<meta name="twitter:description" content="Study: GPUI Linux interop gap This note narrows Linux Phase 2b from: &quot;figure out how con could display a Linux terminal surface inside a GPUI window&quot; to: &quot;wha"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Study: GPUI Linux interop gap","description":"Study: GPUI Linux interop gap This note narrows Linux Phase 2b from: \"figure out how con could display a Linux terminal surface inside a GPUI window\" to: \"wha","url":"https://con.nowledge.co/docs/study/gpui-linux-interop-gap/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item active" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/study/gpui-linux-interop-gap.md" target="_blank" rel="noreferrer">docs/study/gpui-linux-interop-gap.md</a>
+    </div>
+    <h1 id="study-gpui-linux-interop-gap">Study: GPUI Linux interop gap<a class="heading-anchor" href="#study-gpui-linux-interop-gap" aria-hidden="true" aria-label="Link to Study: GPUI Linux interop gap"></a></h1><p>This note narrows Linux Phase 2b from:</p>
+<blockquote>
+<p>&quot;figure out how con could display a Linux terminal surface inside a
+GPUI window&quot;</p>
+</blockquote>
+<p>to:</p>
+<blockquote>
+<p>&quot;what exact GPUI-side capability is missing today, and what fallback
+paths remain if that capability does not arrive?&quot;</p>
+</blockquote>
+<h2 id="conclusion">Conclusion<a class="heading-anchor" href="#conclusion" aria-hidden="true" aria-label="Link to Conclusion"></a></h2><p>GPUI Linux already gives con a real native host shell, but it does
+<strong>not</strong> currently expose a public child-composition contract for a
+foreign Linux-rendered terminal surface.</p>
+<p>Today GPUI Linux provides:</p>
+<ol>
+<li><strong>top-level native windows</strong></li>
+<li><strong>raw Wayland/X11 host handles</strong></li>
+<li><strong>GPUI-owned wgpu rendering</strong></li>
+</ol>
+<p>It does <strong>not</strong> yet provide a downstream public API for:</p>
+<ol>
+<li><strong>embedding a foreign Linux surface inside the view tree</strong></li>
+<li><strong>attaching an external GPU surface/texture as a child pane</strong></li>
+<li><strong>zero-copy Linux texture import for arbitrary downstream renderers</strong></li>
+</ol>
+<p>That means a Ghostty-first Linux embed path is blocked on more than
+Ghostty alone. Even if Ghostty grew a Linux embedded API tomorrow, con
+would still need either:</p>
+<ul>
+<li>new GPUI interop support, or</li>
+<li>a GPUI-owned rendering path instead of a foreign-surface embed</li>
+</ul>
+<h2 id="what-gpui-linux-already-gives-con">What GPUI Linux already gives con<a class="heading-anchor" href="#what-gpui-linux-already-gives-con" aria-hidden="true" aria-label="Link to What GPUI Linux already gives con"></a></h2><h3 id="1-real-linux-windows-and-compositor-integration">1. Real Linux windows and compositor integration<a class="heading-anchor" href="#1-real-linux-windows-and-compositor-integration" aria-hidden="true" aria-label="Link to 1. Real Linux windows and compositor integration"></a></h3><p><code>gpui_linux</code> is not a placeholder shell.</p>
+<p>Its platform layer:</p>
+<ul>
+<li>chooses Wayland or X11 at runtime</li>
+<li>opens real platform windows through <code>PlatformWindow</code></li>
+<li>uses <code>WgpuRenderer</code> for drawing</li>
+<li>uses <code>CosmicTextSystem</code> for text</li>
+</ul>
+<p>Relevant local sources:</p>
+<ul>
+<li><code>3pp/zed/crates/gpui/src/platform.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/platform.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/wayland/window.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/x11/window.rs</code></li>
+<li><code>3pp/zed/crates/gpui_wgpu/src/wgpu_renderer.rs</code></li>
+</ul>
+<p>Important consequence:</p>
+<ul>
+<li>con already has a real Linux app shell</li>
+<li>window creation, input dispatch, clipboard, menus, and top-level GPU
+presentation are not the core blocker</li>
+</ul>
+<h3 id="2-raw-host-handles-are-available">2. Raw host handles are available<a class="heading-anchor" href="#2-raw-host-handles-are-available" aria-hidden="true" aria-label="Link to 2. Raw host handles are available"></a></h3><p><code>PlatformWindow</code> inherits both:</p>
+<ul>
+<li><code>HasWindowHandle</code></li>
+<li><code>HasDisplayHandle</code></li>
+</ul>
+<p>and the Linux platform windows implement those contracts with native raw
+handles:</p>
+<ul>
+<li>Wayland: <code>wl_surface*</code> and <code>wl_display*</code></li>
+<li>X11: X window handle plus display/connection handle</li>
+</ul>
+<p>This is enough for GPUI&#39;s own renderer, which creates a <code>wgpu</code> surface
+from raw window handles.</p>
+<p>Important consequence:</p>
+<ul>
+<li>GPUI already knows how to bootstrap rendering from Linux native
+handles</li>
+<li>any future external-surface API should fit into that worldview rather
+than inventing a GTK-only embedding lane</li>
+</ul>
+<h2 id="what-gpui-does-not-expose-today">What GPUI does not expose today<a class="heading-anchor" href="#what-gpui-does-not-expose-today" aria-hidden="true" aria-label="Link to What GPUI does not expose today"></a></h2><h3 id="gap-1-no-public-foreign-surface-embed-primitive">Gap 1: no public foreign-surface embed primitive<a class="heading-anchor" href="#gap-1-no-public-foreign-surface-embed-primitive" aria-hidden="true" aria-label="Link to Gap 1: no public foreign-surface embed primitive"></a></h3><p>At the public <code>gpui</code> layer, there is no Linux equivalent of:</p>
+<ul>
+<li>&quot;attach this external child surface to the window&quot;</li>
+<li>&quot;host this foreign compositor object inside these bounds&quot;</li>
+<li>&quot;accept an external GPU texture handle for scene composition&quot;</li>
+</ul>
+<p>The <code>PlatformWindow</code> trait exposes top-level window management and raw
+handle access, but no child-surface API.</p>
+<p>Important consequence:</p>
+<ul>
+<li>con cannot currently hand GPUI a Wayland child surface, X11 child
+window, GL drawable, or dmabuf-backed surface and ask GPUI to compose
+it inside a pane</li>
+</ul>
+<h3 id="gap-2-existing-image-apis-are-cpu-image-paths-not-gpu-interop">Gap 2: existing image APIs are CPU-image paths, not GPU interop<a class="heading-anchor" href="#gap-2-existing-image-apis-are-cpu-image-paths-not-gpu-interop" aria-hidden="true" aria-label="Link to Gap 2: existing image APIs are CPU-image paths, not GPU interop"></a></h3><p>The public downstream image path in GPUI is <code>RenderImage</code>, surfaced via:</p>
+<ul>
+<li><code>ImageSource::Render</code></li>
+<li><code>Window::paint_image</code></li>
+</ul>
+<p>That path inserts CPU-backed RGBA bytes into GPUI&#39;s sprite atlas and
+then paints atlas tiles into the scene.</p>
+<p>This is useful as a fallback, but it is not a true foreign-surface or
+external-texture composition boundary.</p>
+<p>Important consequence:</p>
+<ul>
+<li>a Linux terminal rendered elsewhere can be displayed in GPUI today
+only by CPU readback / image upload style techniques</li>
+<li>that is viable as a compatibility path, but not the long-term
+architecture we want if Ghostty keeps its own GPU renderer</li>
+</ul>
+<h3 id="gap-3-paintsurface-exists-only-for-macos-today">Gap 3: <code>paint_surface</code> exists only for macOS today<a class="heading-anchor" href="#gap-3-paintsurface-exists-only-for-macos-today" aria-hidden="true" aria-label="Link to Gap 3: paint_surface exists only for macOS today"></a></h3><p>GPUI already has one special-case surface path:</p>
+<ul>
+<li><code>Window::paint_surface</code></li>
+<li><code>elements::surface</code></li>
+</ul>
+<p>But it is compiled only on macOS and only for <code>CVPixelBuffer</code>.</p>
+<p>There is no Linux sibling today for:</p>
+<ul>
+<li>dmabuf</li>
+<li>EGL image</li>
+<li>external <code>wgpu::Texture</code></li>
+<li>Wayland/X11 child surface reference</li>
+</ul>
+<p>Important consequence:</p>
+<ul>
+<li>the closest conceptual extension point already exists in GPUI</li>
+<li>but the existing implementation is macOS-specific, not a cross-platform
+external-surface abstraction</li>
+</ul>
+<h2 id="why-wayland-dmabuf-is-not-enough-by-itself">Why Wayland dmabuf is not enough by itself<a class="heading-anchor" href="#why-wayland-dmabuf-is-not-enough-by-itself" aria-hidden="true" aria-label="Link to Why Wayland dmabuf is not enough by itself"></a></h2><p><code>gpui_linux</code> does contain Wayland dmabuf probing logic. That proves GPUI
+cares about compositor/GPU identity and future interop opportunities.</p>
+<p>But that code is:</p>
+<ul>
+<li>backend-internal</li>
+<li>used for compositor GPU hinting</li>
+<li>not exposed as a downstream texture-import API</li>
+</ul>
+<p>So &quot;GPUI mentions dmabuf internally&quot; does <strong>not</strong> mean con can already
+use dmabuf as a supported pane-composition interface.</p>
+<h2 id="architecture-consequences-for-con">Architecture consequences for con<a class="heading-anchor" href="#architecture-consequences-for-con" aria-hidden="true" aria-label="Link to Architecture consequences for con"></a></h2><p>This leaves con with three realistic Linux integration lanes.</p>
+<h3 id="option-a-gpui-gains-a-public-linux-external-surface-api">Option A: GPUI gains a public Linux external-surface API<a class="heading-anchor" href="#option-a-gpui-gains-a-public-linux-external-surface-api" aria-hidden="true" aria-label="Link to Option A: GPUI gains a public Linux external-surface API"></a></h3><p>This is the Linux analog of the upstream Windows external-swapchain
+study:</p>
+<ul>
+<li>GPUI would accept some Linux-native child composition object</li>
+<li>con would hand it a Ghostty-rendered surface or texture export</li>
+<li>GPUI would position and clip it inside the pane tree</li>
+</ul>
+<p>Plausible shapes:</p>
+<ul>
+<li>Wayland dmabuf / texture import</li>
+<li>X11 texture or pixmap import</li>
+<li>cross-platform external-texture abstraction at the <code>gpui</code> layer</li>
+</ul>
+<p>Benefits:</p>
+<ul>
+<li>keeps Ghostty as the Linux renderer owner</li>
+<li>closest long-term match to the macOS embed architecture</li>
+</ul>
+<p>Costs:</p>
+<ul>
+<li>requires upstream GPUI API and renderer work</li>
+<li>likely needs a cross-platform story to be acceptable upstream</li>
+</ul>
+<h3 id="option-b-gpui-owned-render-path">Option B: GPUI-owned render path<a class="heading-anchor" href="#option-b-gpui-owned-render-path" aria-hidden="true" aria-label="Link to Option B: GPUI-owned render path"></a></h3><p>con keeps GPUI as the sole Linux renderer and only reuses Ghostty for
+terminal semantics if possible.</p>
+<p>This means:</p>
+<ul>
+<li>GPUI paints the terminal cells itself</li>
+<li>Ghostty embed is not needed for final on-screen composition</li>
+</ul>
+<p>Benefits:</p>
+<ul>
+<li>no foreign-surface composition problem</li>
+<li>downstream ownership is clear</li>
+</ul>
+<p>Costs:</p>
+<ul>
+<li>much closer to the Windows architecture</li>
+<li>forfeits the main benefit of Ghostty&#39;s existing Linux renderer</li>
+</ul>
+<h3 id="option-c-cpu-readback-bridge">Option C: CPU-readback bridge<a class="heading-anchor" href="#option-c-cpu-readback-bridge" aria-hidden="true" aria-label="Link to Option C: CPU-readback bridge"></a></h3><p>A stopgap lane:</p>
+<ul>
+<li>render elsewhere</li>
+<li>read back pixels</li>
+<li>push them through <code>RenderImage</code></li>
+</ul>
+<p>Benefits:</p>
+<ul>
+<li>technically possible with today&#39;s public GPUI APIs</li>
+</ul>
+<p>Costs:</p>
+<ul>
+<li>likely too expensive and inelegant for the intended long-term terminal
+path</li>
+<li>does not solve input/focus/composition semantics cleanly</li>
+</ul>
+<h2 id="recommended-gpui-side-ask">Recommended GPUI-side ask<a class="heading-anchor" href="#recommended-gpui-side-ask" aria-hidden="true" aria-label="Link to Recommended GPUI-side ask"></a></h2><p>If con pursues the Ghostty-first Linux path, the GPUI-side upstream ask
+should be framed narrowly:</p>
+<ol>
+<li>define one public external-surface or external-texture composition
+contract that can live at the <code>gpui</code> layer</li>
+<li>let Linux implement it with Linux-appropriate primitives</li>
+<li>leave unsupported platforms as <code>NotImplemented</code> if necessary</li>
+</ol>
+<p>The important thing is not to ask for &quot;GTK widget embedding.&quot; GPUI
+Linux&#39;s own architecture is already native-window + wgpu, so the right
+abstraction is compositor/texture interop, not foreign toolkit hosting.</p>
+<h2 id="decision-for-phase-2c">Decision for Phase 2c<a class="heading-anchor" href="#decision-for-phase-2c" aria-hidden="true" aria-label="Link to Decision for Phase 2c"></a></h2><p>Phase 2b now has a bounded output:</p>
+<ul>
+<li><strong>Ghostty-first Linux embed remains plausible only if both Ghostty and
+GPUI accept upstream interop work</strong></li>
+<li>if either upstream delta is too large or too slow, con should choose a
+local Linux backend and stop modeling Linux as &quot;macOS with different
+headers&quot;</li>
+</ul>
+<p>That means the next Linux milestone is an architecture decision, not
+more reconnaissance.</p>
+<h2 id="references">References<a class="heading-anchor" href="#references" aria-hidden="true" aria-label="Link to References"></a></h2><ul>
+<li><code>docs/impl/linux-port.md</code></li>
+<li><code>docs/study/linux-port-feasibility.md</code></li>
+<li><code>docs/study/ghostty-linux-embed-gap.md</code></li>
+<li><code>docs/study/gpui-external-swapchain-upstream-pr.md</code></li>
+<li><code>3pp/zed/crates/gpui/src/platform.rs</code></li>
+<li><code>3pp/zed/crates/gpui/src/window.rs</code></li>
+<li><code>3pp/zed/crates/gpui/src/elements/img.rs</code></li>
+<li><code>3pp/zed/crates/gpui/src/elements/surface.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/platform.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/wayland/window.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/x11/window.rs</code></li>
+<li><code>3pp/zed/crates/gpui_linux/src/linux/wayland/client.rs</code></li>
+<li><code>3pp/zed/crates/gpui_wgpu/src/wgpu_renderer.rs</code></li>
+</ul>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#conclusion">Conclusion</a>
+      
+        <a class="docs-toc-item depth-2" href="#what-gpui-linux-already-gives-con">What GPUI Linux already gives con</a>
+      
+        <a class="docs-toc-item depth-3" href="#1-real-linux-windows-and-compositor-integration">1. Real Linux windows and compositor integration</a>
+      
+        <a class="docs-toc-item depth-3" href="#2-raw-host-handles-are-available">2. Raw host handles are available</a>
+      
+        <a class="docs-toc-item depth-2" href="#what-gpui-does-not-expose-today">What GPUI does not expose today</a>
+      
+        <a class="docs-toc-item depth-3" href="#gap-1-no-public-foreign-surface-embed-primitive">Gap 1: no public foreign-surface embed primitive</a>
+      
+        <a class="docs-toc-item depth-3" href="#gap-2-existing-image-apis-are-cpu-image-paths-not-gpu-interop">Gap 2: existing image APIs are CPU-image paths, not GPU interop</a>
+      
+        <a class="docs-toc-item depth-3" href="#gap-3-paintsurface-exists-only-for-macos-today">Gap 3: paint_surface exists only for macOS today</a>
+      
+        <a class="docs-toc-item depth-2" href="#why-wayland-dmabuf-is-not-enough-by-itself">Why Wayland dmabuf is not enough by itself</a>
+      
+        <a class="docs-toc-item depth-2" href="#architecture-consequences-for-con">Architecture consequences for con</a>
+      
+        <a class="docs-toc-item depth-3" href="#option-a-gpui-gains-a-public-linux-external-surface-api">Option A: GPUI gains a public Linux external-surface API</a>
+      
+        <a class="docs-toc-item depth-3" href="#option-b-gpui-owned-render-path">Option B: GPUI-owned render path</a>
+      
+        <a class="docs-toc-item depth-3" href="#option-c-cpu-readback-bridge">Option C: CPU-readback bridge</a>
+      
+        <a class="docs-toc-item depth-2" href="#recommended-gpui-side-ask">Recommended GPUI-side ask</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

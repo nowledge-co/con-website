@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Implementation: macOS Terminal Profiling | con docs</title>
+<meta name="description" content="Implementation: macOS Terminal Profiling This note exists for one specific class of bugs: a heavy TUI such as Claude Code resizes instantly in Ghostty or iTer"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/impl/macos-terminal-profiling/"/>
+<meta property="og:title" content="Implementation: macOS Terminal Profiling | con docs"/>
+<meta property="og:description" content="Implementation: macOS Terminal Profiling This note exists for one specific class of bugs: a heavy TUI such as Claude Code resizes instantly in Ghostty or iTer"/>
+<meta property="og:url" content="https://con.nowledge.co/docs/impl/macos-terminal-profiling/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Implementation: macOS Terminal Profiling | con docs"/>
+<meta name="twitter:description" content="Implementation: macOS Terminal Profiling This note exists for one specific class of bugs: a heavy TUI such as Claude Code resizes instantly in Ghostty or iTer"/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Implementation: macOS Terminal Profiling","description":"Implementation: macOS Terminal Profiling This note exists for one specific class of bugs: a heavy TUI such as Claude Code resizes instantly in Ghostty or iTer","url":"https://con.nowledge.co/docs/impl/macos-terminal-profiling/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item active" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/impl/macos-terminal-profiling.md" target="_blank" rel="noreferrer">docs/impl/macos-terminal-profiling.md</a>
+    </div>
+    <h1 id="implementation-macos-terminal-profiling">Implementation: macOS Terminal Profiling<a class="heading-anchor" href="#implementation-macos-terminal-profiling" aria-hidden="true" aria-label="Link to Implementation: macOS Terminal Profiling"></a></h1><p>This note exists for one specific class of bugs:</p>
+<ul>
+<li>a heavy TUI such as Claude Code resizes instantly in Ghostty or iTerm2</li>
+<li>the same TUI in Con appears to repaint from upper rows down to the bottom</li>
+<li>Con feels hung or many seconds behind during live resize</li>
+<li>the same lag can reproduce even with a minimal TUI such as an otherwise empty <code>tmux</code>, which means the issue is not Claude-specific</li>
+</ul>
+<p>At that point, guessing is lower value than measuring.</p>
+<h2 id="what-we-already-know">What we already know<a class="heading-anchor" href="#what-we-already-know" aria-hidden="true" aria-label="Link to What we already know"></a></h2><ul>
+<li>Con <strong>does</strong> use GPU rendering on macOS.</li>
+<li>The terminal runtime is embedded Ghostty.</li>
+<li>Ghostty renders into a native <code>NSView</code> with its Metal renderer.</li>
+</ul>
+<p>Before drawing architectural conclusions, verify two invariants first:</p>
+<ol>
+<li>the trace must target the real <code>con</code> process, not <code>cargo</code></li>
+<li>the embedded Ghostty runtime must be built as a release-class Zig library</li>
+</ol>
+<p>Without those checks, performance comparisons against standalone Ghostty are not trustworthy.</p>
+<h2 id="lightweight-app-logs">Lightweight app logs<a class="heading-anchor" href="#lightweight-app-logs" aria-hidden="true" aria-label="Link to Lightweight app logs"></a></h2><p>Con now exposes an opt-in trace mode.</p>
+<p>Fast path:</p>
+<pre><code class="language-bash">./scripts/macos/profile-terminal-resize.sh
+</code></pre>
+<p>Time Profiler capture:</p>
+<pre><code class="language-bash">./scripts/macos/profile-terminal-resize-xctrace.sh
+</code></pre>
+<p>The helper now builds <code>con</code> first and then launches the actual built binary under <code>xctrace</code>. This is important: profiling <code>cargo run -p con</code> captures the Cargo wrapper process, not the app you are resizing.</p>
+<p>If your toolchain or output path is non-standard, set them explicitly:</p>
+<pre><code class="language-bash">CARGO_BIN=&quot;$(command -v cargo)&quot; \
+CON_APP_BIN=&quot;$PWD/target/debug/con&quot; \
+./scripts/macos/profile-terminal-resize-xctrace.sh
+</code></pre>
+<p>Equivalent manual form:</p>
+<pre><code class="language-bash">CON_GHOSTTY_PROFILE=1 \
+RUST_LOG=con::perf=info,con_ghostty::perf=info,con=warn,con_core=warn,con_agent=warn \
+cargo run -p con
+</code></pre>
+<p>This emits two high-signal log streams:</p>
+<ul>
+<li><code>con::perf</code><ul>
+<li>every real <code>ghostty_surface_set_size</code> request from the host view</li>
+<li>includes old pixel size, old grid size, new pixel size, logical pane size, and host call time</li>
+<li>host-side <code>update_frame</code> timing for the embedded terminal view</li>
+<li>workspace-level Ghostty wake drain timing</li>
+</ul>
+</li>
+<li><code>con_ghostty::perf</code><ul>
+<li>every Ghostty wakeup-driven app tick</li>
+<li>includes queue delay before the main-thread tick and tick execution time</li>
+</ul>
+</li>
+</ul>
+<p>Interpretation:</p>
+<ul>
+<li>high <code>queue_delay_ms</code><ul>
+<li>main thread is busy before Ghostty even gets a chance to process the wakeup</li>
+</ul>
+</li>
+<li>low <code>queue_delay_ms</code>, low <code>tick_ms</code>, but still visibly slow resize<ul>
+<li>likely AppKit/CA composition or host embedding cost after the terminal core updates</li>
+</ul>
+</li>
+<li>many resize requests with tiny geometric deltas<ul>
+<li>host resize churn is still too high</li>
+</ul>
+</li>
+<li>few resize requests, but each followed by visible multi-second lag<ul>
+<li>likely not <code>ghostty_surface_set_size</code> itself</li>
+</ul>
+</li>
+<li>low resize call time, low tick time, low wake drain time, but still visible lag<ul>
+<li>likely AppKit / Core Animation / compositing around the embedded terminal view</li>
+</ul>
+</li>
+<li>high <code>update_frame</code> elapsed time<ul>
+<li>the embedding host path itself is expensive before Ghostty work begins</li>
+</ul>
+</li>
+<li>low Rust-side timings, but <code>xctrace</code> shows Ghostty formatter / reflow / render-state symbols dominating<ul>
+<li>first verify the embedded Ghostty build mode before blaming GPUI or AppKit</li>
+</ul>
+</li>
+</ul>
+<h2 id="instruments-pass">Instruments pass<a class="heading-anchor" href="#instruments-pass" aria-hidden="true" aria-label="Link to Instruments pass"></a></h2><p>When logs are not enough, capture one trace from Con and one from Ghostty with the same TUI and the same resize gesture.</p>
+<p>Use Instruments:</p>
+<ol>
+<li><code>Time Profiler</code></li>
+<li><code>Core Animation</code></li>
+<li><code>Metal System Trace</code></li>
+</ol>
+<p>Suggested workflow:</p>
+<ol>
+<li>Launch Con from Xcode Instruments or attach Instruments to the running process.</li>
+<li>Start a heavy TUI, for example <code>claude --resume</code>.</li>
+<li>Also capture the simpler control case: launch <code>tmux</code>, then resize for 3-5 seconds.</li>
+<li>Repeat the same capture with Ghostty.</li>
+</ol>
+<p>The helper script above automates the <code>Time Profiler</code> launch for Con by building and then wrapping:</p>
+<pre><code class="language-bash">/absolute/path/to/cargo build -p con
+xcrun xctrace record --template &#39;Time Profiler&#39; --launch -- /absolute/path/to/target/debug/con
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>main-thread time in AppKit / Core Animation during Con resize</li>
+<li>time under GPUI window or layer composition</li>
+<li>time spent in <code>ghostty_app_tick</code></li>
+<li>time spent in <code>ghostty_surface_set_size</code></li>
+<li>whether Metal work itself is slow, or whether Con is late getting frames onto screen</li>
+</ul>
+<p>Also inspect the target process and hot symbols before deeper interpretation:</p>
+<ul>
+<li>if the trace target is <code>cargo</code>, the trace is invalid for app-performance diagnosis</li>
+<li>if the hottest symbols are Ghostty terminal-core functions such as <code>PageFormatter</code>, <code>RenderState.update</code>, or <code>verifyIntegrity</code>, validate that the embedded Ghostty runtime was built with <code>-Doptimize=ReleaseFast</code></li>
+</ul>
+<h2 id="current-thesis">Current thesis<a class="heading-anchor" href="#current-thesis" aria-hidden="true" aria-label="Link to Current thesis"></a></h2><p>After validating the target process and Ghostty build mode, if Con still remains much slower than Ghostty even when:</p>
+<ul>
+<li>Ghostty wake tick delay is low</li>
+<li>Ghostty tick time is low</li>
+<li>resize request count is reasonable</li>
+</ul>
+<p>then the problem is probably structural, not a missing one-line fix:</p>
+<ul>
+<li>the transparent GPUI host/compositor path around the terminal</li>
+<li>the embedding model of the native terminal view inside the GPUI window</li>
+</ul>
+<p>That would justify a larger architectural pass instead of more local tweaks in <code>ghostty_view.rs</code>.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#what-we-already-know">What we already know</a>
+      
+        <a class="docs-toc-item depth-2" href="#lightweight-app-logs">Lightweight app logs</a>
+      
+        <a class="docs-toc-item depth-2" href="#instruments-pass">Instruments pass</a>
+      
+        <a class="docs-toc-item depth-2" href="#current-thesis">Current thesis</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>

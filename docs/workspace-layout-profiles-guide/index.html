@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Workspace Layout Profiles | con docs</title>
+<meta name="description" content="The first is invisible: after rebooting, upgrading, or relaunching Con, your ordinary workspace should come back."/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" href="https://con.nowledge.co/docs/workspace-layout-profiles-guide/"/>
+<meta property="og:title" content="Workspace Layout Profiles | con docs"/>
+<meta property="og:description" content="The first is invisible: after rebooting, upgrading, or relaunching Con, your ordinary workspace should come back."/>
+<meta property="og:url" content="https://con.nowledge.co/docs/workspace-layout-profiles-guide/"/>
+<meta property="og:site_name" content="con"/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Workspace Layout Profiles | con docs"/>
+<meta name="twitter:description" content="The first is invisible: after rebooting, upgrading, or relaunching Con, your ordinary workspace should come back."/>
+<meta name="twitter:image" content="https://con.nowledge.co/assets/og-con.jpg?v=20260504"/>
+<meta name="theme-color" content="#0b0b0d"/>
+<link rel="icon" href="/assets/icon_con_black.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/styles.css"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Workspace Layout Profiles","description":"The first is invisible: after rebooting, upgrading, or relaunching Con, your ordinary workspace should come back.","url":"https://con.nowledge.co/docs/workspace-layout-profiles-guide/","isPartOf":{"@type":"WebSite","name":"con","url":"https://con.nowledge.co"}}</script>
+</head>
+<body class="static-docs-page">
+<header class="static-docs-top">
+  <a class="static-docs-brand" href="/">
+    <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
+    <span>con</span>
+  </a>
+  <nav class="static-docs-top-links" aria-label="Primary">
+    <a href="/docs/">Docs</a>
+    <a href="/changelog/">Changelog</a>
+    <a href="https://github.com/nowledge-co/con-terminal" target="_blank" rel="noreferrer">GitHub</a>
+  </nav>
+</header>
+<main class="static-docs-layout">
+  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+    
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/">Overview</a><a class="docs-nav-item" href="/docs/#install">Install</a><a class="docs-nav-item" href="/docs/#2-min-know-how">Quick controls</a><a class="docs-nav-item" href="/docs/index/">Docs index</a><a class="docs-nav-item" href="/changelog/">Changelog</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/screenshots/">Screenshot gallery</a><a class="docs-nav-item active" href="/docs/workspace-layout-profiles-guide/">Workspace profiles</a><a class="docs-nav-item" href="/docs/hacking/">Contributor setup</a><a class="docs-nav-item" href="/docs/design/">Architecture</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/design/con-design-language/">Design language</a><a class="docs-nav-item" href="/docs/design/con-ux-product-spec/">Product spec</a><a class="docs-nav-item" href="/docs/design/con-ui-visual-spec/">Visual spec</a><a class="docs-nav-item" href="/docs/design/con-prototype-addendum/">Prototype addendum</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/agent-harness/">Agent harness</a><a class="docs-nav-item" href="/docs/impl/agent-runtime-control-plane/">Agent runtime control plane</a><a class="docs-nav-item" href="/docs/impl/socket-api/">Socket API</a><a class="docs-nav-item" href="/docs/impl/con-cli-e2e/">CLI E2E</a><a class="docs-nav-item" href="/docs/impl/pane-surfaces/">Pane surfaces</a><a class="docs-nav-item" href="/docs/impl/pane-runtime-observer/">Pane runtime observer</a><a class="docs-nav-item" href="/docs/impl/agent-tool-surface/">Agent tool surface</a><a class="docs-nav-item" href="/docs/impl/restorable-workspaces/">Restorable workspaces</a><a class="docs-nav-item" href="/docs/impl/terminal-rendering/">Terminal rendering</a><a class="docs-nav-item" href="/docs/impl/vertical-tabs/">Vertical tabs</a><a class="docs-nav-item" href="/docs/impl/build-system/">Build system</a><a class="docs-nav-item" href="/docs/impl/macos-release/">macOS release</a><a class="docs-nav-item" href="/docs/impl/macos-terminal-profiling/">macOS terminal profiling</a><a class="docs-nav-item" href="/docs/impl/windows-port/">Windows port</a><a class="docs-nav-item" href="/docs/impl/linux-port/">Linux port</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/impl/terminal-agent-benchmark/">Terminal agent benchmark</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-loop/">Improvement loop</a><a class="docs-nav-item" href="/docs/impl/terminal-agent-improvement-log/">Improvement log</a>
+    </section>
+  
+    <section class="static-docs-nav-group">
+      <div class="docs-nav-label">undefined</div>
+      <a class="docs-nav-item" href="/docs/study/gpui/">GPUI</a><a class="docs-nav-item" href="/docs/study/gpui-linux-interop-gap/">GPUI Linux interop gap</a><a class="docs-nav-item" href="/docs/study/gpui-external-swapchain-upstream-pr/">GPUI external swapchain PR</a><a class="docs-nav-item" href="/docs/study/ghostty-vt/">Ghostty VT</a><a class="docs-nav-item" href="/docs/study/ghostty-linux-embed-gap/">Ghostty Linux embed gap</a><a class="docs-nav-item" href="/docs/study/rig/">Rig</a><a class="docs-nav-item" href="/docs/study/terminal-control-plane/">Terminal control plane</a><a class="docs-nav-item" href="/docs/study/socket-control-patterns/">Socket patterns</a><a class="docs-nav-item" href="/docs/study/markdown-renderer-architecture/">Markdown renderer</a><a class="docs-nav-item" href="/docs/study/linux-port-feasibility/">Linux port feasibility</a><a class="docs-nav-item" href="/docs/study/pr-12167-windows-apprt-reference/">Windows app reference</a>
+    </section>
+  
+  </aside>
+  <article class="docs-md static-docs-content">
+    <div class="static-docs-source">
+      <a href="https://github.com/nowledge-co/con-terminal/blob/main/docs/workspace-layout-profiles-guide.md" target="_blank" rel="noreferrer">docs/workspace-layout-profiles-guide.md</a>
+    </div>
+    <h1 id="workspace-layout-profiles">Workspace Layout Profiles<a class="heading-anchor" href="#workspace-layout-profiles" aria-hidden="true" aria-label="Link to Workspace Layout Profiles"></a></h1><p>Con has two workspace promises.</p>
+<p>The first is invisible: after rebooting, upgrading, or relaunching Con, your
+ordinary workspace should come back. Windows, tabs, panes, surfaces, working
+directories, and private terminal text history are continuity. You should not
+need a guide for that.</p>
+<p>The second is deliberate: when a workspace shape is worth keeping for a project,
+you can save it as a layout profile. This guide is for that explicit workflow.</p>
+<h2 id="what-a-layout-profile-is">What A Layout Profile Is<a class="heading-anchor" href="#what-a-layout-profile-is" aria-hidden="true" aria-label="Link to What A Layout Profile Is"></a></h2><p>A layout profile is a Con-generated <code>.con/workspace.toml</code> file.</p>
+<p>It describes workspace shape:</p>
+<ul>
+<li>tab names</li>
+<li>pane split structure</li>
+<li>pane and surface names</li>
+<li>relative working directories</li>
+<li>optional agent provider/model defaults</li>
+</ul>
+<p>It does not contain private runtime state:</p>
+<ul>
+<li>no commands to run</li>
+<li>no conversations</li>
+<li>no command history</li>
+<li>no terminal text history</li>
+<li>no credentials</li>
+<li>no trust decisions</li>
+</ul>
+<p>Think of it as a profile for recreating a tuned workspace, not as a terminal
+session backup. It is safe to review because it describes shape, not activity.</p>
+<h2 id="the-aha-flow">The Aha Flow<a class="heading-anchor" href="#the-aha-flow" aria-hidden="true" aria-label="Link to The Aha Flow"></a></h2><ol>
+<li>Tune the workspace visually until it feels right.</li>
+<li>Name the tabs, panes, and surfaces so the intent is obvious.</li>
+<li>Save the layout profile.</li>
+<li>Review the generated <code>.con/workspace.toml</code>.</li>
+<li>Reopen the project later with <code>con ~/dev/app</code>, or commit the file so a
+teammate can get the same starting shape.</li>
+</ol>
+<p>The profile captures the workspace you designed. It does not capture what you
+typed, what the agent said, or what processes were running.</p>
+<p>Private terminal text restore can be disabled in <strong>Settings -&gt; General -&gt;
+Continuity</strong>. Use <strong>Clear Restored Terminal History</strong> from Command Palette when
+you want to turn it off and wipe the saved terminal text already stored by Con.
+Continuity is default-on for new installs and existing beta users; the opt-out
+is explicit because restart continuity is part of Con&#39;s default workspace model.</p>
+<h2 id="save-a-profile">Save A Profile<a class="heading-anchor" href="#save-a-profile" aria-hidden="true" aria-label="Link to Save A Profile"></a></h2><ol>
+<li>Open a project in Con.</li>
+<li>Arrange tabs, panes, and surfaces visually.</li>
+<li>Rename tabs, panes, and surfaces so the layout is understandable.</li>
+<li>Choose <strong>Save Layout Profile</strong> from Command Palette or the Workspace menu.</li>
+<li>Save as <code>.con/workspace.toml</code> under the project root.</li>
+<li>Review the generated file.</li>
+<li>Commit it only if the layout is useful to the project.</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-text">Project: ~/dev/app
+  Tab: Dev
+    Pane: Shell      cwd .
+    Pane: Server     cwd crates/server
+    Pane: Tests      cwd crates/server
+  Tab: Agents
+    Surface: Planner cwd .
+    Surface: Worker  cwd crates/ui
+</code></pre>
+<p>The exported file should recreate that shape, not the processes that happened
+to be running inside it.</p>
+<p>Path values are written as repo-relative slash paths, even on Windows:</p>
+<pre><code class="language-toml">cwd = &quot;crates/server&quot;
+</code></pre>
+<p>That keeps the file stable in git diffs and usable across machines.</p>
+<h2 id="open-a-project-profile">Open A Project Profile<a class="heading-anchor" href="#open-a-project-profile" aria-hidden="true" aria-label="Link to Open A Project Profile"></a></h2><p>Open a project profile explicitly:</p>
+<pre><code class="language-sh">con ~/dev/app
+</code></pre>
+<p>Con opens <code>~/dev/app/.con/workspace.toml</code> when it exists. If no profile exists,
+Con opens a fresh shell rooted at <code>~/dev/app</code>.</p>
+<p>Open a profile file directly:</p>
+<pre><code class="language-sh">con ~/dev/app/.con/workspace.toml
+</code></pre>
+<p>If the requested profile is malformed, Con opens a fresh shell and shows the
+profile error in the terminal. It does not silently restore an unrelated
+workspace.</p>
+<p>Inside the app, use:</p>
+<ul>
+<li><strong>Add Tabs from Layout Profile</strong> to choose a project folder or profile file and add
+its tabs to the current window. If the folder has no profile, Con adds one
+fresh tab rooted there.</li>
+<li><strong>Open Layout Profile in New Window</strong> to choose a project folder or profile
+file and open it separately.</li>
+</ul>
+<p>Plain <code>con</code> without a path still favors private session restore. That keeps
+normal relaunch behavior predictable: quitting, upgrading, or rebooting should
+bring back the last private workspace, not silently replace it with a project
+profile because the process happened to start from a repo directory.</p>
+<p>The more aggressive <code>cd ~/dev/app &amp;&amp; con</code> project-detection flow is deferred
+until Con has full single-instance forwarding and project-memory state. At that
+point Con can distinguish &quot;open this project&quot; from &quot;restore my last app&quot;.</p>
+<h2 id="share-a-profile">Share A Profile<a class="heading-anchor" href="#share-a-profile" aria-hidden="true" aria-label="Link to Share A Profile"></a></h2><p>Commit <code>.con/workspace.toml</code> when the layout is useful to other people on the
+project.</p>
+<p>Good shared profile content:</p>
+<ul>
+<li>&quot;Dev&quot;, &quot;Server&quot;, &quot;Tests&quot;, &quot;Release&quot; tab names</li>
+<li>repo-relative cwd values</li>
+<li>panes and surfaces with clear names</li>
+<li>no machine-specific absolute paths unless unavoidable</li>
+</ul>
+<p>Bad shared profile content:</p>
+<ul>
+<li>personal history</li>
+<li>output transcripts</li>
+<li>secrets</li>
+<li>commands that run automatically</li>
+<li>private agent conversations</li>
+</ul>
+<h2 id="new-tab-new-window-and-defaults">New Tab, New Window, And Defaults<a class="heading-anchor" href="#new-tab-new-window-and-defaults" aria-hidden="true" aria-label="Link to New Tab, New Window, And Defaults"></a></h2><p>Use these rules:</p>
+<ul>
+<li><strong>New Tab</strong> stays scratch by default. It should not surprise you by expanding
+into a multi-pane project layout.</li>
+<li><strong>Add Tabs from Layout Profile</strong> is the explicit &quot;new tab(s) from this profile&quot;
+flow. If the profile contains one tab, it behaves like a new tab. If it
+contains several tabs, Con adds all of them.</li>
+<li><strong>Open Layout Profile in New Window</strong> is the explicit &quot;new window from this
+profile&quot; flow.</li>
+<li><strong>New Window</strong> stays scratch by default. A global &quot;default new-window layout&quot;
+setting is intentionally deferred because it can fight with private restore
+and project memory.</li>
+</ul>
+<h2 id="gesture-semantics">Gesture Semantics<a class="heading-anchor" href="#gesture-semantics" aria-hidden="true" aria-label="Link to Gesture Semantics"></a></h2><table>
+<thead>
+<tr>
+<th>Gesture</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Launch Con normally</td>
+<td>Restore the private workspace you left behind.</td>
+</tr>
+<tr>
+<td>Cmd+N / New Window</td>
+<td>Open one clean scratch shell with shared history.</td>
+</tr>
+<tr>
+<td><code>con ~/dev/app</code></td>
+<td>Open the project&#39;s profile if present; otherwise one shell rooted there.</td>
+</tr>
+<tr>
+<td><code>con ~/dev/app/.con/workspace.toml</code></td>
+<td>Open that profile directly.</td>
+</tr>
+<tr>
+<td>Add Tabs from Layout Profile</td>
+<td>Add the selected project/profile into the current window.</td>
+</tr>
+<tr>
+<td>Open Layout Profile in New Window</td>
+<td>Open the selected project/profile separately.</td>
+</tr>
+</tbody></table>
+<p>This keeps every entry point legible: restore is automatic, scratch is fresh,
+and project layout is explicit.</p>
+<h2 id="process-continuity">Process Continuity<a class="heading-anchor" href="#process-continuity" aria-hidden="true" aria-label="Link to Process Continuity"></a></h2><p>Layout profiles do not resume running processes. Use tmux or zellij when you
+want processes to survive app restarts:</p>
+<pre><code class="language-sh">tmux attach -t app || tmux new -s app
+</code></pre>
+<p>Con restores the layout and directory. tmux restores the running session.</p>
+
+  </article>
+  
+    <aside class="static-docs-toc" aria-label="On this page">
+      <div class="docs-nav-label">On this page</div>
+      
+        <a class="docs-toc-item depth-2" href="#what-a-layout-profile-is">What A Layout Profile Is</a>
+      
+        <a class="docs-toc-item depth-2" href="#the-aha-flow">The Aha Flow</a>
+      
+        <a class="docs-toc-item depth-2" href="#save-a-profile">Save A Profile</a>
+      
+        <a class="docs-toc-item depth-2" href="#open-a-project-profile">Open A Project Profile</a>
+      
+        <a class="docs-toc-item depth-2" href="#share-a-profile">Share A Profile</a>
+      
+        <a class="docs-toc-item depth-2" href="#new-tab-new-window-and-defaults">New Tab, New Window, And Defaults</a>
+      
+        <a class="docs-toc-item depth-2" href="#gesture-semantics">Gesture Semantics</a>
+      
+        <a class="docs-toc-item depth-2" href="#process-continuity">Process Continuity</a>
+      
+    </aside>
+  
+</main>
+</body>
+</html>
