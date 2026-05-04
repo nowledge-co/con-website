@@ -191,6 +191,7 @@ function titleFromMarkdown(markdown, repoPath) {
 
 function descriptionFromMarkdown(markdown, fallback) {
   const cleaned = markdown
+    .replace(/^#\s+.+$/m, ' ')
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/<[^>]*>/g, ' ')
     .replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
@@ -293,10 +294,18 @@ async function fetchText(url) {
   return response.text();
 }
 
+async function readRepoText(repoPath) {
+  const localPath = path.join(LOCAL_CON_DIR, repoPath);
+  if (await fileExists(localPath)) {
+    return fs.readFile(localPath, 'utf8');
+  }
+  return fetchText(rawGithubUrl(repoPath));
+}
+
 function renderDocNav(activePath) {
   return DOC_NAV.map((group) => `
     <section class="static-docs-nav-group">
-      <div class="docs-nav-label">${escapeHtml(group.group)}</div>
+      <div class="docs-nav-label">${escapeHtml(group.label || group.group)}</div>
       ${group.items.map((item) => {
         const href = `${pageUrlForDoc(item.path)}${item.hash ? `#${item.hash}` : ''}`;
         const active = item.path === activePath && !item.hash ? ' active' : '';
@@ -387,10 +396,10 @@ function renderPage({ repoPath, title, description, html, toc }) {
     ${renderDocNav(repoPath)}
   </aside>
   <article class="docs-md static-docs-content">
-    <div class="static-docs-source">
-      <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(repoPath)}</a>
-    </div>
     ${html}
+    <footer class="static-docs-source">
+      <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Edit this page on GitHub</a>
+    </footer>
   </article>
   ${renderToc(toc)}
 </main>
@@ -422,7 +431,7 @@ async function main() {
 
   const pages = [];
   for (const repoPath of DOC_PATHS) {
-    const markdown = await fetchText(rawGithubUrl(repoPath));
+    const markdown = await readRepoText(repoPath);
     const title = titleFromMarkdown(markdown, repoPath);
     const description = descriptionFromMarkdown(markdown, `${labelForDoc(repoPath)} for con, the terminal emulator with AI harness.`);
     const rendered = renderMarkdown(markdown, repoPath);
