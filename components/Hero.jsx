@@ -17,35 +17,6 @@ const OS_CDN = {
   Windows: WINDOWS_SVG,
   Linux:   'https://cdn.simpleicons.org/linux/f7f1ea',
 };
-const OVERLAY_ROUTES = {
-  '/docs': 'docs',
-  '/docs/': 'docs',
-  '/changelog': 'changelog',
-  '/changelog/': 'changelog',
-};
-
-function routeForOverlay(which) {
-  if (which === 'docs') return '/docs/';
-  if (which === 'changelog') return '/changelog/';
-  return null;
-}
-
-function overlayFromLocation() {
-  if (typeof window === 'undefined') return null;
-  const fromPath = OVERLAY_ROUTES[window.location.pathname];
-  if (fromPath) return fromPath;
-
-  const params = new URLSearchParams(window.location.search);
-  const requested = params.get('view') || params.get('overlay');
-  return requested === 'changelog' || requested === 'docs' ? requested : null;
-}
-
-function isOverlayLocation() {
-  if (typeof window === 'undefined') return false;
-  if (OVERLAY_ROUTES[window.location.pathname]) return true;
-  const params = new URLSearchParams(window.location.search);
-  return params.has('view') || params.has('overlay');
-}
 
 function detectOS() {
   if (typeof navigator === 'undefined') return 'macOS';
@@ -61,36 +32,7 @@ const Page = ({ tweaks }) => {
   const [h1, h2Pre, h2Italic, h2Post] = headline.split('||');
   const [detected] = React.useState(() => detectOS());
   const [osTab, setOsTab] = React.useState(detected);
-  const [overlay, setOverlay] = React.useState(() => overlayFromLocation());
   const [repoMeta, setRepoMeta] = React.useState({ stars: '2.4k', version: 'v0.4' });
-
-  const openOverlay = React.useCallback((which, event) => {
-    event?.preventDefault();
-    setOverlay(which);
-    const route = routeForOverlay(which);
-    if (route && window.location.pathname !== route) {
-      window.history.pushState({ overlay: which }, '', route);
-    }
-  }, []);
-
-  const closeOverlay = React.useCallback(() => {
-    setOverlay(null);
-    if (isOverlayLocation()) {
-      window.history.pushState({}, '', '/');
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const initialOverlay = overlayFromLocation();
-    const canonicalRoute = routeForOverlay(initialOverlay);
-    if (canonicalRoute && (window.location.pathname !== canonicalRoute || window.location.search)) {
-      window.history.replaceState({ overlay: initialOverlay }, '', canonicalRoute);
-    }
-
-    const onPopState = () => setOverlay(overlayFromLocation());
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -130,8 +72,8 @@ const Page = ({ tweaks }) => {
           <span className="brand-version">{repoMeta.version}</span>
         </div>
         <nav className="nav-links">
-          <a className="nav-link-btn" href="/docs/" onClick={(event) => openOverlay('docs', event)}>Docs</a>
-          <a className="nav-link-btn" href="/changelog/" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
+          <a className="nav-link-btn" href="/docs/">Docs</a>
+          <a className="nav-link-btn" href="/changelog/">Changelog</a>
         </nav>
         <a className="gh-pill" href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">
           <GitHubGlyph />
@@ -211,8 +153,8 @@ const Page = ({ tweaks }) => {
             <div className="foot-col">
               <div className="foot-col-label">Product</div>
               <a href={`https://github.com/${REPO}/releases/latest`} target="_blank" rel="noreferrer">Download</a>
-              <a href="/docs/" onClick={(event) => openOverlay('docs', event)}>Docs</a>
-              <a href="/changelog/" onClick={(event) => openOverlay('changelog', event)}>Changelog</a>
+              <a href="/docs/">Docs</a>
+              <a href="/changelog/">Changelog</a>
               <a href={`https://github.com/${REPO}/issues`} target="_blank" rel="noreferrer">Roadmap</a>
             </div>
             <div className="foot-col">
@@ -244,7 +186,6 @@ const Page = ({ tweaks }) => {
         </div>
       </footer>
       </div>{/* /ground */}
-      {overlay ? <DocsOverlay which={overlay} onClose={closeOverlay} /> : null}
     </div>
   );
 };

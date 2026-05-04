@@ -323,6 +323,9 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const canonical = `${SITE_URL}${urlPath}`;
   const sourceUrl = githubBlobUrl(repoPath);
   const fullTitle = title.includes('con') ? `${title} | con` : `${title} | con docs`;
+  const isChangelogPage = repoPath === 'CHANGELOG.md';
+  const docsCurrent = isChangelogPage ? '' : ' class="active" aria-current="page"';
+  const changelogCurrent = isChangelogPage ? ' class="active" aria-current="page"' : '';
   const schema = {
     '@context': 'https://schema.org',
     '@type': repoPath === 'CHANGELOG.md' ? 'WebPage' : 'TechArticle',
@@ -373,8 +376,9 @@ function renderPage({ repoPath, title, description, html, toc }) {
     <span>con</span>
   </a>
   <nav class="static-docs-top-links" aria-label="Primary">
-    <a href="/docs/">Docs</a>
-    <a href="/changelog/">Changelog</a>
+    <a href="/">Product</a>
+    <a href="/docs/"${docsCurrent}>Docs</a>
+    <a href="/changelog/"${changelogCurrent}>Changelog</a>
     <a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">GitHub</a>
   </nav>
 </header>
