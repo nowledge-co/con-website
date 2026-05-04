@@ -14,6 +14,12 @@
 
 # production
 /build
+/dist
+/docs
+/changelog
+/sitemap.xml
+/robots.txt
+/assets/docs-manifest.json
 
 # misc
 .DS_Store
@@ -38,4 +44,3 @@ next-env.d.ts
 # design handoff (kept local for reference only)
 /project
 /chats
-

@@ -6,7 +6,7 @@
     "build": "node scripts/build-docs.mjs",
     "check": "npm run build && npm run check:docs",
     "check:docs": "node scripts/check-docs.mjs",
-    "dev": "python3 -m http.server 4173"
+    "dev": "npm run build && python3 -m http.server 4173 -d dist"
   },
   "repository": {
     "type": "git",

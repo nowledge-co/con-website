@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const OUT_DIR = path.join(ROOT, 'dist');
 const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
@@ -11,6 +12,14 @@ const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');
+const STATIC_ENTRIES = [
+  'assets',
+  'components',
+  'index.html',
+  'LICENSE',
+  'og-image',
+  'styles.css',
+];
 
 let DOC_MANIFEST = null;
 let DOC_NAV = [];
@@ -122,7 +131,25 @@ async function loadManifest() {
 
 function outputPathForUrl(urlPath) {
   const clean = urlPath.replace(/^\/+|\/+$/g, '');
-  return path.join(ROOT, clean, 'index.html');
+  return path.join(OUT_DIR, clean, 'index.html');
+}
+
+async function copyStaticEntry(entry) {
+  const source = path.join(ROOT, entry);
+  const target = path.join(OUT_DIR, entry);
+  if (!(await fileExists(source))) return;
+  await fs.cp(source, target, {
+    recursive: true,
+    filter: (src) => !src.endsWith(`${path.sep}docs-manifest.json`),
+  });
+}
+
+async function prepareOutputDirectory() {
+  await fs.rm(OUT_DIR, { recursive: true, force: true });
+  await fs.mkdir(OUT_DIR, { recursive: true });
+  for (const entry of STATIC_ENTRIES) {
+    await copyStaticEntry(entry);
+  }
 }
 
 function escapeHtml(value) {
@@ -383,8 +410,9 @@ async function writeFileEnsured(filePath, contents) {
 
 async function main() {
   const manifestSource = await loadManifest();
+  await prepareOutputDirectory();
   await writeFileEnsured(
-    path.join(ROOT, 'assets', 'docs-manifest.json'),
+    path.join(OUT_DIR, 'assets', 'docs-manifest.json'),
     `${JSON.stringify(DOC_MANIFEST, null, 2)}\n`,
   );
 
@@ -400,8 +428,8 @@ async function main() {
   }
 
   const sitemapUrls = ['/', ...pages.map((page) => pageUrlForDoc(page.repoPath))];
-  await writeFileEnsured(path.join(ROOT, 'sitemap.xml'), renderSitemap([...new Set(sitemapUrls)]));
-  await writeFileEnsured(path.join(ROOT, 'robots.txt'), `User-agent: *
+  await writeFileEnsured(path.join(OUT_DIR, 'sitemap.xml'), renderSitemap([...new Set(sitemapUrls)]));
+  await writeFileEnsured(path.join(OUT_DIR, 'robots.txt'), `User-agent: *
 Allow: /
 Sitemap: ${SITE_URL}/sitemap.xml
 `);
