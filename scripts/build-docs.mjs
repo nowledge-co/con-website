@@ -17,6 +17,7 @@ const STATIC_ENTRIES = [
   'components',
   'index.html',
   'LICENSE',
+  'docs-command.js',
   'og-image',
   'styles.css',
 ];
@@ -238,6 +239,8 @@ function renderMarkdown(markdown, currentPath) {
   const toc = [];
   const usedIds = new Map();
   const renderer = new marked.Renderer();
+  const isChangelog = currentPath === 'CHANGELOG.md';
+  let openRelease = false;
 
   renderer.heading = (text, level, raw) => {
     const base = slugify(raw || text) || 'section';
@@ -245,6 +248,31 @@ function renderMarkdown(markdown, currentPath) {
     const id = count ? `${base}-${count}` : base;
     usedIds.set(base, count + 1);
     if (level === 2 || level === 3) toc.push({ id, text: stripHtml(text), depth: level });
+    if (isChangelog) {
+      if (level === 1) {
+        return `<header class="changelog-hero" id="${id}">
+          <p class="changelog-eyebrow">Release history</p>
+          <h1>${text}<a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(stripHtml(text))}"></a></h1>
+        </header>`;
+      }
+      if (level === 2) {
+        const plain = stripHtml(text);
+        const match = plain.match(/`?([^`\s]+)`?\s*[-–]\s*(\d{4}-\d{2}-\d{2})/);
+        const version = match?.[1] || plain;
+        const date = match?.[2] || '';
+        const close = openRelease ? '</section>' : '';
+        openRelease = true;
+        return `${close}<section class="release-card" id="${id}">
+          <div class="release-card-meta">
+            <span>Release</span>
+            ${date ? `<time datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
+          </div>
+          <h2><a class="release-version-link" href="#${id}">${escapeHtml(version)}</a><a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(plain)}"></a></h2>`;
+      }
+      if (level === 3) {
+        return `<h3 id="${id}" class="release-section-heading">${text}<a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(stripHtml(text))}"></a></h3>`;
+      }
+    }
     return `<h${level} id="${id}">${text}<a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(stripHtml(text))}"></a></h${level}>`;
   };
 
@@ -279,7 +307,8 @@ function renderMarkdown(markdown, currentPath) {
     return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || '')}"${titleAttr} loading="lazy">`;
   };
 
-  const html = rewriteRawHtmlLinks(marked.parse(markdown, { renderer, gfm: true }), currentPath);
+  let html = rewriteRawHtmlLinks(marked.parse(markdown, { renderer, gfm: true }), currentPath);
+  if (isChangelog && openRelease) html += '</section>';
   return { html, toc };
 }
 
@@ -315,6 +344,21 @@ function renderDocNav(activePath) {
   `).join('');
 }
 
+function renderCommandPalette() {
+  return `
+<div class="docs-command" data-docs-command hidden>
+  <button class="docs-command-backdrop" type="button" data-docs-command-close aria-label="Close search"></button>
+  <section class="docs-command-panel" role="dialog" aria-modal="true" aria-label="Search docs and changelog">
+    <div class="docs-command-search">
+      <span class="docs-command-glyph" aria-hidden="true"></span>
+      <input id="docs-command-input" type="search" autocomplete="off" spellcheck="false" placeholder="Search docs and changelog"/>
+      <kbd>Esc</kbd>
+    </div>
+    <div class="docs-command-results" data-docs-command-results role="listbox" aria-label="Search results"></div>
+  </section>
+</div>`;
+}
+
 function renderToc(toc) {
   if (!toc.length) return '';
   return `
@@ -322,6 +366,25 @@ function renderToc(toc) {
       <div class="docs-nav-label">On this page</div>
       ${toc.slice(0, 14).map((item) => `
         <a class="docs-toc-item depth-${item.depth}" href="#${escapeHtml(item.id)}">${escapeHtml(item.text)}</a>
+      `).join('')}
+    </aside>
+  `;
+}
+
+function latestReleaseFromToc(toc) {
+  return toc.find((item) => item.depth === 2)?.text || '';
+}
+
+function renderChangelogSidebar(toc) {
+  const releases = toc.filter((item) => item.depth === 2).slice(0, 12);
+  if (!releases.length) return '';
+  return `
+    <aside class="changelog-sidebar" aria-label="Release navigation">
+      <div class="docs-nav-label">Releases</div>
+      ${releases.map((item, index) => `
+        <a class="changelog-release-link${index === 0 ? ' active' : ''}" href="#${escapeHtml(item.id)}">
+          ${escapeHtml(item.text.replace(/`/g, ''))}
+        </a>
       `).join('')}
     </aside>
   `;
@@ -335,6 +398,25 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const isChangelogPage = repoPath === 'CHANGELOG.md';
   const docsCurrent = isChangelogPage ? '' : ' class="active" aria-current="page"';
   const changelogCurrent = isChangelogPage ? ' class="active" aria-current="page"' : '';
+  const bodyClass = isChangelogPage ? 'static-docs-page changelog-page' : 'static-docs-page';
+  const mainClass = isChangelogPage ? 'static-docs-layout changelog-layout' : 'static-docs-layout';
+  const latestRelease = isChangelogPage ? latestReleaseFromToc(toc) : '';
+  const articleIntro = isChangelogPage ? `
+    <div class="changelog-summary" aria-label="Changelog summary">
+      <div>
+        <span>Latest</span>
+        <strong>${escapeHtml(latestRelease.replace(/`/g, '') || 'Current beta')}</strong>
+      </div>
+      <div>
+        <span>Source</span>
+        <strong>GitHub releases</strong>
+      </div>
+      <div>
+        <span>Scope</span>
+        <strong>Pre-release beta</strong>
+      </div>
+    </div>
+  ` : '';
   const schema = {
     '@context': 'https://schema.org',
     '@type': repoPath === 'CHANGELOG.md' ? 'WebPage' : 'TechArticle',
@@ -378,24 +460,34 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <link rel="stylesheet" href="/styles.css"/>
 <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
-<body class="static-docs-page">
+<body class="${bodyClass}">
 <header class="static-docs-top">
   <a class="static-docs-brand" href="/">
     <img src="/assets/icon_con_black.png" alt="" width="28" height="28"/>
     <span>con</span>
   </a>
-  <nav class="static-docs-top-links" aria-label="Primary">
-    <a href="/">Product</a>
-    <a href="/docs/"${docsCurrent}>Docs</a>
-    <a href="/changelog/"${changelogCurrent}>Changelog</a>
-    <a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">GitHub</a>
-  </nav>
+  <div class="static-docs-actions">
+    <button class="docs-command-trigger" type="button" data-docs-command-open aria-label="Search docs and changelog">
+      <span>Search</span>
+      <kbd>⌘K</kbd>
+    </button>
+    <nav class="static-docs-top-links" aria-label="Primary">
+      <a href="/">Product</a>
+      <a href="/docs/"${docsCurrent}>Docs</a>
+      <a href="/changelog/"${changelogCurrent}>Changelog</a>
+      <a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">GitHub</a>
+    </nav>
+  </div>
 </header>
-<main class="static-docs-layout">
-  <aside class="static-docs-sidebar" aria-label="Documentation navigation">
-    ${renderDocNav(repoPath)}
-  </aside>
+${renderCommandPalette()}
+<main class="${mainClass}">
+  ${isChangelogPage ? renderChangelogSidebar(toc) : `
+    <aside class="static-docs-sidebar" aria-label="Documentation navigation">
+      ${renderDocNav(repoPath)}
+    </aside>
+  `}
   <article class="docs-md static-docs-content">
+    ${articleIntro}
     ${html}
     <footer class="static-docs-source">
       <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Edit this page on GitHub</a>
@@ -403,6 +495,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
   </article>
   ${renderToc(toc)}
 </main>
+<script src="/docs-command.js" defer></script>
 </body>
 </html>`;
 }
@@ -421,6 +514,43 @@ async function writeFileEnsured(filePath, contents) {
   await fs.writeFile(filePath, contents);
 }
 
+function textFromMarkdown(markdown) {
+  return markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
+    .replace(/\[[^\]]*]\([^)]+\)/g, '$1')
+    .replace(/[`*_>#+-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildSearchIndex(pages) {
+  const items = [];
+  for (const page of pages) {
+    const url = pageUrlForDoc(page.repoPath);
+    const pageKind = page.repoPath === 'CHANGELOG.md' ? 'Changelog' : 'Docs';
+    items.push({
+      title: page.title,
+      kind: pageKind,
+      url,
+      description: page.description,
+      text: `${page.title} ${page.description} ${page.searchText}`.slice(0, 3000),
+    });
+    for (const item of page.toc) {
+      const isRelease = page.repoPath === 'CHANGELOG.md' && item.depth === 2;
+      items.push({
+        title: item.text.replace(/`/g, ''),
+        kind: isRelease ? 'Release' : 'Section',
+        url: `${url}#${item.id}`,
+        description: page.title,
+        text: `${page.title} ${item.text} ${page.description}`,
+      });
+    }
+  }
+  return items;
+}
+
 async function main() {
   const manifestSource = await loadManifest();
   await prepareOutputDirectory();
@@ -435,10 +565,15 @@ async function main() {
     const title = titleFromMarkdown(markdown, repoPath);
     const description = descriptionFromMarkdown(markdown, `${labelForDoc(repoPath)} for con, the terminal emulator with AI harness.`);
     const rendered = renderMarkdown(markdown, repoPath);
-    const page = { repoPath, title, description, ...rendered };
+    const page = { repoPath, title, description, searchText: textFromMarkdown(markdown), ...rendered };
     pages.push(page);
     await writeFileEnsured(outputPathForUrl(pageUrlForDoc(repoPath)), renderPage(page));
   }
+
+  await writeFileEnsured(
+    path.join(OUT_DIR, 'assets', 'docs-search.json'),
+    `${JSON.stringify(buildSearchIndex(pages), null, 2)}\n`,
+  );
 
   const sitemapUrls = ['/', ...pages.map((page) => pageUrlForDoc(page.repoPath))];
   await writeFileEnsured(path.join(OUT_DIR, 'sitemap.xml'), renderSitemap([...new Set(sitemapUrls)]));
