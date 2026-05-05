@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260505';
+const CSS_VERSION = '20260505b';
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');
@@ -242,6 +242,8 @@ function renderMarkdown(markdown, currentPath) {
   const renderer = new marked.Renderer();
   const isChangelog = currentPath === 'CHANGELOG.md';
   let openRelease = false;
+  let releaseIndex = 0;
+  let skippedChangelogIntro = 0;
 
   renderer.heading = (text, level, raw) => {
     const base = slugify(raw || text) || 'section';
@@ -251,10 +253,7 @@ function renderMarkdown(markdown, currentPath) {
     if (level === 2 || level === 3) toc.push({ id, text: stripHtml(text), depth: level });
     if (isChangelog) {
       if (level === 1) {
-        return `<header class="changelog-hero" id="${id}">
-          <p class="changelog-eyebrow">Release history</p>
-          <h1>${text}<a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(stripHtml(text))}"></a></h1>
-        </header>`;
+        return '';
       }
       if (level === 2) {
         const plain = stripHtml(text);
@@ -262,8 +261,10 @@ function renderMarkdown(markdown, currentPath) {
         const version = match?.[1] || plain;
         const date = match?.[2] || '';
         const close = openRelease ? '</section>' : '';
+        const currentClass = releaseIndex === 0 ? ' release-card-current' : '';
         openRelease = true;
-        return `${close}<section class="release-card" id="${id}">
+        releaseIndex += 1;
+        return `${close}<section class="release-card${currentClass}" id="${id}">
           <div class="release-card-meta">
             <span>Release</span>
             ${date ? `<time datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
@@ -275,6 +276,14 @@ function renderMarkdown(markdown, currentPath) {
       }
     }
     return `<h${level} id="${id}">${text}<a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(stripHtml(text))}"></a></h${level}>`;
+  };
+
+  renderer.paragraph = (text) => {
+    if (isChangelog && !openRelease && skippedChangelogIntro < 2) {
+      skippedChangelogIntro += 1;
+      return '';
+    }
+    return `<p>${text}</p>`;
   };
 
   renderer.link = (href, title, text) => {
@@ -372,21 +381,80 @@ function renderToc(toc) {
   `;
 }
 
-function latestReleaseFromToc(toc) {
-  return toc.find((item) => item.depth === 2)?.text || '';
+function releaseEntriesFromToc(toc) {
+  return toc.filter((item) => item.depth === 2);
+}
+
+function parseReleaseLabel(text) {
+  const label = (text || '').replace(/`/g, '');
+  const match = label.match(/^([^\s]+)\s*[-–]\s*(\d{4}-\d{2}-\d{2})/);
+  return {
+    label,
+    version: match?.[1] || label,
+    date: match?.[2] || '',
+  };
+}
+
+function renderHumanDate(date) {
+  const match = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return '';
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[Number(match[2]) - 1] || match[2];
+  return `${month} ${Number(match[3])}, ${match[1]}`;
+}
+
+function renderChangelogOverview(toc) {
+  const releases = releaseEntriesFromToc(toc);
+  const latest = releases[0];
+  const latestInfo = parseReleaseLabel(latest?.text || '');
+  const latestDate = renderHumanDate(latestInfo.date) || latestInfo.date;
+  const archiveLabel = releases.length === 1 ? '1 release' : `${releases.length} releases`;
+  return `
+    <section class="changelog-cover" aria-labelledby="changelog-title">
+      <div class="changelog-cover-copy">
+        <p class="changelog-eyebrow">Release history</p>
+        <h1 id="changelog-title">Changelog</h1>
+        <p>Track what changed in con, from shipped app behavior to installer and platform fixes.</p>
+        <p>con is still in beta, so notes are grouped by release train while the product settles.</p>
+      </div>
+      <aside class="changelog-current" aria-label="Latest release">
+        <span>Latest beta</span>
+        ${latest ? `<a href="#${escapeHtml(latest.id)}">${escapeHtml(latestInfo.version)}</a>` : '<strong>Current beta</strong>'}
+        ${latestDate ? `<time datetime="${escapeHtml(latestInfo.date)}">${escapeHtml(latestDate)}</time>` : ''}
+      </aside>
+      <dl class="changelog-signals" aria-label="Release signals">
+        <div>
+          <dt>Channel</dt>
+          <dd>Beta</dd>
+        </div>
+        <div>
+          <dt>Archive</dt>
+          <dd>${escapeHtml(archiveLabel)}</dd>
+        </div>
+        <div>
+          <dt>Platforms</dt>
+          <dd>macOS · Windows · Linux</dd>
+        </div>
+      </dl>
+    </section>
+  `;
 }
 
 function renderChangelogSidebar(toc) {
-  const releases = toc.filter((item) => item.depth === 2).slice(0, 12);
+  const releases = releaseEntriesFromToc(toc).slice(0, 12);
   if (!releases.length) return '';
   return `
     <aside class="changelog-sidebar" aria-label="Release navigation">
       <div class="docs-nav-label">Releases</div>
-      ${releases.map((item, index) => `
+      ${releases.map((item, index) => {
+        const release = parseReleaseLabel(item.text);
+        return `
         <a class="changelog-release-link${index === 0 ? ' active' : ''}" href="#${escapeHtml(item.id)}">
-          ${escapeHtml(item.text.replace(/`/g, ''))}
+          <span>${escapeHtml(release.version)}</span>
+          ${release.date ? `<time datetime="${escapeHtml(release.date)}">${escapeHtml(release.date)}</time>` : ''}
         </a>
-      `).join('')}
+      `;
+      }).join('')}
     </aside>
   `;
 }
@@ -395,34 +463,21 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const urlPath = pageUrlForDoc(repoPath);
   const canonical = `${SITE_URL}${urlPath}`;
   const sourceUrl = githubBlobUrl(repoPath);
-  const fullTitle = title.includes('con') ? `${title} | con` : `${title} | con docs`;
   const isChangelogPage = repoPath === 'CHANGELOG.md';
+  const fullTitle = isChangelogPage ? 'Changelog | con' : title.includes('con') ? `${title} | con` : `${title} | con docs`;
+  const pageDescription = isChangelogPage
+    ? 'Track con release notes across beta app, installer, and platform changes.'
+    : description;
   const docsCurrent = isChangelogPage ? '' : ' class="active" aria-current="page"';
   const changelogCurrent = isChangelogPage ? ' class="active" aria-current="page"' : '';
   const bodyClass = isChangelogPage ? 'static-docs-page changelog-page' : 'static-docs-page';
   const mainClass = isChangelogPage ? 'static-docs-layout changelog-layout' : 'static-docs-layout';
-  const latestRelease = isChangelogPage ? latestReleaseFromToc(toc) : '';
-  const articleIntro = isChangelogPage ? `
-    <div class="changelog-summary" aria-label="Changelog summary">
-      <div>
-        <span>Latest</span>
-        <strong>${escapeHtml(latestRelease.replace(/`/g, '') || 'Current beta')}</strong>
-      </div>
-      <div>
-        <span>Source</span>
-        <strong>GitHub releases</strong>
-      </div>
-      <div>
-        <span>Scope</span>
-        <strong>Pre-release beta</strong>
-      </div>
-    </div>
-  ` : '';
+  const articleIntro = isChangelogPage ? renderChangelogOverview(toc) : '';
   const schema = {
     '@context': 'https://schema.org',
     '@type': repoPath === 'CHANGELOG.md' ? 'WebPage' : 'TechArticle',
     headline: title,
-    description,
+    description: pageDescription,
     url: canonical,
     isPartOf: {
       '@type': 'WebSite',
@@ -437,11 +492,11 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${escapeHtml(fullTitle)}</title>
-<meta name="description" content="${escapeHtml(description)}"/>
+<meta name="description" content="${escapeHtml(pageDescription)}"/>
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
 <link rel="canonical" href="${escapeHtml(canonical)}"/>
 <meta property="og:title" content="${escapeHtml(fullTitle)}"/>
-<meta property="og:description" content="${escapeHtml(description)}"/>
+<meta property="og:description" content="${escapeHtml(pageDescription)}"/>
 <meta property="og:url" content="${escapeHtml(canonical)}"/>
 <meta property="og:site_name" content="con"/>
 <meta property="og:type" content="article"/>
@@ -450,7 +505,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <meta property="og:image:height" content="630"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="${escapeHtml(fullTitle)}"/>
-<meta name="twitter:description" content="${escapeHtml(description)}"/>
+<meta name="twitter:description" content="${escapeHtml(pageDescription)}"/>
 <meta name="twitter:image" content="${OG_IMAGE}"/>
 <meta name="theme-color" content="#0b0b0d"/>
 <link rel="icon" href="/assets/icon_con_black.png"/>
@@ -493,7 +548,7 @@ ${renderCommandPalette()}
       <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Edit this page on GitHub</a>
     </footer>
   </article>
-  ${renderToc(toc)}
+  ${isChangelogPage ? '' : renderToc(toc)}
 </main>
 <script src="/docs-command.js" defer></script>
 </body>

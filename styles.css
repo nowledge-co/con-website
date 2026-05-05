@@ -850,12 +850,12 @@ body {
 
 /* ============ changelog ============ */
 .changelog-layout {
-  grid-template-columns: 260px minmax(0, 850px) 218px;
-  gap: 34px;
-  width: min(1360px, 100%);
+  grid-template-columns: 280px minmax(0, 920px);
+  gap: 48px;
+  width: min(1300px, 100%);
 }
 .changelog-layout .static-docs-content {
-  max-width: 850px;
+  max-width: 920px;
 }
 .changelog-sidebar {
   position: sticky;
@@ -866,42 +866,76 @@ body {
   padding-top: 6px;
 }
 .changelog-release-link {
-  min-height: 34px;
-  display: flex;
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  padding: 7px 8px;
+  gap: 12px;
+  padding: 8px 10px;
   border-radius: 8px;
   color: rgba(247,241,234,0.56);
   text-decoration: none;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 1.25;
+  transition: background .15s ease, color .15s ease, transform .15s var(--ease-out-quart);
+}
+.changelog-release-link span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.changelog-release-link time {
+  color: rgba(247,241,234,0.38);
+  font-size: 10.5px;
 }
 .changelog-release-link:hover {
   background: rgba(255,255,255,0.055);
   color: rgba(247,241,234,0.9);
+  transform: translateX(2px);
 }
 .changelog-release-link.active {
   background: rgba(255,199,152,0.11);
   color: #ffe1c6;
-  box-shadow: inset 0 0 0 1px rgba(255,199,152,0.08);
 }
-.changelog-summary {
+.changelog-release-link.active time {
+  color: rgba(255,225,198,0.62);
+}
+.changelog-cover {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 34px;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 28px 32px;
+  margin: 0 0 42px;
+  padding: 10px 0 22px;
 }
-.changelog-summary > div {
+.changelog-cover-copy {
+  min-width: 0;
+  max-width: 690px;
+}
+.docs-md .changelog-cover h1 {
+  margin: 0;
+  font-size: 78px;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+.changelog-cover-copy p {
+  max-width: 660px;
+  margin: 20px 0 0;
+  color: rgba(247,241,234,0.76);
+  font-size: 17px;
+  line-height: 1.62;
+}
+.changelog-current {
   min-width: 0;
   display: grid;
-  gap: 5px;
-  padding: 13px 14px;
+  align-self: start;
+  gap: 7px;
+  padding: 18px;
   border-radius: 8px;
   background: rgba(255,255,255,0.045);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.055);
 }
-.changelog-summary span,
+.changelog-current span,
 .release-card-meta span,
 .changelog-eyebrow {
   font-family: 'JetBrains Mono', monospace;
@@ -910,30 +944,66 @@ body {
   text-transform: uppercase;
   color: rgba(247,241,234,0.42);
 }
-.changelog-summary strong {
+.changelog-current a,
+.changelog-current strong {
   min-width: 0;
-  color: rgba(247,241,234,0.86);
-  font-size: 13px;
+  color: #ffe1c6;
+  font-size: 22px;
   font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-decoration: none;
+  border: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.changelog-hero {
-  margin: 0 0 20px;
+.changelog-current a:hover {
+  color: #f7f1ea;
 }
-.docs-md .changelog-hero h1 {
+.changelog-current time {
+  color: rgba(247,241,234,0.56);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+}
+.changelog-signals {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 8px 0 0;
+  padding: 18px 0 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.changelog-signals div {
+  min-width: 0;
+}
+.changelog-signals dt {
+  margin: 0 0 5px;
+  color: rgba(247,241,234,0.38);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.changelog-signals dd {
   margin: 0;
-  font-size: clamp(38px, 6vw, 64px);
-  letter-spacing: -0.035em;
-  line-height: 0.95;
+  color: rgba(247,241,234,0.82);
+  font-size: 14px;
+  font-weight: 560;
 }
 .release-card {
-  margin: 24px 0;
-  padding: 22px 22px 20px;
+  position: relative;
+  margin: 28px 0;
+  padding: 26px 28px 26px;
   border-radius: 8px;
   background: rgba(255,255,255,0.038);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+.release-card-current {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,199,152,0.09), transparent 36%),
+    rgba(255,255,255,0.044);
 }
 .release-card-meta {
   display: flex;
@@ -948,9 +1018,10 @@ body {
   font-size: 11.5px;
 }
 .docs-md .release-card h2 {
-  margin: 0 0 14px;
-  font-size: clamp(24px, 3vw, 34px);
-  letter-spacing: -0.025em;
+  margin: 0 0 18px;
+  font-size: 38px;
+  letter-spacing: 0;
+  line-height: 1;
 }
 .docs-md .release-version-link {
   color: #f7f1ea;
@@ -2355,12 +2426,33 @@ footer.site-foot {
     width: 100%;
     max-width: 100%;
   }
-  .changelog-page .changelog-summary,
-  .changelog-page .changelog-hero,
+  .changelog-page .changelog-cover,
   .changelog-page .release-card,
   .changelog-page .docs-md > p {
     width: 100%;
     max-width: 100%;
+  }
+  .changelog-cover {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+    padding-bottom: 8px;
+  }
+  .docs-md .changelog-cover h1 {
+    font-size: 44px;
+    letter-spacing: 0;
+  }
+  .changelog-cover-copy p {
+    margin-top: 14px;
+    font-size: 15px;
+  }
+  .changelog-current {
+    padding: 15px 16px;
+  }
+  .changelog-signals {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-top: 16px;
   }
   .changelog-sidebar {
     position: static;
@@ -2376,15 +2468,16 @@ footer.site-foot {
   }
   .changelog-release-link {
     flex: 0 0 auto;
+    min-width: 172px;
     white-space: nowrap;
-  }
-  .changelog-summary {
-    grid-template-columns: 1fr;
   }
   .release-card {
     padding: 18px 16px;
     max-width: 100%;
     overflow-wrap: anywhere;
+  }
+  .docs-md .release-card h2 {
+    font-size: 28px;
   }
   .foot-brand-row,
   .foot-badges,
