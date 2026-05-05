@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260505c';
+const CSS_VERSION = '20260505d';
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');

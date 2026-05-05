@@ -18,6 +18,13 @@ const OS_CDN = {
   Linux:   'https://cdn.simpleicons.org/linux/f7f1ea',
 };
 
+function formatStars(count) {
+  if (typeof count !== 'number') return null;
+  return count >= 1000
+    ? (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+    : String(count);
+}
+
 function detectOS() {
   if (typeof navigator === 'undefined') return 'macOS';
   const p = (navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || '').toLowerCase();
@@ -32,32 +39,34 @@ const Page = ({ tweaks }) => {
   const [h1, h2Pre, h2Italic, h2Post] = headline.split('||');
   const [detected] = React.useState(() => detectOS());
   const [osTab, setOsTab] = React.useState(detected);
-  const [repoMeta, setRepoMeta] = React.useState({ stars: '2.4k', version: 'v0.4' });
+  const [repoMeta, setRepoMeta] = React.useState({ stars: null, version: null });
+  const versionLabel = repoMeta.version || 'Beta';
+  const starLabel = repoMeta.stars || 'Star';
 
   React.useEffect(() => {
+    let cancelled = false;
     (async () => {
       try {
         const [repoRes, relRes] = await Promise.allSettled([
           fetch(`https://api.github.com/repos/${REPO}`),
           fetch(`https://api.github.com/repos/${REPO}/releases/latest`),
         ]);
-        const next = { ...repoMeta };
+        const next = {};
         if (repoRes.status === 'fulfilled' && repoRes.value.ok) {
           const d = await repoRes.value.json();
-          if (typeof d.stargazers_count === 'number') {
-            next.stars = d.stargazers_count >= 1000
-              ? (d.stargazers_count / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
-              : String(d.stargazers_count);
-          }
+          const stars = formatStars(d.stargazers_count);
+          if (stars) next.stars = stars;
         }
         if (relRes.status === 'fulfilled' && relRes.value.ok) {
           const d = await relRes.value.json();
           if (d.tag_name) next.version = d.tag_name.startsWith('v') ? d.tag_name : `v${d.tag_name}`;
         }
-        setRepoMeta(next);
+        if (!cancelled && (next.stars || next.version)) {
+          setRepoMeta((current) => ({ ...current, ...next }));
+        }
       } catch (e) { /* keep fallback */ }
     })();
-    // eslint-disable-next-line
+    return () => { cancelled = true; };
   }, []);
 
   return (
@@ -69,7 +78,7 @@ const Page = ({ tweaks }) => {
         <div className="brand">
           <img src="/assets/icon_con_black.png" alt="con" className="brand-icon" />
           <span className="brand-name">con</span>
-          <span className="brand-version">{repoMeta.version}</span>
+          <span className="brand-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
         </div>
         <nav className="nav-links">
           <a className="nav-link-btn" href="/docs/">Docs</a>
@@ -79,7 +88,7 @@ const Page = ({ tweaks }) => {
           <GitHubGlyph />
           <span className="gh-label">GitHub</span>
           <span className="gh-sep" />
-          <span className="gh-star"><StarGlyph /> {repoMeta.stars}</span>
+          <span className="gh-star" data-live={repoMeta.stars ? 'true' : 'false'}><StarGlyph /> {starLabel}</span>
         </a>
       </header>
 
@@ -139,7 +148,7 @@ const Page = ({ tweaks }) => {
             <div className="foot-brand-row">
               <img src="/assets/icon_con_black.png" alt="" className="foot-icon" />
               <span className="foot-name">con</span>
-              <span className="foot-version">{repoMeta.version}</span>
+              <span className="foot-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
             </div>
             <p className="foot-tag">A fast, humane terminal for the agent era.</p>
             <div className="foot-badges">

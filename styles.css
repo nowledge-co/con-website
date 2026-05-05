@@ -72,6 +72,16 @@ body {
   margin-left: 2px;
   white-space: nowrap;
 }
+.brand-version[data-live="false"],
+.foot-version[data-live="false"],
+.gh-star[data-live="false"] {
+  color: rgba(247,241,234,0.54);
+}
+.brand-version[data-live="true"],
+.foot-version[data-live="true"],
+.gh-star[data-live="true"] {
+  color: rgba(247,241,234,0.78);
+}
 .nav-links {
   display: flex; gap: 28px; font-size: 13px;
   color: rgba(247,241,234,0.7);
