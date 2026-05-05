@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260505b';
+const CSS_VERSION = '20260505c';
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');
@@ -342,16 +342,20 @@ async function readRepoText(repoPath) {
 }
 
 function renderDocNav(activePath) {
-  return DOC_NAV.map((group) => `
+  return DOC_NAV.map((group) => {
+    const items = group.items.filter((item) => item.path !== 'CHANGELOG.md');
+    if (!items.length) return '';
+    return `
     <section class="static-docs-nav-group">
       <div class="docs-nav-label">${escapeHtml(group.label || group.group)}</div>
-      ${group.items.map((item) => {
+      ${items.map((item) => {
         const href = `${pageUrlForDoc(item.path)}${item.hash ? `#${item.hash}` : ''}`;
         const active = item.path === activePath && !item.hash ? ' active' : '';
         return `<a class="docs-nav-item${active}" href="${escapeHtml(href)}">${escapeHtml(item.label)}</a>`;
       }).join('')}
     </section>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderCommandPalette() {

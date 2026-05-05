@@ -520,9 +520,9 @@ body {
   top: 0;
   z-index: 20;
   min-height: 66px;
-  padding: 0 28px;
+  padding: 22px 28px 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   background: rgba(11, 11, 13, 0.74);
   backdrop-filter: blur(16px);
 }
@@ -2362,7 +2362,7 @@ footer.site-foot {
   }
   .static-docs-top {
     min-height: 62px;
-    padding: 12px 18px;
+    padding: 22px 18px 12px;
   }
   .static-docs-nav {
     display: grid;
