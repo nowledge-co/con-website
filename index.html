@@ -13,6 +13,8 @@
 <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1"/>
 <meta name="format-detection" content="telephone=no, address=no, email=no"/>
 <link rel="canonical" href="https://con.nowledge.co/"/>
+<link rel="alternate" type="text/markdown" href="https://con.nowledge.co/home.md"/>
+<link rel="alternate" type="text/plain" title="llms.txt" href="https://con.nowledge.co/llms.txt"/>
 <meta property="og:title" content="con: terminal emulator with AI harness"/>
 <meta property="og:description" content="A serious terminal first. When you ask for help, the built-in agent understands the pane, shell, and workflow you are already in."/>
 <meta property="og:url" content="https://con.nowledge.co/"/>
@@ -47,31 +49,49 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "con",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "macOS, Windows, Linux",
-  "url": "https://con.nowledge.co/",
-  "downloadUrl": "https://github.com/nowledge-co/con-terminal/releases/latest",
-  "codeRepository": "https://github.com/nowledge-co/con-terminal",
-  "description": "Open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.",
-  "license": "https://github.com/nowledge-co/con-terminal/blob/main/LICENSE",
-  "image": "https://con.nowledge.co/assets/og-con.jpg?v=20260504",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Nowledge Labs",
-    "url": "https://nowledge-labs.ai",
-    "logo": "https://con.nowledge.co/assets/nowledge-labs-icon.png",
-    "sameAs": [
-      "https://x.com/nowledgelabs",
-      "https://github.com/nowledge-co"
-    ]
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://con.nowledge.co/#organization",
+      "name": "Nowledge Labs",
+      "url": "https://nowledge-labs.ai",
+      "logo": "https://con.nowledge.co/assets/nowledge-labs-icon.png",
+      "sameAs": [
+        "https://x.com/nowledgelabs",
+        "https://github.com/nowledge-co"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://con.nowledge.co/#website",
+      "name": "con",
+      "url": "https://con.nowledge.co/",
+      "publisher": {
+        "@id": "https://con.nowledge.co/#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://con.nowledge.co/#software",
+      "name": "con",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Windows, Linux",
+      "url": "https://con.nowledge.co/",
+      "downloadUrl": "https://github.com/nowledge-co/con-terminal/releases/latest",
+      "codeRepository": "https://github.com/nowledge-co/con-terminal",
+      "description": "Open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.",
+      "license": "https://github.com/nowledge-co/con-terminal/blob/main/LICENSE",
+      "image": "https://con.nowledge.co/assets/og-con.jpg?v=20260504",
+      "publisher": {
+        "@id": "https://con.nowledge.co/#organization"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
 }
 </script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>

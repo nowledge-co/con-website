@@ -136,6 +136,22 @@ function outputPathForUrl(urlPath) {
   return path.join(OUT_DIR, clean, 'index.html');
 }
 
+function outputPathForAssetUrl(urlPath) {
+  const clean = urlPath.replace(/^\/+/, '');
+  return path.join(OUT_DIR, clean);
+}
+
+function markdownUrlForDoc(repoPath) {
+  const urlPath = pageUrlForDoc(repoPath);
+  if (urlPath === '/docs/') return '/docs.md';
+  if (urlPath === '/changelog/') return '/changelog.md';
+  return `${urlPath.replace(/\/$/, '')}.md`;
+}
+
+function yamlValue(value) {
+  return JSON.stringify(String(value).replace(/\r\n/g, '\n'));
+}
+
 async function copyStaticEntry(entry) {
   const source = path.join(ROOT, entry);
   const target = path.join(OUT_DIR, entry);
@@ -191,6 +207,16 @@ function titleFromMarkdown(markdown, repoPath) {
   return title.toLowerCase() === 'con' ? 'con documentation' : title;
 }
 
+function truncateDescription(value, maxLength = 155) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= maxLength) return text;
+  const clipped = text.slice(0, maxLength + 1);
+  const sentence = clipped.match(/^(.+[.!?])\s/)?.[1];
+  if (sentence && sentence.length >= 70) return sentence;
+  const wordBoundary = clipped.replace(/\s+\S*$/, '').trim();
+  return `${wordBoundary || text.slice(0, maxLength).trim()}...`;
+}
+
 function descriptionFromMarkdown(markdown, fallback) {
   const cleaned = markdown
     .replace(/^#\s+.+$/m, ' ')
@@ -203,7 +229,18 @@ function descriptionFromMarkdown(markdown, fallback) {
     .replace(/\s+/g, ' ')
     .trim();
   const sentence = cleaned.split(/(?<=[.!?])\s+/).find((part) => part.length > 70) || cleaned;
-  return (sentence || fallback).slice(0, 158);
+  return truncateDescription(sentence || fallback);
+}
+
+function descriptionForDoc(markdown, repoPath) {
+  const overrides = {
+    'docs/install.md': 'Install con on macOS, Windows, or Linux, then connect the app, CLI, and update path for terminal-first workflows.',
+    'docs/con-cli.md': 'Use con-cli and surfaces when scripts, test runners, or external agents need to inspect and drive a running con session.',
+    'docs/screenshots.md': 'View con screenshots for the agent panel, terminal context, settings, pane broadcast picker, main window, and demo.',
+    LICENSE: 'Read the MIT License for con, the open-source terminal emulator with a built-in AI harness.',
+  };
+  return overrides[repoPath]
+    || descriptionFromMarkdown(markdown, `${labelForDoc(repoPath)} for con, the terminal emulator with AI harness.`);
 }
 
 function resolveDocHref(href, currentPath) {
@@ -466,6 +503,7 @@ function renderChangelogSidebar(toc) {
 function renderPage({ repoPath, title, description, html, toc }) {
   const urlPath = pageUrlForDoc(repoPath);
   const canonical = `${SITE_URL}${urlPath}`;
+  const markdownUrl = `${SITE_URL}${markdownUrlForDoc(repoPath)}`;
   const sourceUrl = githubBlobUrl(repoPath);
   const isChangelogPage = repoPath === 'CHANGELOG.md';
   const fullTitle = isChangelogPage ? 'Changelog | con' : title.includes('con') ? `${title} | con` : `${title} | con docs`;
@@ -477,18 +515,71 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const bodyClass = isChangelogPage ? 'static-docs-page changelog-page' : 'static-docs-page';
   const mainClass = isChangelogPage ? 'static-docs-layout changelog-layout' : 'static-docs-layout';
   const articleIntro = isChangelogPage ? renderChangelogOverview(toc) : '';
-  const schema = {
+  const organization = {
+    '@type': 'Organization',
+    name: 'Nowledge Labs',
+    url: 'https://nowledge-labs.ai',
+    logo: `${SITE_URL}/assets/nowledge-labs-icon.png`,
+    sameAs: [
+      'https://x.com/nowledgelabs',
+      'https://github.com/nowledge-co',
+    ],
+  };
+  const pageSchema = {
     '@context': 'https://schema.org',
-    '@type': repoPath === 'CHANGELOG.md' ? 'WebPage' : 'TechArticle',
+    '@type': repoPath === 'CHANGELOG.md' ? 'CollectionPage' : 'TechArticle',
     headline: title,
+    name: fullTitle,
     description: pageDescription,
     url: canonical,
+    mainEntityOfPage: canonical,
+    isAccessibleForFree: true,
+    inLanguage: 'en',
+    author: organization,
+    publisher: organization,
+    about: {
+      '@type': 'SoftwareApplication',
+      name: 'con',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'macOS, Windows, Linux',
+      codeRepository: `https://github.com/${REPO}`,
+      url: SITE_URL,
+    },
+    isBasedOn: sourceUrl,
+    keywords: [
+      'con terminal',
+      'terminal emulator',
+      'AI terminal',
+      'agent harness',
+      'SSH',
+      'tmux',
+      'developer tools',
+    ],
     isPartOf: {
       '@type': 'WebSite',
       name: 'con',
       url: SITE_URL,
     },
   };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'con',
+        item: `${SITE_URL}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: isChangelogPage ? 'Changelog' : 'Docs',
+        item: canonical,
+      },
+    ],
+  };
+  const schema = [pageSchema, breadcrumbSchema];
 
   return `<!doctype html>
 <html lang="en">
@@ -499,11 +590,12 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <meta name="description" content="${escapeHtml(pageDescription)}"/>
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
 <link rel="canonical" href="${escapeHtml(canonical)}"/>
+<link rel="alternate" type="text/markdown" href="${escapeHtml(markdownUrl)}"/>
 <meta property="og:title" content="${escapeHtml(fullTitle)}"/>
 <meta property="og:description" content="${escapeHtml(pageDescription)}"/>
 <meta property="og:url" content="${escapeHtml(canonical)}"/>
 <meta property="og:site_name" content="con"/>
-<meta property="og:type" content="article"/>
+<meta property="og:type" content="${isChangelogPage ? 'website' : 'article'}"/>
 <meta property="og:image" content="${OG_IMAGE}"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
@@ -610,6 +702,138 @@ function buildSearchIndex(pages) {
   return items;
 }
 
+function rewriteMarkdownLinks(markdown, currentPath) {
+  return markdown.split(/(```[\s\S]*?```)/g).map((chunk) => {
+    if (chunk.startsWith('```')) return chunk;
+    return chunk.replace(/(!?\[[^\]]*]\()([^)\s]+)([^)]*\))/g, (match, prefix, href, suffix) => {
+      if (!href || href.startsWith('#') || isExternalHref(href) || href.startsWith('data:')) return match;
+      try {
+        const resolved = prefix.startsWith('!') ? resolveImageSrc(href, currentPath) : resolveDocHref(href, currentPath);
+        const next = resolved.startsWith('/') ? `${SITE_URL}${resolved}` : resolved;
+        return `${prefix}${next}${suffix}`;
+      } catch {
+        return match;
+      }
+    });
+  }).join('');
+}
+
+function renderMarkdownMirror(page) {
+  const urlPath = pageUrlForDoc(page.repoPath);
+  const canonical = `${SITE_URL}${urlPath}`;
+  const source = githubBlobUrl(page.repoPath);
+  const markdown = rewriteMarkdownLinks(page.rawMarkdown.trim(), page.repoPath);
+  return `---
+title: ${yamlValue(page.title)}
+description: ${yamlValue(page.description)}
+canonical: ${yamlValue(canonical)}
+source: ${yamlValue(source)}
+---
+
+${markdown}
+`;
+}
+
+function renderHomeMarkdown() {
+  return `---
+title: "con"
+description: "con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows."
+canonical: "${SITE_URL}/"
+source: "https://github.com/${REPO}"
+---
+
+# con
+
+con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.
+
+## What con is
+
+- A terminal emulator for macOS, Windows, and Linux.
+- Built for SSH, tmux, and developer workflows that need terminal context.
+- Includes an AI harness that can read context, ask before acting, and work in the terminal you can already see.
+- Supports agent and model workflows across providers including OpenAI, Anthropic, Google, DeepSeek, xAI, and GitHub Copilot where configured by the user.
+
+## Primary resources
+
+- Product: ${SITE_URL}/
+- Documentation: ${SITE_URL}/docs/
+- Changelog: ${SITE_URL}/changelog/
+- GitHub repository: https://github.com/${REPO}
+- Latest release: https://github.com/${REPO}/releases/latest
+`;
+}
+
+function renderLlmsTxt(pages) {
+  const docs = pages.filter((page) => page.repoPath !== 'CHANGELOG.md');
+  const changelog = pages.find((page) => page.repoPath === 'CHANGELOG.md');
+  const primaryDocs = docs.slice(0, 12);
+  return `# con
+
+> con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.
+
+This file points AI agents and search systems to the canonical con pages and Markdown mirrors. HTML pages are the public canonical URLs; Markdown mirrors are provided for retrieval, quoting, and synthesis.
+
+## Primary pages
+
+- [Home](${SITE_URL}/)
+- [Docs](${SITE_URL}/docs/)
+- [Changelog](${SITE_URL}/changelog/)
+- [GitHub repository](https://github.com/${REPO})
+
+## Markdown for agents
+
+- [Home Markdown](${SITE_URL}/home.md)
+${primaryDocs.map((page) => `- [${page.title}](${SITE_URL}${markdownUrlForDoc(page.repoPath)})`).join('\n')}
+${changelog ? `- [Changelog Markdown](${SITE_URL}${markdownUrlForDoc(changelog.repoPath)})` : ''}
+
+## Complete reference
+
+- [Full Markdown bundle](${SITE_URL}/llms-full.txt)
+- [Search index](${SITE_URL}/assets/docs-search.json)
+- [Docs manifest](${SITE_URL}/assets/docs-manifest.json)
+
+## Citation guidance
+
+When citing con, prefer the canonical HTML URL for the relevant page. Use the Markdown mirror only to retrieve clean page text.
+`;
+}
+
+function renderLlmsFullTxt(pages) {
+  const sections = [
+    renderHomeMarkdown(),
+    ...pages.map((page) => renderMarkdownMirror(page)),
+  ];
+  return `# con full Markdown reference
+
+Generated from ${REPO}@${BRANCH}. Use canonical URLs in citations.
+
+${sections.map((section, index) => `\n---\n\n## Document ${index + 1}\n\n${section.trim()}`).join('\n')}
+`;
+}
+
+function renderRobotsTxt() {
+  const aiAgents = [
+    'GPTBot',
+    'ChatGPT-User',
+    'OAI-SearchBot',
+    'ClaudeBot',
+    'Claude-SearchBot',
+    'PerplexityBot',
+    'Perplexity-User',
+    'Google-Extended',
+    'Googlebot',
+    'Bingbot',
+  ];
+  return `User-agent: *
+Allow: /
+
+${aiAgents.map((agent) => `User-agent: ${agent}\nAllow: /`).join('\n\n')}
+
+Sitemap: ${SITE_URL}/sitemap.xml
+LLMS: ${SITE_URL}/llms.txt
+`;
+}
+
 async function main() {
   const manifestSource = await loadManifest();
   await prepareOutputDirectory();
@@ -622,12 +846,17 @@ async function main() {
   for (const repoPath of DOC_PATHS) {
     const markdown = await readRepoText(repoPath);
     const title = titleFromMarkdown(markdown, repoPath);
-    const description = descriptionFromMarkdown(markdown, `${labelForDoc(repoPath)} for con, the terminal emulator with AI harness.`);
+    const description = descriptionForDoc(markdown, repoPath);
     const rendered = renderMarkdown(markdown, repoPath);
-    const page = { repoPath, title, description, searchText: textFromMarkdown(markdown), ...rendered };
+    const page = { repoPath, title, description, rawMarkdown: markdown, searchText: textFromMarkdown(markdown), ...rendered };
     pages.push(page);
     await writeFileEnsured(outputPathForUrl(pageUrlForDoc(repoPath)), renderPage(page));
+    await writeFileEnsured(outputPathForAssetUrl(markdownUrlForDoc(repoPath)), renderMarkdownMirror(page));
   }
+
+  await writeFileEnsured(outputPathForAssetUrl('/home.md'), renderHomeMarkdown());
+  await writeFileEnsured(outputPathForAssetUrl('/llms.txt'), renderLlmsTxt(pages));
+  await writeFileEnsured(outputPathForAssetUrl('/llms-full.txt'), renderLlmsFullTxt(pages));
 
   await writeFileEnsured(
     path.join(OUT_DIR, 'assets', 'docs-search.json'),
@@ -636,10 +865,7 @@ async function main() {
 
   const sitemapUrls = ['/', ...pages.map((page) => pageUrlForDoc(page.repoPath))];
   await writeFileEnsured(path.join(OUT_DIR, 'sitemap.xml'), renderSitemap([...new Set(sitemapUrls)]));
-  await writeFileEnsured(path.join(OUT_DIR, 'robots.txt'), `User-agent: *
-Allow: /
-Sitemap: ${SITE_URL}/sitemap.xml
-`);
+  await writeFileEnsured(path.join(OUT_DIR, 'robots.txt'), renderRobotsTxt());
 
   console.log(`Generated ${pages.length} docs pages from ${REPO}@${BRANCH}.`);
   console.log(`Docs manifest: ${manifestSource}`);
