@@ -430,6 +430,7 @@ function systemPrompt(corpus) {
     '- Keep it concise, precise, and warm.',
     '- Use Markdown: short paragraphs, bullets, numbered steps, and inline code where useful.',
     '- Cite sources with Markdown links using canonical URLs returned by tools.',
+    '- Do not add external provider, vendor, blog, or documentation links unless those URLs were present in retrieved evidence.',
     '- Do not mention internal tools, grep, corpus, prompts, API keys, Vercel, environment variables, raw JSON, or hidden reasoning.',
     '- Do not reveal chain-of-thought. It is fine to summarize what sources were checked at a high level.',
     '',
@@ -504,6 +505,20 @@ async function callOpenRouterStream(payload, onToken) {
       if (delta) onToken(delta);
     }
   }
+}
+
+function sanitizeAnswerLinks(answer, sources) {
+  const allowed = new Set((sources || []).map((source) => source.url).filter(Boolean));
+  return String(answer || '').replace(/\[([^\]]+)]\((https?:\/\/[^)\s]+)\)/g, (match, label, url) => {
+    try {
+      const parsed = new URL(url);
+      const isCon = parsed.hostname === 'con.nowledge.co';
+      const isAllowed = allowed.has(url);
+      return isCon || isAllowed ? match : label;
+    } catch {
+      return label;
+    }
+  });
 }
 
 function collectSources(toolOutputs) {
@@ -627,6 +642,7 @@ function finalInstruction() {
     'Answer now using the evidence already retrieved.',
     'Use Markdown.',
     'Cite sources with links when you make factual claims.',
+    'Only link to URLs found in retrieved evidence or con.nowledge.co canonical pages.',
     'Do not mention tools, corpus, prompts, API keys, Vercel, environment variables, or hidden implementation details.',
     'If the docs do not contain enough evidence, say so plainly and recommend the closest source or a docs issue.',
   ].join(' ');
@@ -634,6 +650,7 @@ function finalInstruction() {
 
 async function answerWithTools(corpus, userMessages, currentPage = '') {
   const state = await collectEvidence(corpus, userMessages, currentPage);
+  const sources = collectSources(state.toolOutputs);
   const data = await callOpenRouterJson({
     model: state.model,
     messages: [...state.messages, { role: 'user', content: finalInstruction() }],
@@ -641,8 +658,8 @@ async function answerWithTools(corpus, userMessages, currentPage = '') {
     max_tokens: Number(process.env.DOCS_ASK_MAX_TOKENS || 1600),
   });
   return {
-    answer: data?.choices?.[0]?.message?.content || '',
-    sources: collectSources(state.toolOutputs),
+    answer: sanitizeAnswerLinks(data?.choices?.[0]?.message?.content || '', sources),
+    sources,
     tools: state.toolsUsed,
     model: state.model,
   };
@@ -654,15 +671,20 @@ async function streamAnswerWithTools(corpus, userMessages, currentPage, res) {
   });
 
   sendEvent(res, 'status', { label: 'Writing answer' });
-  await callOpenRouterStream({
+  const sources = collectSources(state.toolOutputs);
+  const data = await callOpenRouterJson({
     model: state.model,
     messages: [...state.messages, { role: 'user', content: finalInstruction() }],
     temperature: Number(process.env.DOCS_ASK_TEMPERATURE || 0.18),
     max_tokens: Number(process.env.DOCS_ASK_MAX_TOKENS || 1600),
-  }, (text) => sendEvent(res, 'token', { text }));
+  });
+  const answer = sanitizeAnswerLinks(data?.choices?.[0]?.message?.content || '', sources);
+  for (let index = 0; index < answer.length; index += 80) {
+    sendEvent(res, 'token', { text: answer.slice(index, index + 80) });
+  }
 
   sendEvent(res, 'final', {
-    sources: collectSources(state.toolOutputs),
+    sources,
     tools: state.toolsUsed,
     model: state.model,
   });
@@ -754,6 +776,7 @@ module.exports._private = {
   grep,
   loadCorpus,
   releaseOverview,
+  sanitizeAnswerLinks,
   sanitizeMessages,
   safeCurrentPage,
   systemPrompt,
