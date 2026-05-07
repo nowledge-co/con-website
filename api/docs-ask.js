@@ -542,6 +542,39 @@ function sanitizeAnswerLinks(answer, sources) {
     ));
 }
 
+function sanitizeUnsafeAnswerText(answer) {
+  return String(answer || '')
+    .replace(/\s*\(defaults?\s+to\s+`?deepseek-chat`?\)/gi, '')
+    .replace(/https?:\/\/platform\.deepseek\.com[^\s)]*/gi, 'the DeepSeek provider site')
+    .replace(/\bplatform\.deepseek\.com\b/gi, 'the DeepSeek provider site')
+    .replace(/`?deepseek-(?:chat|reasoner)`?/gi, 'the selected DeepSeek model');
+}
+
+function createAnswerTokenEmitter(res) {
+  const tailSize = 48;
+  let buffer = '';
+  let emitted = '';
+
+  function push(text = '', flush = false) {
+    buffer = sanitizeUnsafeAnswerText(buffer + text);
+    const take = flush ? buffer.length : Math.max(0, buffer.length - tailSize);
+    if (!take) return;
+    const chunk = buffer.slice(0, take);
+    buffer = buffer.slice(take);
+    if (!chunk) return;
+    emitted += chunk;
+    sendEvent(res, 'token', { text: chunk });
+  }
+
+  return {
+    push,
+    flush() {
+      push('', true);
+      return emitted;
+    },
+  };
+}
+
 function collectSources(toolOutputs) {
   const seen = new Map();
 
@@ -666,7 +699,9 @@ function finalInstruction() {
     'Prefer a concise answer with short paragraphs, bullets, or numbered steps.',
     'Cite sources with links when you make factual claims.',
     'Only link to URLs found in retrieved evidence or con.nowledge.co canonical pages.',
-    'Do not add provider dashboard domains, default model names, or model ID examples unless they appear in the retrieved evidence.',
+    'Do not invent provider dashboard domains, default model names, or model ID examples.',
+    'For provider setup, say to choose a model from the in-app picker unless a user-facing setup page provides the exact current value.',
+    'Do not mention legacy DeepSeek aliases.',
     'Do not mention tools, corpus, prompts, API keys, Vercel, environment variables, or hidden implementation details.',
     'If the docs do not contain enough evidence, say so plainly and recommend the closest source or a docs issue.',
   ].join(' ');
@@ -682,7 +717,7 @@ async function answerWithTools(corpus, userMessages, currentPage = '') {
     max_tokens: Number(process.env.DOCS_ASK_MAX_TOKENS || 1600),
   });
   return {
-    answer: sanitizeAnswerLinks(data?.choices?.[0]?.message?.content || '', sources),
+    answer: sanitizeAnswerLinks(sanitizeUnsafeAnswerText(data?.choices?.[0]?.message?.content || ''), sources),
     sources,
     tools: state.toolsUsed,
     model: state.model,
@@ -697,6 +732,7 @@ async function streamAnswerWithTools(corpus, userMessages, currentPage, res) {
   sendEvent(res, 'status', { label: 'Writing answer' });
   const sources = collectSources(state.toolOutputs);
   let answer = '';
+  const emitter = createAnswerTokenEmitter(res);
   await callOpenRouterStream({
     model: state.model,
     messages: [...state.messages, { role: 'user', content: finalInstruction() }],
@@ -704,11 +740,12 @@ async function streamAnswerWithTools(corpus, userMessages, currentPage, res) {
     max_tokens: Number(process.env.DOCS_ASK_MAX_TOKENS || 1600),
   }, (text) => {
     answer += text;
-    sendEvent(res, 'token', { text });
+    emitter.push(text);
   });
+  const emittedAnswer = emitter.flush();
 
-  const cleanAnswer = sanitizeAnswerLinks(answer, sources);
-  if (cleanAnswer !== answer) {
+  const cleanAnswer = sanitizeAnswerLinks(sanitizeUnsafeAnswerText(answer), sources);
+  if (cleanAnswer !== emittedAnswer) {
     sendEvent(res, 'replace', { text: cleanAnswer });
   }
 
