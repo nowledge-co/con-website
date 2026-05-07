@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/docs-ask.js": {
+      "maxDuration": 60
+    }
+  },
   "headers": [
     {
       "source": "/(.*).md",

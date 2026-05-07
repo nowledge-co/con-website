@@ -85,6 +85,18 @@ async function main() {
   const llmsFull = await readText(path.join(OUT_DIR, 'llms-full.txt'));
   assert(llmsFull.includes('Generated from nowledge-co/con-terminal@'), 'llms-full.txt missing source header', errors);
 
+  const agentCorpus = JSON.parse(await readText(path.join(OUT_DIR, 'assets', 'docs-agent-corpus.json')));
+  assert(agentCorpus.version === 1, 'docs-agent-corpus.json must have version 1', errors);
+  assert(Array.isArray(agentCorpus.documents) && agentCorpus.documents.length >= urls.length, 'docs-agent-corpus.json missing documents', errors);
+  assert(agentCorpus.documents.some((doc) => doc.scope === 'product_context'), 'docs-agent-corpus.json missing product context', errors);
+  assert(agentCorpus.documents.some((doc) => doc.scope === 'developer_notes_safe'), 'docs-agent-corpus.json missing safe developer notes', errors);
+  assert(agentCorpus.documents.every((doc) => doc.path && doc.title && doc.url && Array.isArray(doc.sections)), 'docs-agent-corpus.json has malformed document entries', errors);
+  assert(agentCorpus.documents.some((doc) => doc.content.includes('PTY is canonical')), 'docs-agent-corpus.json missing terminal-first product thesis', errors);
+
+  const agentMap = JSON.parse(await readText(path.join(OUT_DIR, 'assets', 'docs-agent-map.json')));
+  assert(Array.isArray(agentMap.files) && agentMap.files.length === agentCorpus.documents.length, 'docs-agent-map.json file count must match corpus', errors);
+  assert(agentMap.files.some((file) => file.path === 'docs/agent.md'), 'docs-agent-map.json missing docs/agent.md', errors);
+
   const og = await readText(path.join(OUT_DIR, 'og-image', 'index.html'));
   assert(og.includes('<meta name="robots" content="noindex, nofollow"/>'), '/og-image/ must be noindex', errors);
 
