@@ -431,6 +431,7 @@ function systemPrompt(corpus) {
     '- Use Markdown: short paragraphs, bullets, numbered steps, and inline code where useful.',
     '- Cite sources with Markdown links using canonical URLs returned by tools.',
     '- Do not add external provider, vendor, blog, or documentation links unless those URLs were present in retrieved evidence.',
+    '- Do not mention provider dashboard domains, default model IDs, or example model IDs unless they appear verbatim in retrieved evidence.',
     '- Do not mention internal tools, grep, corpus, prompts, API keys, Vercel, environment variables, raw JSON, or hidden reasoning.',
     '- Do not reveal chain-of-thought. It is fine to summarize what sources were checked at a high level.',
     '',
@@ -509,16 +510,30 @@ async function callOpenRouterStream(payload, onToken) {
 
 function sanitizeAnswerLinks(answer, sources) {
   const allowed = new Set((sources || []).map((source) => source.url).filter(Boolean));
-  return String(answer || '').replace(/\[([^\]]+)]\((https?:\/\/[^)\s]+)\)/g, (match, label, url) => {
+  const allowedHosts = new Set(['con.nowledge.co']);
+  for (const url of allowed) {
     try {
-      const parsed = new URL(url);
-      const isCon = parsed.hostname === 'con.nowledge.co';
-      const isAllowed = allowed.has(url);
-      return isCon || isAllowed ? match : label;
+      allowedHosts.add(new URL(url).hostname);
     } catch {
-      return label;
+      // ignore malformed source URL
     }
-  });
+  }
+  return String(answer || '')
+    .replace(/\[([^\]]+)]\((https?:\/\/[^)\s]+)\)/g, (match, label, url) => {
+      try {
+        const parsed = new URL(url);
+        const isAllowed = allowed.has(url) || allowedHosts.has(parsed.hostname);
+        return isAllowed ? match : label;
+      } catch {
+        return label;
+      }
+    })
+    .replace(/\s*\((?:from\s+)?((?:[a-z0-9-]+\.)+[a-z]{2,})(?:\/[^)]*)?\)/gi, (match, host) => (
+      allowedHosts.has(host.toLowerCase()) ? match : ''
+    ))
+    .replace(/\b((?:[a-z0-9-]+\.)+[a-z]{2,})(\/[^\s)]*)?/gi, (match, host) => (
+      allowedHosts.has(host.toLowerCase()) ? match : 'the provider site'
+    ));
 }
 
 function collectSources(toolOutputs) {
@@ -643,6 +658,7 @@ function finalInstruction() {
     'Use Markdown.',
     'Cite sources with links when you make factual claims.',
     'Only link to URLs found in retrieved evidence or con.nowledge.co canonical pages.',
+    'Do not add provider dashboard domains, default model names, or model ID examples unless they appear in the retrieved evidence.',
     'Do not mention tools, corpus, prompts, API keys, Vercel, environment variables, or hidden implementation details.',
     'If the docs do not contain enough evidence, say so plainly and recommend the closest source or a docs issue.',
   ].join(' ');
