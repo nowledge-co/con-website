@@ -86,11 +86,14 @@ async function main() {
   assert(llmsFull.includes('Generated from nowledge-co/con-terminal@'), 'llms-full.txt missing source header', errors);
 
   const agentCorpus = JSON.parse(await readText(path.join(OUT_DIR, 'assets', 'docs-agent-corpus.json')));
-  assert(agentCorpus.version === 1, 'docs-agent-corpus.json must have version 1', errors);
+  assert(agentCorpus.version === 2, 'docs-agent-corpus.json must have version 2', errors);
   assert(Array.isArray(agentCorpus.documents) && agentCorpus.documents.length >= urls.length, 'docs-agent-corpus.json missing documents', errors);
   assert(agentCorpus.documents.some((doc) => doc.scope === 'product_context'), 'docs-agent-corpus.json missing product context', errors);
+  assert(agentCorpus.documents.some((doc) => doc.scope === 'answer_policy'), 'docs-agent-corpus.json missing answer policy', errors);
+  assert(agentCorpus.documents.some((doc) => doc.scope === 'design_reference'), 'docs-agent-corpus.json missing design reference', errors);
+  assert(agentCorpus.documents.some((doc) => doc.scope === 'engineering_reference'), 'docs-agent-corpus.json missing engineering reference', errors);
   assert(agentCorpus.documents.some((doc) => doc.scope === 'developer_notes_safe'), 'docs-agent-corpus.json missing safe developer notes', errors);
-  assert(agentCorpus.documents.every((doc) => doc.path && doc.title && doc.url && Array.isArray(doc.sections)), 'docs-agent-corpus.json has malformed document entries', errors);
+  assert(agentCorpus.documents.every((doc) => doc.path && doc.title && doc.url && doc.scope && doc.kind && Array.isArray(doc.sections)), 'docs-agent-corpus.json has malformed document entries', errors);
   assert(agentCorpus.documents.some((doc) => doc.content.includes('PTY is canonical')), 'docs-agent-corpus.json missing terminal-first product thesis', errors);
 
   const agentMap = JSON.parse(await readText(path.join(OUT_DIR, 'assets', 'docs-agent-map.json')));
