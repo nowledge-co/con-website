@@ -857,12 +857,12 @@ body {
   margin: 0;
   border-radius: 0;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255,199,152,0.07), transparent 34%),
-    linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0) 220px),
+    radial-gradient(circle at 52% 0%, rgba(255,199,152,0.052), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.016), rgba(255,255,255,0) 220px),
     #120f0e;
   color: #f7f1ea;
-  border-left: 1px solid rgba(255,255,255,0.08);
-  box-shadow: -18px 0 50px rgba(0,0,0,0.26);
+  border-left: 0;
+  box-shadow: none;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
@@ -879,9 +879,8 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
-  padding: 21px 22px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.018);
+  padding: 26px 28px 21px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.024), rgba(255,255,255,0));
 }
 .docs-ask-heading {
   display: grid;
@@ -891,36 +890,36 @@ body {
 }
 .docs-ask-heading .docs-nav-label {
   display: block;
-  margin: 0 0 7px;
+  margin: 0 0 9px;
   text-align: left;
 }
 .docs-ask-header h2 {
-  margin: 0 0 8px;
-  font-size: 24px;
+  margin: 0 0 10px;
+  font-size: 26px;
   line-height: 1.08;
   letter-spacing: 0;
 }
 .docs-ask-header p {
   margin: 0;
-  max-width: 34ch;
-  color: rgba(247,241,234,0.62);
-  font-size: 13px;
-  line-height: 1.45;
+  max-width: 35ch;
+  color: rgba(247,241,234,0.56);
+  font-size: 13.5px;
+  line-height: 1.48;
 }
 .docs-ask-icon-button {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border: 0;
   border-radius: 999px;
-  background: rgba(255,255,255,0.065);
-  color: rgba(247,241,234,0.68);
+  background: rgba(255,255,255,0.055);
+  color: rgba(247,241,234,0.62);
   font: inherit;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
 }
 .docs-ask-icon-button:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.095);
   color: #f7f1ea;
 }
 .docs-ask-activity {
@@ -928,9 +927,8 @@ body {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 0 22px;
-  border-bottom: 1px solid rgba(255,255,255,0.055);
-  color: rgba(247,241,234,0.56);
+  padding: 0 28px;
+  color: rgba(247,241,234,0.54);
   font-size: 12.5px;
 }
 .docs-ask-activity[hidden] {
@@ -950,7 +948,7 @@ body {
 }
 .docs-ask-messages {
   overflow-y: auto;
-  padding: 22px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -960,46 +958,64 @@ body {
 .docs-ask-empty {
   min-height: 100%;
   display: grid;
-  place-content: center;
-  gap: 10px;
+  align-content: start;
+  gap: 11px;
   text-align: left;
   color: rgba(247,241,234,0.58);
-  padding: 18px 4px;
+  padding: clamp(26px, 8vh, 70px) 0 24px;
 }
 .docs-ask-empty strong {
+  max-width: 25ch;
   color: rgba(247,241,234,0.9);
-  font-size: 18px;
-  line-height: 1.35;
+  font-size: 19px;
+  line-height: 1.28;
   letter-spacing: 0;
 }
 .docs-ask-empty span {
-  max-width: 34ch;
-  font-size: 13px;
-  line-height: 1.45;
+  max-width: 36ch;
+  color: rgba(247,241,234,0.52);
+  font-size: 13.5px;
+  line-height: 1.5;
 }
 .docs-ask-prompts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  display: grid;
+  gap: 3px;
+  margin-top: 17px;
 }
 .docs-ask-prompts button {
-  min-height: 34px;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 999px;
-  padding: 0 11px;
-  background: rgba(255,255,255,0.045);
-  color: rgba(247,241,234,0.74);
+  min-height: 40px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: transparent;
+  color: rgba(247,241,234,0.68);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
+  text-align: left;
   cursor: pointer;
   transition: background .16s ease, color .16s ease, border-color .16s ease, transform .16s var(--ease-out-quart);
 }
 .docs-ask-prompts button:hover {
-  background: rgba(255,199,152,0.11);
-  border-color: rgba(255,199,152,0.16);
+  background: rgba(255,199,152,0.075);
   color: #f7f1ea;
   transform: translateY(-1px);
+}
+.docs-ask-prompts button::after {
+  content: '›';
+  color: rgba(255,199,152,0.46);
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity .16s ease, transform .16s var(--ease-out-quart);
+}
+.docs-ask-prompts button:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 .docs-ask-message {
   display: grid;
@@ -1149,19 +1165,21 @@ body {
 }
 .docs-ask-form {
   margin: 0;
-  padding: 15px 16px 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.018);
+  padding: 18px 20px 20px;
+  border-top: 0;
+  background:
+    linear-gradient(180deg, rgba(18,15,14,0), #120f0e 18px),
+    rgba(255,255,255,0.012);
 }
 .docs-ask-form textarea {
   width: 100%;
-  min-height: 86px;
+  min-height: 90px;
   max-height: 180px;
   resize: vertical;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 0;
   outline: 0;
-  border-radius: 10px;
-  background: rgba(0,0,0,0.28);
+  border-radius: 9px;
+  background: rgba(255,255,255,0.042);
   color: #f7f1ea;
   font: inherit;
   font-size: 14px;
@@ -1170,9 +1188,8 @@ body {
   transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
 }
 .docs-ask-form textarea:focus {
-  border-color: rgba(255,199,152,0.34);
-  box-shadow: 0 0 0 3px rgba(255,199,152,0.08);
-  background: rgba(0,0,0,0.34);
+  box-shadow: inset 0 0 0 1px rgba(255,199,152,0.24);
+  background: rgba(255,255,255,0.055);
 }
 .docs-ask-form textarea::placeholder {
   color: rgba(247,241,234,0.38);
@@ -1185,17 +1202,17 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 2px 0;
+  padding: 12px 2px 0;
 }
 .docs-ask-form-footer span {
-  color: rgba(247,241,234,0.42);
+  color: rgba(247,241,234,0.36);
   font-size: 11.5px;
 }
 .docs-ask-form-footer button {
-  min-height: 36px;
+  min-height: 38px;
   border: 0;
   border-radius: 999px;
-  padding: 0 15px;
+  padding: 0 16px;
   background: #ffc798;
   color: #1b1410;
   font: inherit;
@@ -2865,6 +2882,15 @@ footer.site-foot {
   .docs-ask-icon-button {
     width: 44px;
     height: 44px;
+  }
+  .docs-ask-header {
+    padding: 25px 28px 18px;
+  }
+  .docs-ask-empty {
+    padding-top: 42px;
+  }
+  .docs-ask-form-footer button {
+    min-width: 64px;
   }
   .docs-ask {
     top: 0;

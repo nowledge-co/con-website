@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260508c';
+const CSS_VERSION = '20260508d';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -545,7 +545,7 @@ function renderAskAiPanel() {
       <div class="docs-ask-heading">
         <span class="docs-nav-label">con guide</span>
         <h2>Ask con docs</h2>
-        <p>Setup, releases, providers, shortcuts, terminal workflows, and builder details.</p>
+        <p>Setup, workflows, shortcuts, and how the agent fits into the terminal.</p>
       </div>
       <button class="docs-ask-icon-button" type="button" data-docs-ask-close aria-label="Close Ask AI">×</button>
     </header>
@@ -555,12 +555,13 @@ function renderAskAiPanel() {
     </div>
     <div class="docs-ask-messages" data-docs-ask-messages aria-live="polite">
       <div class="docs-ask-empty">
-        <strong>What do you want to do in con?</strong>
-        <span>Ask setup, release, or workflow questions.</span>
+        <strong>Start with the thing you are trying to do.</strong>
+        <span>Ask about setup, daily workflows, shortcuts, or how con differs from other AI terminals.</span>
         <div class="docs-ask-prompts" aria-label="Example questions">
+          <button type="button" data-docs-ask-suggestion="How is con different from Warp?">Compare with Warp</button>
           <button type="button" data-docs-ask-suggestion="How do I set up DeepSeek?">Set up DeepSeek</button>
-          <button type="button" data-docs-ask-suggestion="What changed in the latest beta?">Latest beta</button>
-          <button type="button" data-docs-ask-suggestion="How does the agent panel work?">Agent panel</button>
+          <button type="button" data-docs-ask-suggestion="How does the agent panel work?">Use the agent panel</button>
+          <button type="button" data-docs-ask-suggestion="How do I open Quick Terminal?">Open Quick Terminal</button>
         </div>
       </div>
     </div>
@@ -568,7 +569,7 @@ function renderAskAiPanel() {
       <label class="sr-only" for="docs-ask-input">Ask a question about con docs</label>
       <textarea id="docs-ask-input" data-docs-ask-input rows="3" maxlength="1200" placeholder="Ask about con..."></textarea>
       <div class="docs-ask-form-footer">
-        <span>Answers cite the docs.</span>
+        <span>Grounded in the docs.</span>
         <button type="submit" data-docs-ask-submit>Ask</button>
       </div>
     </form>

@@ -168,12 +168,13 @@
   function emptyState() {
     return `
       <div class="docs-ask-empty">
-        <strong>What do you want to do in con?</strong>
-        <span>Ask setup, release, or workflow questions.</span>
+        <strong>Start with the thing you are trying to do.</strong>
+        <span>Ask about setup, daily workflows, shortcuts, or how con differs from other AI terminals.</span>
         <div class="docs-ask-prompts" aria-label="Example questions">
+          <button type="button" data-docs-ask-suggestion="How is con different from Warp?">Compare with Warp</button>
           <button type="button" data-docs-ask-suggestion="How do I set up DeepSeek?">Set up DeepSeek</button>
-          <button type="button" data-docs-ask-suggestion="What changed in the latest beta?">Latest beta</button>
-          <button type="button" data-docs-ask-suggestion="How does the agent panel work?">Agent panel</button>
+          <button type="button" data-docs-ask-suggestion="How does the agent panel work?">Use the agent panel</button>
+          <button type="button" data-docs-ask-suggestion="How do I open Quick Terminal?">Open Quick Terminal</button>
         </div>
       </div>
     `;
