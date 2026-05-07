@@ -833,24 +833,16 @@ body {
 .docs-ask[hidden] {
   display: none;
 }
-html.docs-ask-open,
-html.docs-ask-open body {
-  overflow: hidden;
-}
 .docs-ask {
   position: fixed;
   inset: 0;
   z-index: 78;
   display: flex;
   justify-content: flex-end;
+  pointer-events: none;
 }
 .docs-ask-backdrop {
-  position: fixed;
-  inset: 0;
-  border: 0;
-  background: rgba(4, 4, 5, 0.48);
-  backdrop-filter: blur(12px);
-  cursor: default;
+  display: none;
 }
 .docs-ask-panel {
   position: relative;
@@ -858,12 +850,14 @@ html.docs-ask-open body {
   height: calc(100dvh - 24px);
   margin: 12px;
   border-radius: 10px;
-  background: rgba(22, 18, 16, 0.98);
+  background: rgba(19, 16, 15, 0.98);
   color: #f7f1ea;
-  box-shadow: 0 28px 90px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.42);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
+  pointer-events: auto;
 }
 .docs-ask:not([hidden]) .docs-ask-panel {
   animation: docs-ask-in .2s var(--ease-out-quart) both;
@@ -877,7 +871,8 @@ html.docs-ask-open body {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
   padding: 18px 18px 14px;
-  background: rgba(255,255,255,0.026);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
 }
 .docs-ask-header h2 {
   margin: 5px 0 4px;
@@ -1018,7 +1013,8 @@ html.docs-ask-open body {
 .docs-ask-form {
   margin: 0;
   padding: 12px;
-  background: rgba(255,255,255,0.026);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
 }
 .docs-ask-form textarea {
   width: 100%;
@@ -2683,6 +2679,19 @@ footer.site-foot {
     width: calc(100vw - 20px);
     height: calc(100dvh - 20px);
     margin: 10px;
+  }
+  .docs-ask-backdrop {
+    position: fixed;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(4, 4, 5, 0.34);
+    cursor: default;
+    pointer-events: auto;
+  }
+  html.docs-ask-open,
+  html.docs-ask-open body {
+    overflow: hidden;
   }
   .static-docs-top-links {
     display: none;

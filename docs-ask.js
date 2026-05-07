@@ -88,8 +88,8 @@
     if (!messages.length) {
       messagesEl.innerHTML = `
         <div class="docs-ask-empty">
-          <strong>Ask about install, providers, shortcuts, agent behavior, releases, or con-cli.</strong>
-          <span>The agent can search and read the generated docs corpus before it answers.</span>
+          <strong>What do you want to do in con?</strong>
+          <span>Try “set up DeepSeek”, “what changed in the latest beta”, or “how does the agent panel work?”</span>
         </div>
       `;
       return;
@@ -110,7 +110,7 @@
     busy = next;
     input.disabled = next;
     if (submit) submit.disabled = next;
-    if (statusEl) statusEl.textContent = label || 'Uses docs tools, not embeddings.';
+    if (statusEl) statusEl.textContent = label || 'Ready';
   }
 
   function openAsk() {
@@ -130,7 +130,7 @@
   async function ask(question) {
     messages.push({ role: 'user', content: question });
     renderMessages();
-    setBusy(true, 'Searching docs...');
+    setBusy(true, 'Checking docs...');
 
     try {
       const response = await fetch('/api/docs-ask', {
@@ -145,7 +145,12 @@
         }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || `Ask AI failed (${response.status})`);
+      if (!response.ok) {
+        const message = response.status === 503
+          ? 'Ask AI is not configured yet.'
+          : (data.error || `Ask AI failed (${response.status})`);
+        throw new Error(message);
+      }
       messages.push({
         role: 'assistant',
         content: data.answer || 'I could not find enough evidence in the docs to answer.',

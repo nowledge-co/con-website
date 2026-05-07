@@ -454,26 +454,26 @@ function renderAskAiPanel() {
   return `
 <div class="docs-ask" data-docs-ask hidden>
   <button class="docs-ask-backdrop" type="button" data-docs-ask-close aria-label="Close Ask AI"></button>
-  <section class="docs-ask-panel" role="dialog" aria-modal="true" aria-label="Ask AI about con docs">
+  <section class="docs-ask-panel" role="dialog" aria-modal="false" aria-label="Ask AI about con docs">
     <header class="docs-ask-header">
       <div>
-        <span class="docs-nav-label">Docs agent</span>
+        <span class="docs-nav-label">con guide</span>
         <h2>Ask AI</h2>
-        <p>Answers use con docs and curated product context. Verify anything critical.</p>
+        <p>Ask about setup, releases, providers, shortcuts, or agent workflows.</p>
       </div>
       <button class="docs-ask-icon-button" type="button" data-docs-ask-close aria-label="Close Ask AI">×</button>
     </header>
     <div class="docs-ask-messages" data-docs-ask-messages aria-live="polite">
       <div class="docs-ask-empty">
-        <strong>Ask about install, providers, shortcuts, agent behavior, releases, or con-cli.</strong>
-        <span>The agent can search and read the generated docs corpus before it answers.</span>
+        <strong>What do you want to do in con?</strong>
+        <span>Try “set up DeepSeek”, “what changed in the latest beta”, or “how does the agent panel work?”</span>
       </div>
     </div>
     <form class="docs-ask-form" data-docs-ask-form>
       <label class="sr-only" for="docs-ask-input">Ask a question about con docs</label>
       <textarea id="docs-ask-input" data-docs-ask-input rows="3" maxlength="1200" placeholder="Ask a question about con..."></textarea>
       <div class="docs-ask-form-footer">
-        <span data-docs-ask-status>Uses docs tools, not embeddings.</span>
+        <span data-docs-ask-status>Ready</span>
         <button type="submit" data-docs-ask-submit>Ask</button>
       </div>
     </form>
