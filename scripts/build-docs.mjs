@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260508b';
+const CSS_VERSION = '20260508c';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -542,7 +542,7 @@ function renderAskAiPanel() {
   <button class="docs-ask-backdrop" type="button" data-docs-ask-close aria-label="Close Ask AI"></button>
   <aside class="docs-ask-panel" role="complementary" aria-label="Ask AI about con docs">
     <header class="docs-ask-header">
-      <div>
+      <div class="docs-ask-heading">
         <span class="docs-nav-label">con guide</span>
         <h2>Ask con docs</h2>
         <p>Setup, releases, providers, shortcuts, terminal workflows, and builder details.</p>

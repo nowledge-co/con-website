@@ -123,14 +123,32 @@
 
   function renderSources(sources) {
     if (!sources?.length) return '';
+    const clean = [];
+    const seen = new Set();
+    for (const source of sources) {
+      const key = source.path || source.url || source.title;
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      clean.push(source);
+      if (clean.length >= 4) break;
+    }
+    if (!clean.length) return '';
     return `
       <div class="docs-ask-sources">
         <span>Sources</span>
-        ${sources.map((source) => `
-          <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.title || source.path || source.url)}</a>
+        ${clean.map((source) => `
+          <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(sourceTitle(source))}</a>
         `).join('')}
       </div>
     `;
+  }
+
+  function sourceTitle(source) {
+    if (source.path === 'docs.md') return 'Docs overview';
+    if (source.path === 'changelog.md') return 'Changelog';
+    if (source.path === 'docs/settings.md') return 'Settings';
+    if (source.path === 'agent-context/developer-insights.md') return 'Builder notes';
+    return source.title || source.path || source.url;
   }
 
   function renderSteps(steps) {
