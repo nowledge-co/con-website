@@ -9,7 +9,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260508a';
+const CSS_VERSION = '20260508b';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -556,7 +556,7 @@ function renderAskAiPanel() {
     <div class="docs-ask-messages" data-docs-ask-messages aria-live="polite">
       <div class="docs-ask-empty">
         <strong>What do you want to do in con?</strong>
-        <span>Ask a practical question, or start with one of these.</span>
+        <span>Ask setup, release, or workflow questions.</span>
         <div class="docs-ask-prompts" aria-label="Example questions">
           <button type="button" data-docs-ask-suggestion="How do I set up DeepSeek?">Set up DeepSeek</button>
           <button type="button" data-docs-ask-suggestion="What changed in the latest beta?">Latest beta</button>
@@ -569,7 +569,7 @@ function renderAskAiPanel() {
       <textarea id="docs-ask-input" data-docs-ask-input rows="3" maxlength="1200" placeholder="Ask about con..."></textarea>
       <div class="docs-ask-form-footer">
         <span>Answers cite the docs.</span>
-        <button type="submit" data-docs-ask-submit>Send</button>
+        <button type="submit" data-docs-ask-submit>Ask</button>
       </div>
     </form>
   </aside>

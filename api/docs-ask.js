@@ -487,25 +487,31 @@ async function callOpenRouterStream(payload, onToken) {
   const decoder = new TextDecoder();
   let buffer = '';
 
+  function readLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('data:')) return;
+    const data = trimmed.slice(5).trim();
+    if (!data || data === '[DONE]') return;
+    let json;
+    try {
+      json = JSON.parse(data);
+    } catch {
+      return;
+    }
+    const delta = json?.choices?.[0]?.delta?.content;
+    if (delta) onToken(delta);
+  }
+
   for await (const chunk of response.body) {
     buffer += decoder.decode(chunk, { stream: true });
     const lines = buffer.split('\n');
     buffer = lines.pop() || '';
     for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith('data:')) continue;
-      const data = trimmed.slice(5).trim();
-      if (!data || data === '[DONE]') continue;
-      let json;
-      try {
-        json = JSON.parse(data);
-      } catch {
-        continue;
-      }
-      const delta = json?.choices?.[0]?.delta?.content;
-      if (delta) onToken(delta);
+      readLine(line);
     }
   }
+  buffer += decoder.decode();
+  if (buffer.trim()) readLine(buffer);
 }
 
 function sanitizeAnswerLinks(answer, sources) {
@@ -656,6 +662,8 @@ function finalInstruction() {
   return [
     'Answer now using the evidence already retrieved.',
     'Use Markdown.',
+    'Do not start routine answers with a Markdown heading. Answer directly.',
+    'Prefer a concise answer with short paragraphs, bullets, or numbered steps.',
     'Cite sources with links when you make factual claims.',
     'Only link to URLs found in retrieved evidence or con.nowledge.co canonical pages.',
     'Do not add provider dashboard domains, default model names, or model ID examples unless they appear in the retrieved evidence.',
@@ -688,15 +696,20 @@ async function streamAnswerWithTools(corpus, userMessages, currentPage, res) {
 
   sendEvent(res, 'status', { label: 'Writing answer' });
   const sources = collectSources(state.toolOutputs);
-  const data = await callOpenRouterJson({
+  let answer = '';
+  await callOpenRouterStream({
     model: state.model,
     messages: [...state.messages, { role: 'user', content: finalInstruction() }],
     temperature: Number(process.env.DOCS_ASK_TEMPERATURE || 0.18),
     max_tokens: Number(process.env.DOCS_ASK_MAX_TOKENS || 1600),
+  }, (text) => {
+    answer += text;
+    sendEvent(res, 'token', { text });
   });
-  const answer = sanitizeAnswerLinks(data?.choices?.[0]?.message?.content || '', sources);
-  for (let index = 0; index < answer.length; index += 80) {
-    sendEvent(res, 'token', { text: answer.slice(index, index + 80) });
+
+  const cleanAnswer = sanitizeAnswerLinks(answer, sources);
+  if (cleanAnswer !== answer) {
+    sendEvent(res, 'replace', { text: cleanAnswer });
   }
 
   sendEvent(res, 'final', {

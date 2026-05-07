@@ -17,6 +17,7 @@
   let messages = [];
   let lastFocus = null;
   let busy = false;
+  let renderQueued = false;
 
   for (const opener of openers) {
     const kbd = opener.querySelector('kbd');
@@ -150,7 +151,7 @@
     return `
       <div class="docs-ask-empty">
         <strong>What do you want to do in con?</strong>
-        <span>Ask a practical question, or start with one of these.</span>
+        <span>Ask setup, release, or workflow questions.</span>
         <div class="docs-ask-prompts" aria-label="Example questions">
           <button type="button" data-docs-ask-suggestion="How do I set up DeepSeek?">Set up DeepSeek</button>
           <button type="button" data-docs-ask-suggestion="What changed in the latest beta?">Latest beta</button>
@@ -176,6 +177,15 @@
       </article>
     `).join('');
     messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function scheduleRender() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => {
+      renderQueued = false;
+      renderMessages();
+    });
   }
 
   function setBusy(next, label = '') {
@@ -241,6 +251,9 @@
           setPendingStep(pending, { label: payload.label || 'Reading source', detail: payload.detail || '' });
         } else if (event === 'token') {
           pending.content += payload.text || '';
+          scheduleRender();
+        } else if (event === 'replace') {
+          pending.content = payload.text || pending.content;
           renderMessages();
         } else if (event === 'final') {
           pending.sources = payload.sources || [];
