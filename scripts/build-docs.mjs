@@ -10,6 +10,27 @@ const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
 const CSS_VERSION = '20260505d';
+const CORE_KEYWORDS = [
+  'terminal emulator',
+  'AI terminal',
+  'terminal-first AI agent',
+  'terminal agent',
+  'AI agent terminal',
+  'agentic terminal',
+  'agent-native workflows',
+  'open-source terminal',
+  'open-source AI terminal',
+  'Warp alternative',
+  'Warp terminal alternative',
+  'terminal for coding agents',
+  'CLI agent workflows',
+  'SSH AI terminal',
+  'tmux AI terminal',
+  'GPU terminal',
+  'Rust terminal',
+  'native terminal app',
+  'developer tools',
+];
 const LOCAL_CON_DIR = process.env.CON_TERMINAL_DIR || path.resolve(ROOT, '..', 'con');
 const LOCAL_MANIFEST = process.env.CON_DOCS_MANIFEST || path.join(LOCAL_CON_DIR, 'docs', 'manifest.json');
 const BUNDLED_MANIFEST = path.join(ROOT, 'assets', 'docs-manifest.json');
@@ -241,6 +262,24 @@ function descriptionForDoc(markdown, repoPath) {
   };
   return overrides[repoPath]
     || descriptionFromMarkdown(markdown, `${labelForDoc(repoPath)} for con, the terminal emulator with AI harness.`);
+}
+
+function keywordsForDoc(repoPath) {
+  const pageKeywords = {
+    'docs/install.md': ['install con', 'Homebrew terminal app', 'Linux AI terminal', 'Windows AI terminal'],
+    'docs/quick-controls.md': ['terminal shortcuts', 'agent panel shortcut', 'smart command input'],
+    'docs/quick-terminal.md': ['drop-down terminal', 'macOS quick terminal', 'global terminal shortcut'],
+    'docs/agent.md': ['built-in AI agent', 'terminal context agent', 'AI terminal assistant', 'Claude Code terminal', 'Codex terminal'],
+    'docs/settings.md': ['AI providers', 'OpenAI terminal', 'Anthropic terminal', 'DeepSeek terminal', 'xAI terminal', 'GitHub Copilot terminal'],
+    'docs/terminal-workflows.md': ['SSH terminal', 'tmux terminal', 'split panes', 'terminal workflows'],
+    'docs/skills-and-workflows.md': ['slash commands', 'agent skills', 'terminal automation workflows'],
+    'docs/workspace-layout-profiles-guide.md': ['workspace profiles', 'terminal layout restore', 'share terminal layout'],
+    'docs/screenshots.md': ['terminal screenshots', 'AI terminal screenshots', 'agent panel screenshots'],
+    'docs/con-cli.md': ['con-cli', 'terminal control plane', 'agent orchestration', 'terminal surfaces'],
+    'CHANGELOG.md': ['release notes', 'terminal changelog', 'AI terminal beta'],
+    LICENSE: ['MIT License', 'open-source terminal'],
+  };
+  return [...new Set([...CORE_KEYWORDS, ...(pageKeywords[repoPath] || [])])];
 }
 
 function resolveDocHref(href, currentPath) {
@@ -515,6 +554,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const bodyClass = isChangelogPage ? 'static-docs-page changelog-page' : 'static-docs-page';
   const mainClass = isChangelogPage ? 'static-docs-layout changelog-layout' : 'static-docs-layout';
   const articleIntro = isChangelogPage ? renderChangelogOverview(toc) : '';
+  const keywords = keywordsForDoc(repoPath);
   const organization = {
     '@type': 'Organization',
     name: 'Nowledge Labs',
@@ -546,14 +586,20 @@ function renderPage({ repoPath, title, description, html, toc }) {
       url: SITE_URL,
     },
     isBasedOn: sourceUrl,
-    keywords: [
-      'con terminal',
-      'terminal emulator',
-      'AI terminal',
-      'agent harness',
-      'SSH',
-      'tmux',
-      'developer tools',
+    keywords,
+    audience: [
+      {
+        '@type': 'Audience',
+        audienceType: 'AI-native software engineers',
+      },
+      {
+        '@type': 'Audience',
+        audienceType: 'infrastructure and ops engineers',
+      },
+      {
+        '@type': 'Audience',
+        audienceType: 'terminal power users',
+      },
     ],
     isPartOf: {
       '@type': 'WebSite',
@@ -588,6 +634,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(pageDescription)}"/>
+<meta name="keywords" content="${escapeHtml(keywords.join(','))}"/>
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
 <link rel="canonical" href="${escapeHtml(canonical)}"/>
 <link rel="alternate" type="text/markdown" href="${escapeHtml(markdownUrl)}"/>
@@ -596,6 +643,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
 <meta property="og:url" content="${escapeHtml(canonical)}"/>
 <meta property="og:site_name" content="con"/>
 <meta property="og:type" content="${isChangelogPage ? 'website' : 'article'}"/>
+${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="article:tag" content="${escapeHtml(keyword)}"/>`).join('\n')}
 <meta property="og:image" content="${OG_IMAGE}"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
@@ -722,12 +770,14 @@ function renderMarkdownMirror(page) {
   const urlPath = pageUrlForDoc(page.repoPath);
   const canonical = `${SITE_URL}${urlPath}`;
   const source = githubBlobUrl(page.repoPath);
+  const keywords = keywordsForDoc(page.repoPath).join(', ');
   const markdown = rewriteMarkdownLinks(page.rawMarkdown.trim(), page.repoPath);
   return `---
 title: ${yamlValue(page.title)}
 description: ${yamlValue(page.description)}
 canonical: ${yamlValue(canonical)}
 source: ${yamlValue(source)}
+keywords: ${yamlValue(keywords)}
 ---
 
 ${markdown}
@@ -735,16 +785,20 @@ ${markdown}
 }
 
 function renderHomeMarkdown() {
+  const keywords = CORE_KEYWORDS.join(', ');
   return `---
 title: "con"
-description: "con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows."
+description: "con is an open-source, terminal-first AI terminal with a built-in agent panel for SSH, tmux, coding agents, and agent-native workflows."
 canonical: "${SITE_URL}/"
 source: "https://github.com/${REPO}"
+keywords: "${keywords}"
 ---
 
 # con
 
-con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.
+con is an open-source, GPU-accelerated, terminal-first AI terminal with a built-in agent panel for SSH, tmux, coding agents, and agent-native workflows.
+
+The core product principle is simple: the PTY is canonical, the shell is real, and the agent is a layer. con is for people who want a serious terminal first and AI help only when it earns its place.
 
 ## What con is
 
@@ -752,6 +806,17 @@ con is an open-source, GPU-accelerated terminal emulator with a built-in AI harn
 - Built for SSH, tmux, and developer workflows that need terminal context.
 - Includes an AI harness that can read context, ask before acting, and work in the terminal you can already see.
 - Supports agent and model workflows across providers including OpenAI, Anthropic, Google, DeepSeek, xAI, and GitHub Copilot where configured by the user.
+
+## Positioning
+
+- For people searching for a Warp alternative, con is the open-source, terminal-first option: it keeps raw terminal workflows intact instead of turning the shell into a block-based workspace.
+- For people searching for an AI terminal, con puts the AI agent in a contextual side panel that can inspect terminal state, SSH sessions, tmux panes, TUIs, and coding-agent CLIs.
+- For people searching for a coding agent terminal, con is designed to keep external agent workflows visible in real terminal panes.
+- For people searching for an SSH or tmux AI terminal, con treats remote and multiplexed terminal state as first-class context.
+
+## Core search intents
+
+${CORE_KEYWORDS.map((keyword) => `- ${keyword}`).join('\n')}
 
 ## Primary resources
 
@@ -769,9 +834,17 @@ function renderLlmsTxt(pages) {
   const primaryDocs = docs.slice(0, 12);
   return `# con
 
-> con is an open-source, GPU-accelerated terminal emulator with a built-in AI harness for SSH, tmux, and agent-native workflows.
+> con is an open-source, GPU-accelerated, terminal-first AI terminal with a built-in agent panel for SSH, tmux, coding agents, and agent-native workflows.
 
 This file points AI agents and search systems to the canonical con pages and Markdown mirrors. HTML pages are the public canonical URLs; Markdown mirrors are provided for retrieval, quoting, and synthesis.
+
+## Entity summary
+
+con is a native terminal emulator for macOS, Windows, and Linux. It is built around real PTY sessions, shell workflows, SSH, tmux, terminal panes, and a contextual AI agent panel. It is relevant to queries about AI terminals, terminal-first AI agents, coding agent terminals, open-source Warp alternatives, SSH AI terminals, tmux AI terminals, and agent-native developer tools.
+
+## Query coverage
+
+${CORE_KEYWORDS.map((keyword) => `- ${keyword}`).join('\n')}
 
 ## Primary pages
 
