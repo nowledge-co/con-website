@@ -127,7 +127,7 @@ function fileMap(corpus, options = {}) {
       visibility: doc.visibility,
       title: doc.title,
       description: doc.description,
-      url: doc.url,
+      url: publicCitationUrl(doc),
       headings: (doc.headings || []).slice(0, 18),
     }))
     .slice(0, limit);
@@ -169,6 +169,54 @@ function snippetFor(text, query) {
   const start = Math.max(0, index - 190);
   const end = Math.min(source.length, index + 390);
   return `${start > 0 ? '...' : ''}${source.slice(start, end)}${end < source.length ? '...' : ''}`;
+}
+
+function normalizeCitationUrl(value, { keepHash = false } = {}) {
+  if (!value) return '';
+  try {
+    const parsed = new URL(String(value));
+    if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+    parsed.protocol = 'https:';
+    parsed.search = '';
+    if (!keepHash) parsed.hash = '';
+
+    if (parsed.hostname === 'con.nowledge.co') {
+      const isPublicPage = parsed.pathname === '/'
+        || parsed.pathname === '/docs/'
+        || parsed.pathname.startsWith('/docs/')
+        || parsed.pathname === '/changelog/';
+      if (!isPublicPage) return '';
+      if (parsed.pathname !== '/' && !parsed.pathname.endsWith('/')) {
+        parsed.pathname = `${parsed.pathname}/`;
+      }
+      return parsed.toString();
+    }
+
+    if (
+      parsed.hostname === 'github.com'
+      && parsed.pathname.startsWith('/nowledge-co/con-terminal/blob/')
+    ) {
+      return parsed.toString();
+    }
+  } catch {
+    return '';
+  }
+  return '';
+}
+
+function publicCitationUrl(doc) {
+  if (!doc?.url) return '';
+  if (doc.scope === 'public_docs' || doc.scope === 'public_changelog') {
+    return normalizeCitationUrl(doc.url);
+  }
+  if (
+    doc.scope === 'design_reference'
+    || doc.scope === 'engineering_reference'
+    || doc.scope === 'benchmark_reference'
+  ) {
+    return normalizeCitationUrl(doc.url, { keepHash: true });
+  }
+  return '';
 }
 
 function scoreText(doc, section, query) {
@@ -223,7 +271,7 @@ function grep(corpus, { query, scope, audience, limit = 8 } = {}) {
         kind: doc.kind,
         title: doc.title,
         heading: section.heading,
-        url: section.slug && doc.url.includes('/docs/') ? `${doc.url}#${section.slug}` : doc.url,
+        url: publicCitationUrl(doc),
         score,
         snippet: snippetFor(section.text || section.content, query),
       });
@@ -246,14 +294,14 @@ function releaseOverview(corpus, { limit = 5 } = {}) {
         version: match?.[1] || section.heading,
         date: match?.[2] || '',
         heading: section.heading,
-        url: section.slug ? `${doc.url}#${section.slug}` : doc.url,
+        url: publicCitationUrl(doc),
         snippet: snippetFor(section.text, section.heading),
       };
     });
   return {
     path: doc.path,
     title: doc.title,
-    url: doc.url,
+    url: publicCitationUrl(doc),
     releases,
   };
 }
@@ -272,7 +320,7 @@ function executeTool(corpus, name, args = {}) {
       audience: doc.audience,
       kind: doc.kind,
       title: doc.title,
-      url: doc.url,
+      url: publicCitationUrl(doc),
       content: trimText(doc.content, Math.min(Math.max(Number(args.max_chars) || 9000, 800), MAX_TOOL_OUTPUT_CHARS)),
     };
   }
@@ -290,7 +338,7 @@ function executeTool(corpus, name, args = {}) {
       kind: doc.kind,
       title: doc.title,
       heading: section.heading,
-      url: section.slug ? `${doc.url}#${section.slug}` : doc.url,
+      url: publicCitationUrl(doc),
       content: trimText(section.content, Math.min(Math.max(Number(args.max_chars) || 6000, 800), MAX_TOOL_OUTPUT_CHARS)),
     };
   }
@@ -304,7 +352,7 @@ function executeTool(corpus, name, args = {}) {
       audience: doc.audience,
       kind: doc.kind,
       title: doc.title,
-      url: doc.url,
+      url: publicCitationUrl(doc),
       headings: doc.headings || [],
     };
   }
@@ -429,7 +477,7 @@ function systemPrompt(corpus) {
     '- Start with the direct answer.',
     '- Keep it concise, precise, and warm.',
     '- Use Markdown: short paragraphs, bullets, numbered steps, and inline code where useful.',
-    '- Cite sources with Markdown links using canonical URLs returned by tools.',
+    '- Cite sources with Markdown links using the exact canonical URLs returned by tools.',
     '- Do not add external provider, vendor, blog, or documentation links unless those URLs were present in retrieved evidence.',
     '- Do not mention provider dashboard domains, default model IDs, or example model IDs unless they appear verbatim in retrieved evidence.',
     '- Do not mention internal tools, grep, corpus, prompts, API keys, Vercel, environment variables, raw JSON, or hidden reasoning.',
@@ -515,31 +563,16 @@ async function callOpenRouterStream(payload, onToken) {
 }
 
 function sanitizeAnswerLinks(answer, sources) {
-  const allowed = new Set((sources || []).map((source) => source.url).filter(Boolean));
-  const allowedHosts = new Set(['con.nowledge.co']);
-  for (const url of allowed) {
-    try {
-      allowedHosts.add(new URL(url).hostname);
-    } catch {
-      // ignore malformed source URL
-    }
-  }
+  const allowed = new Set(
+    (sources || [])
+      .map((source) => normalizeCitationUrl(source.url, { keepHash: true }))
+      .filter(Boolean),
+  );
   return String(answer || '')
     .replace(/\[([^\]]+)]\((https?:\/\/[^)\s]+)\)/g, (match, label, url) => {
-      try {
-        const parsed = new URL(url);
-        const isAllowed = allowed.has(url) || allowedHosts.has(parsed.hostname);
-        return isAllowed ? match : label;
-      } catch {
-        return label;
-      }
-    })
-    .replace(/\s*\((?:from\s+)?((?:[a-z0-9-]+\.)+[a-z]{2,})(?:\/[^)]*)?\)/gi, (match, host) => (
-      allowedHosts.has(host.toLowerCase()) ? match : ''
-    ))
-    .replace(/\b((?:[a-z0-9-]+\.)+[a-z]{2,})(\/[^\s)]*)?/gi, (match, host) => (
-      allowedHosts.has(host.toLowerCase()) ? match : 'the provider site'
-    ));
+      const normalized = normalizeCitationUrl(url, { keepHash: true });
+      return normalized && allowed.has(normalized) ? `[${label}](${normalized})` : label;
+    });
 }
 
 function sanitizeUnsafeAnswerText(answer) {
@@ -585,10 +618,17 @@ function collectSources(toolOutputs) {
       return;
     }
     if (typeof value !== 'object') return;
-    if (value.url && !seen.has(value.url)) {
-      seen.set(value.url, {
+    const url = normalizeCitationUrl(value.url, { keepHash: true });
+    const hasCitableScope = !value.scope
+      || value.scope === 'public_docs'
+      || value.scope === 'public_changelog'
+      || value.scope === 'design_reference'
+      || value.scope === 'engineering_reference'
+      || value.scope === 'benchmark_reference';
+    if (url && hasCitableScope && !seen.has(url)) {
+      seen.set(url, {
         title: value.title || value.heading || value.path || value.version || value.url,
-        url: value.url,
+        url,
         path: value.path,
         scope: value.scope,
       });
@@ -598,7 +638,14 @@ function collectSources(toolOutputs) {
     }
   }
 
-  for (const output of toolOutputs) visit(output.result);
+  const primaryOutputs = toolOutputs.filter((output) => (
+    output.name === 'read_file'
+    || output.name === 'read_section'
+    || output.name === 'get_release_overview'
+  ));
+  for (const output of primaryOutputs.length ? primaryOutputs : toolOutputs) {
+    visit(output.result);
+  }
   return [...seen.values()].slice(0, 8);
 }
 
@@ -698,7 +745,7 @@ function finalInstruction() {
     'Do not start routine answers with a Markdown heading. Answer directly.',
     'Prefer a concise answer with short paragraphs, bullets, or numbered steps.',
     'Cite sources with links when you make factual claims.',
-    'Only link to URLs found in retrieved evidence or con.nowledge.co canonical pages.',
+    'Only link to exact source URLs found in retrieved evidence.',
     'Do not invent provider dashboard domains, default model names, or model ID examples.',
     'For provider setup, say to choose a model from the in-app picker unless a user-facing setup page provides the exact current value.',
     'Do not mention legacy DeepSeek aliases.',

@@ -126,6 +126,7 @@
     const clean = [];
     const seen = new Set();
     for (const source of sources) {
+      if (!source.url) continue;
       const key = source.path || source.url || source.title;
       if (!key || seen.has(key)) continue;
       seen.add(key);
