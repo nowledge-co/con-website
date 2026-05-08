@@ -145,10 +145,10 @@
   }
 
   function sourceTitle(source) {
+    if (source.path === 'home.md') return 'Product';
     if (source.path === 'docs.md') return 'Docs overview';
     if (source.path === 'changelog.md') return 'Changelog';
     if (source.path === 'docs/settings.md') return 'Settings';
-    if (source.path === 'agent-context/developer-insights.md') return 'Builder notes';
     return source.title || source.path || source.url;
   }
 

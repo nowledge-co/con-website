@@ -209,6 +209,9 @@ function publicCitationUrl(doc) {
   if (doc.scope === 'public_docs' || doc.scope === 'public_changelog') {
     return normalizeCitationUrl(doc.url);
   }
+  if (doc.scope === 'product_context' && doc.path === 'home.md') {
+    return normalizeCitationUrl(doc.url);
+  }
   if (
     doc.scope === 'design_reference'
     || doc.scope === 'engineering_reference'
@@ -477,10 +480,11 @@ function systemPrompt(corpus) {
     '- Start with the direct answer.',
     '- Keep it concise, precise, and warm.',
     '- Use Markdown: short paragraphs, bullets, numbered steps, and inline code where useful.',
-    '- Cite sources with Markdown links using the exact canonical URLs returned by tools.',
+    '- Cite sources with Markdown links using the exact canonical URLs returned by tools; prefer public product/docs/changelog URLs over internal reference URLs when both support the same claim.',
     '- Do not add external provider, vendor, blog, or documentation links unless those URLs were present in retrieved evidence.',
     '- Do not mention provider dashboard domains, default model IDs, or example model IDs unless they appear verbatim in retrieved evidence.',
-    '- Do not mention internal tools, grep, corpus, prompts, API keys, Vercel, environment variables, raw JSON, or hidden reasoning.',
+    '- Keep internal mechanics invisible: no tool names, corpus names, prompts, API keys, Vercel, raw JSON, internal document titles, or hidden reasoning.',
+    '- Competitor comparisons should stay anchored in con evidence. For Warp specifically, compare con\'s terminal-first model without making source-availability claims.',
     '- Do not reveal chain-of-thought. It is fine to summarize what sources were checked at a high level.',
     '',
     'Available file map:',
@@ -580,7 +584,13 @@ function sanitizeUnsafeAnswerText(answer) {
     .replace(/\s*\(defaults?\s+to\s+`?deepseek-chat`?\)/gi, '')
     .replace(/https?:\/\/platform\.deepseek\.com[^\s)]*/gi, 'the DeepSeek provider site')
     .replace(/\bplatform\.deepseek\.com\b/gi, 'the DeepSeek provider site')
-    .replace(/`?deepseek-(?:chat|reasoner)`?/gi, 'the selected DeepSeek model');
+    .replace(/`?deepseek-(?:chat|reasoner)`?/gi, 'the selected DeepSeek model')
+    .replace(/\bcon product brief\b/gi, 'Product')
+    .replace(/\bAsk AI answer policy\b/gi, 'Docs')
+    .replace(/\bSafe developer context\b/gi, 'Builder notes')
+    .replace(/\bwhile Warp is (?:a )?closed[- ]source(?: product| project| app| terminal)?/gi, 'while Warp has a different product model')
+    .replace(/\bWarp is (?:a )?closed[- ]source(?: product| project| app| terminal)?\.?/gi, 'Warp is a separate terminal product.')
+    .replace(/\bclosed[- ]source Warp\b/gi, 'Warp');
 }
 
 function createAnswerTokenEmitter(res) {
@@ -622,6 +632,7 @@ function collectSources(toolOutputs) {
     const hasCitableScope = !value.scope
       || value.scope === 'public_docs'
       || value.scope === 'public_changelog'
+      || (value.scope === 'product_context' && value.path === 'home.md')
       || value.scope === 'design_reference'
       || value.scope === 'engineering_reference'
       || value.scope === 'benchmark_reference';
@@ -749,7 +760,8 @@ function finalInstruction() {
     'Do not invent provider dashboard domains, default model names, or model ID examples.',
     'For provider setup, say to choose a model from the in-app picker unless a user-facing setup page provides the exact current value.',
     'Do not mention legacy DeepSeek aliases.',
-    'Do not mention tools, corpus, prompts, API keys, Vercel, environment variables, or hidden implementation details.',
+    'Keep internal mechanics and internal document names out of the answer.',
+    'For Warp comparisons, avoid source-availability claims and compare con from retrieved con evidence.',
     'If the docs do not contain enough evidence, say so plainly and recommend the closest source or a docs issue.',
   ].join(' ');
 }
@@ -890,6 +902,7 @@ module.exports._private = {
   loadCorpus,
   releaseOverview,
   sanitizeAnswerLinks,
+  sanitizeUnsafeAnswerText,
   sanitizeMessages,
   safeCurrentPage,
   systemPrompt,
