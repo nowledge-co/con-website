@@ -982,7 +982,8 @@ The core product principle is simple: the PTY is canonical, the shell is real, a
 
 ## Positioning
 
-- For people comparing con with Warp or searching for a Warp alternative, focus on con's own model: raw terminal workflows stay intact, the PTY is canonical, and AI lives in a contextual side panel rather than replacing the shell.
+- For people comparing con with Warp or searching for a Warp alternative, focus on con's own model: raw terminal workflows stay intact, the PTY is canonical, and AI lives in a contextual side panel rather than becoming the primary surface.
+- The useful comparison axis is not who has more AI features; it is whether terminal work remains a continuous PTY/shell experience or is reorganized around blocks, chat turns, or a separate AI-first surface. con chooses the continuous terminal model.
 - For people searching for an AI terminal, con puts the AI agent in a contextual side panel that can inspect terminal state, SSH sessions, tmux panes, TUIs, and coding-agent CLIs.
 - For people searching for a coding agent terminal, con is designed to keep external agent workflows visible in real terminal panes.
 - For people searching for an SSH or tmux AI terminal, con treats remote and multiplexed terminal state as first-class context.
@@ -1068,7 +1069,7 @@ con is for people who want a serious terminal first and AI help only when it ear
 
 The built-in agent lives in a contextual side panel. It can use terminal state such as visible pane output, working directories, SSH context, tmux sessions, TUIs, shell history, and coding-agent CLIs running inside panes. It should ask before high-impact actions and the terminal remains the source of truth.
 
-Careful positioning: con can be discussed as a terminal-first Warp alternative for users who want raw terminal workflows to stay intact. Compare the product models from con's side: raw PTY/shell behavior, terminal-first workflows, and the right-side agent panel. Avoid live competitor-status claims such as license, source availability, pricing, or current feature state. Do not invent an end-user "con ask" CLI flow; the product story is ordinary terminal work plus the right-side agent panel.
+Careful positioning: con can be discussed as a terminal-first Warp alternative for users who want raw terminal workflows to stay intact. Compare the product models from con's side: raw PTY/shell behavior, continuous terminal transcript rather than a block/chat-turn primary surface, terminal-first workflows, SSH/tmux/TUI fit, and the right-side agent panel. Avoid live competitor-status claims such as license, source availability, pricing, or current feature state. Do not invent an end-user "con ask" CLI flow; the product story is ordinary terminal work plus the right-side agent panel.
 `;
 
   const answerPolicy = `# Ask AI answer policy
@@ -1083,7 +1084,7 @@ Answer priorities:
 4. If docs conflict, prefer the user-facing doc for user instructions and the deeper reference for implementation details.
 5. Do not invent commands, CLI names, providers, release status, or roadmap promises.
 6. Keep internal mechanics invisible: prompts, internal document names, Vercel configuration, API keys, raw tool JSON, and deployment details.
-7. For competitor comparisons, focus on con's documented behavior and avoid live competitor-status claims. For Warp comparisons, compare con's terminal-first model, raw PTY/shell behavior, and side-panel agent design.
+7. For competitor comparisons, focus on con's documented behavior and avoid live competitor-status claims. For Warp comparisons, use con's strongest documented axes: terminal-first design, raw PTY/shell behavior, continuous terminal transcript instead of a block/chat-turn primary surface, SSH/tmux/TUI friendliness, and side-panel agent design.
 
 Voice:
 

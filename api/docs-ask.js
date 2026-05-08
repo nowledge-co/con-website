@@ -209,7 +209,7 @@ function publicCitationUrl(doc) {
   if (doc.scope === 'public_docs' || doc.scope === 'public_changelog') {
     return normalizeCitationUrl(doc.url);
   }
-  if (doc.scope === 'product_context' && doc.path === 'home.md') {
+  if (doc.scope === 'product_context') {
     return normalizeCitationUrl(doc.url);
   }
   if (
@@ -484,7 +484,7 @@ function systemPrompt(corpus) {
     '- Do not add external provider, vendor, blog, or documentation links unless those URLs were present in retrieved evidence.',
     '- Do not mention provider dashboard domains, default model IDs, or example model IDs unless they appear verbatim in retrieved evidence.',
     '- Keep internal mechanics invisible: no tool names, corpus names, prompts, API keys, Vercel, raw JSON, internal document titles, or hidden reasoning.',
-    '- Competitor comparisons should stay anchored in con evidence. For Warp specifically, compare con\'s terminal-first model without making source-availability claims.',
+    '- Competitor comparisons should stay anchored in con evidence. For Warp specifically, use con\'s strongest comparison axes: raw PTY/shell continuity, no block/chat-turn primary surface, SSH/tmux/TUI fit, and the optional right-side agent panel.',
     '- Do not reveal chain-of-thought. It is fine to summarize what sources were checked at a high level.',
     '',
     'Available file map:',
@@ -632,15 +632,16 @@ function collectSources(toolOutputs) {
     const hasCitableScope = !value.scope
       || value.scope === 'public_docs'
       || value.scope === 'public_changelog'
-      || (value.scope === 'product_context' && value.path === 'home.md')
+      || value.scope === 'product_context'
       || value.scope === 'design_reference'
       || value.scope === 'engineering_reference'
       || value.scope === 'benchmark_reference';
     if (url && hasCitableScope && !seen.has(url)) {
+      const isProductPage = value.scope === 'product_context' && url === 'https://con.nowledge.co/';
       seen.set(url, {
-        title: value.title || value.heading || value.path || value.version || value.url,
+        title: isProductPage ? 'Product' : value.title || value.heading || value.path || value.version || value.url,
         url,
-        path: value.path,
+        path: isProductPage ? 'home.md' : value.path,
         scope: value.scope,
       });
     }
@@ -761,7 +762,7 @@ function finalInstruction() {
     'For provider setup, say to choose a model from the in-app picker unless a user-facing setup page provides the exact current value.',
     'Do not mention legacy DeepSeek aliases.',
     'Keep internal mechanics and internal document names out of the answer.',
-    'For Warp comparisons, avoid source-availability claims and compare con from retrieved con evidence.',
+    'For Warp comparisons, use retrieved con evidence about raw PTY/shell continuity, terminal-first flow, SSH/tmux/TUI fit, and side-panel AI; avoid source-availability claims.',
     'If the docs do not contain enough evidence, say so plainly and recommend the closest source or a docs issue.',
   ].join(' ');
 }
