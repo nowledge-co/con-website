@@ -40,12 +40,13 @@
 <meta name="twitter:image:alt" content="con terminal emulator hero preview"/>
 <meta name="theme-color" content="#0b0b0d"/>
 <meta name="color-scheme" content="dark light"/>
-<link rel="icon" href="/assets/icon_con_black.png"/>
-<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="icon" href="/assets/icon_con_192.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_192.png"/>
+<link rel="preload" as="image" href="/assets/bg-with-coon.webp" fetchpriority="high"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20260505d"/>
+<link rel="stylesheet" href="styles.css?v=20260511a"/>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -138,24 +139,31 @@
   ]
 }
 </script>
-<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/marked@12.0.2/marked.min.js"></script>
 </head>
 <body>
-<div id="app"></div>
-<script type="text/babel" src="components/TerminalDemo.jsx"></script>
-<script type="text/babel" src="components/Hero.jsx?v=20260505d"></script>
-<script type="text/babel">
-const CONFIG = {
-  headline: "GPU fast.||Agent || built in||.",
-  bgImage: "/assets/bg-with-coon.webp",
-  showAgent: true,
-  controlMode: "agent",
-};
-
-ReactDOM.createRoot(document.getElementById('app')).render(<Page tweaks={CONFIG}/>);
-</script>
+<div id="app">
+  <main class="landing-fallback" aria-label="con landing page">
+    <nav class="landing-fallback-nav" aria-label="Primary">
+      <a class="landing-fallback-brand" href="/">
+        <img src="/assets/icon_con_192.png" alt="" width="24" height="24"/>
+        <strong>con</strong>
+      </a>
+      <span class="landing-fallback-links">
+        <a href="/docs/">Docs</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="https://github.com/nowledge-co/con-terminal">GitHub</a>
+      </span>
+    </nav>
+    <section class="landing-fallback-hero">
+      <h1>
+        <span>GPU fast.</span>
+        <span>Agent <em>built in.</em></span>
+      </h1>
+      <p>A fast, humane terminal for SSH, tmux, and agent-native workflows.</p>
+      <a class="landing-fallback-cta" href="https://github.com/nowledge-co/con-terminal/releases/latest">Download con</a>
+    </section>
+  </main>
+</div>
+<script defer src="/landing.js?v=20260511a"></script>
 </body>
 </html>

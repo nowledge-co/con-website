@@ -1,6 +1,7 @@
 // Con landing — Tasklayer-inspired composition with OS-detecting install card, pilot center, providers strip.
 
 const REPO = 'nowledge-co/con-terminal';
+const PROVIDER_ICON_BASE = '/assets/provider-icons';
 const INSTALL_CMDS = {
   macOS:   'curl -fsSL https://nowled.ge/con-sh | sh',
   Windows: 'irm https://nowled.ge/con-ps1 | iex',
@@ -12,10 +13,10 @@ const OS_STATUS = {
   Linux:   { chip: 'early', label: 'Linux x86_64 (early)' },
 };
 const WINDOWS_SVG = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23f7f1ea"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>'.replace(/%23/g,'#'))}`;
-const OS_CDN = {
-  macOS:   'https://cdn.simpleicons.org/apple/f7f1ea',
+const OS_ICONS = {
+  macOS:   '/assets/os-icons/apple.svg',
   Windows: WINDOWS_SVG,
-  Linux:   'https://cdn.simpleicons.org/linux/f7f1ea',
+  Linux:   '/assets/os-icons/linux.svg',
 };
 
 function formatStars(count) {
@@ -41,7 +42,6 @@ const Page = ({ tweaks }) => {
   const [osTab, setOsTab] = React.useState(detected);
   const [repoMeta, setRepoMeta] = React.useState({ stars: null, version: null });
   const versionLabel = repoMeta.version || 'Beta';
-  const starLabel = repoMeta.stars || 'Star';
 
   React.useEffect(() => {
     let cancelled = false;
@@ -76,7 +76,7 @@ const Page = ({ tweaks }) => {
       {/* NAV */}
       <header className="nav">
         <div className="brand">
-          <img src="/assets/icon_con_black.png" alt="con" className="brand-icon" />
+          <img src="/assets/icon_con_192.png" alt="con" className="brand-icon" width="24" height="24" />
           <span className="brand-name">con</span>
           <span className="brand-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
         </div>
@@ -87,8 +87,12 @@ const Page = ({ tweaks }) => {
         <a className="gh-pill" href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">
           <GitHubGlyph />
           <span className="gh-label">GitHub</span>
-          <span className="gh-sep" />
-          <span className="gh-star" data-live={repoMeta.stars ? 'true' : 'false'}><StarGlyph /> {starLabel}</span>
+          {repoMeta.stars ? (
+            <>
+              <span className="gh-sep" />
+              <span className="gh-star" data-live="true"><StarGlyph /> {repoMeta.stars}</span>
+            </>
+          ) : null}
         </a>
       </header>
 
@@ -146,7 +150,7 @@ const Page = ({ tweaks }) => {
         <div className="foot-inner">
           <div className="foot-brand">
             <div className="foot-brand-row">
-              <img src="/assets/icon_con_black.png" alt="" className="foot-icon" />
+              <img src="/assets/icon_con_192.png" alt="" className="foot-icon" width="24" height="24" />
               <span className="foot-name">con</span>
               <span className="foot-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
             </div>
@@ -228,7 +232,7 @@ const InstallCard = ({ detected, osTab, setOsTab }) => {
               className={`os-tab${isActive ? ' active' : ''}${isDetected ? ' detected' : ''}`}
               onClick={() => setOsTab(os)}
             >
-              <img src={OS_CDN[os]} alt="" className="os-icon" />
+            <img src={OS_ICONS[os]} alt="" className="os-icon" />
               <span>{os}</span>
               {chip ? <span className={`os-chip ${chip}`}>{chip}</span> : null}
             </button>
@@ -253,12 +257,11 @@ const InstallCard = ({ detected, osTab, setOsTab }) => {
   );
 };
 
-// Provider uses lobehub CDN icons
+// Provider icons are vendored from @lobehub/icons-static-svg@1.90.0.
 const Provider = ({ id, label }) => (
   <span className="provider" data-provider={id}>
     <img
-      src={`https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${id}.svg`}
-      onError={(e) => { const mono = id.replace(/-color$/, ''); if (e.currentTarget.src.includes(`${mono}.svg`)) return; e.currentTarget.src = `https://unpkg.com/@lobehub/icons-static-svg@latest/icons/${mono}.svg`; }}
+      src={`${PROVIDER_ICON_BASE}/${id}.svg`}
       alt=""
       className="provider-logo"
     />

@@ -6,7 +6,7 @@
     "build": "node scripts/build-docs.mjs",
     "check": "npm run build && npm run check:docs",
     "check:docs": "node scripts/check-docs.mjs",
-    "dev": "npm run build && python3 -m http.server 4173 -d dist"
+    "dev": "npm run build && python3 -m http.server 4180 -d dist"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/nowledge-co/con-website#readme",
   "dependencies": {
-    "marked": "12.0.2"
+    "esbuild": "^0.25.12",
+    "marked": "12.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

@@ -13,18 +13,23 @@ const MODE_PLACEHOLDER = {
   shell: 'Run a command…',
 };
 const BASE_AGENT_MESSAGES = [
-  { kind: 'user', body: 'Find where we set max_tokens, bump it to 8192.' },
-  { kind: 'assistant', body: <>Reading <code>crates/con-core/src/config.rs</code>…</> },
-  { kind: 'tool-read' },
-  { kind: 'assistant', body: <>Line 47, currently <code>4096</code>. I'll patch it.</> },
-  { kind: 'tool-approval' },
+  { kind: 'user', body: 'What am I looking at in this workspace?' },
+  { kind: 'tool-context' },
+  { kind: 'assistant', body: <>You are in <code>~/dev/con</code> on <code>main</code>. I can read the visible pane and prepare the next command before anything runs.</> },
+  { kind: 'tool-doc' },
+  { kind: 'assistant', body: <>Quick controls are active: <code>⌘I</code> moves focus, <code>⌘L</code> shows the agent panel, and shell mode can target one pane or every split pane.</> },
 ];
+const prefersCompactDemo = () => (
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 560px)').matches
+);
 
 const TerminalDemo = ({ tweaks }) => {
   const initialMode = (tweaks.controlMode === 'cmd') ? 'shell'
                     : (tweaks.controlMode === 'auto') ? 'smart'
                     : (MODES.includes(tweaks.controlMode) ? tweaks.controlMode : 'smart');
-  const [showAgent, setShowAgent] = React.useState(tweaks.showAgent ?? true);
+  const [showAgent, setShowAgent] = React.useState(() => (
+    prefersCompactDemo() ? false : (tweaks.showAgent ?? true)
+  ));
   const [showBottom, setShowBottom] = React.useState(true);
   const [mode, setMode] = React.useState(initialMode);
   const [paneCount, setPaneCount] = React.useState(1);
@@ -37,7 +42,14 @@ const TerminalDemo = ({ tweaks }) => {
   const [agentMessages, setAgentMessages] = React.useState(BASE_AGENT_MESSAGES);
   const [tabs] = React.useState([{ id: 'zsh', title: 'zsh' }]);
 
-  React.useEffect(() => { setShowAgent(tweaks.showAgent ?? true); }, [tweaks.showAgent]);
+  React.useEffect(() => {
+    if (!prefersCompactDemo()) setShowAgent(tweaks.showAgent ?? true);
+  }, [tweaks.showAgent]);
+  React.useEffect(() => {
+    document.querySelectorAll('.con-window .pane').forEach((pane) => {
+      pane.scrollTop = pane.scrollHeight;
+    });
+  }, [paneLogs[0].length, paneLogs[1].length, paneCount]);
   React.useEffect(() => {
     if (!tweaks.controlMode) return;
     const next = (tweaks.controlMode === 'cmd') ? 'shell'
@@ -147,7 +159,6 @@ const TerminalDemo = ({ tweaks }) => {
     setCommand('');
     setScopeOpen(false);
   };
-
   return (
     <div className="con-window">
       {/* Title bar */}
@@ -168,7 +179,12 @@ const TerminalDemo = ({ tweaks }) => {
             ))}
             <button className="tab-new" aria-label="New tab">+</button>
           </div>
-        ) : <div className="titlebar-spacer" />}
+        ) : (
+          <div className="session-chip" aria-label="Current terminal session">
+            <span className="session-cwd">~/dev/con</span>
+            <span className="session-state">main</span>
+          </div>
+        )}
         <div className="con-win-actions">
           <button
             title={paneCount > 1 ? 'Close split' : 'Split pane'}
@@ -209,7 +225,7 @@ const TerminalDemo = ({ tweaks }) => {
               aria-label="Terminal pane 1"
               aria-multiline="true"
             >
-              <TerminalStreamA entries={paneLogs[0]} draft={paneDrafts[0]} focused={focusedPane === 0} />
+              <TerminalStreamLiveA entries={paneLogs[0]} draft={paneDrafts[0]} focused={focusedPane === 0} />
             </div>
             {paneCount > 1 && (
               <div
@@ -223,10 +239,60 @@ const TerminalDemo = ({ tweaks }) => {
                 aria-label="Terminal pane 2"
                 aria-multiline="true"
               >
-                <TerminalStreamB entries={paneLogs[1]} draft={paneDrafts[1]} focused={focusedPane === 1} />
+                <TerminalStreamLiveB entries={paneLogs[1]} draft={paneDrafts[1]} focused={focusedPane === 1} />
               </div>
             )}
           </div>
+
+          {showBottom && (
+            <div className={`con-bottombar mode-${mode}`}>
+              <div className="bb-mode-wrap">
+                <button
+                  className={`bb-mode-btn mode-${mode}`}
+                  onClick={cycleMode}
+                  title="Cycle mode · ⌘;"
+                  aria-label={MODE_LABEL[mode]}
+                >
+                  <ModeIcon mode={mode} />
+                </button>
+              </div>
+
+              {showBroadcast && (
+                <div className="bb-broadcast-wrap">
+                  <button
+                    className={`bb-broadcast${scopeOpen ? ' open' : ''}`}
+                    onClick={() => setScopeOpen(o => !o)}
+                    title="Pane scope · ⌘'"
+                  >
+                    <BroadcastGlyph/>
+                    <span>{scope === 'all' ? 'All panes' : `Pane ${focusedPane + 1}`}</span>
+                  </button>
+                  {scopeOpen && (
+                    <PaneScopePopover
+                      scope={scope}
+                      setScope={setScope}
+                      paneCount={paneCount}
+                      focusedPane={focusedPane}
+                      setFocusedPane={setFocusedPane}
+                      onClose={() => setScopeOpen(false)}
+                    />
+                  )}
+                </div>
+              )}
+
+              <div className="bb-input-wrap">
+                <input
+                  className={`bb-input mode-${mode}`}
+                  placeholder={MODE_PLACEHOLDER[mode]}
+                  value={command}
+                  onChange={(e) => setCommand(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') submitCommand(); }}
+                />
+              </div>
+
+              <button className="bb-send" aria-label="Send" onClick={submitCommand}><ArrowUpGlyph/></button>
+            </div>
+          )}
         </div>
 
         {showAgent && (
@@ -237,58 +303,6 @@ const TerminalDemo = ({ tweaks }) => {
           />
         )}
       </div>
-
-      {/* Bottom bar */}
-      {showBottom && (
-        <div className={`con-bottombar mode-${mode}`}>
-          <div className="bb-mode-wrap">
-            <button
-              className={`bb-mode-btn mode-${mode}`}
-              onClick={cycleMode}
-              title="Cycle mode · ⌘K"
-              aria-label={MODE_LABEL[mode]}
-            >
-              <ModeIcon mode={mode} />
-            </button>
-            <span className={`bb-mode-tooltip mode-${mode}`}>{MODE_LABEL[mode]}</span>
-          </div>
-
-          {showBroadcast && (
-            <div className="bb-broadcast-wrap">
-              <button
-                className={`bb-broadcast${scopeOpen ? ' open' : ''}`}
-                onClick={() => setScopeOpen(o => !o)}
-                title="Pane scope · ⌘'"
-              >
-                <BroadcastGlyph/>
-                <span>{scope === 'all' ? 'All panes' : `Pane ${focusedPane + 1}`}</span>
-              </button>
-              {scopeOpen && (
-                <PaneScopePopover
-                  scope={scope}
-                  setScope={setScope}
-                  paneCount={paneCount}
-                  focusedPane={focusedPane}
-                  setFocusedPane={setFocusedPane}
-                  onClose={() => setScopeOpen(false)}
-                />
-              )}
-            </div>
-          )}
-
-          <div className="bb-input-wrap">
-            <input
-              className={`bb-input mode-${mode}`}
-              placeholder={MODE_PLACEHOLDER[mode]}
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') submitCommand(); }}
-            />
-          </div>
-
-          <button className="bb-send" aria-label="Send" onClick={submitCommand}><ArrowUpGlyph/></button>
-        </div>
-      )}
     </div>
   );
 };
@@ -341,7 +355,7 @@ const PaneScopePopover = ({ scope, setScope, paneCount, focusedPane, setFocusedP
   );
 };
 
-const looksLikeShell = (text) => /^(cd|clear|curl|git|kubectl|ls|npm|pnpm|pwd|ssh|vim|yarn)(\s|$)/.test(text.trim());
+const looksLikeShell = (text) => /^(brew|cargo|cd|clear|con-cli|curl|git|just|kubectl|ls|npm|pnpm|pwd|rg|ssh|vim|yarn)(\s|$)/.test(text.trim());
 
 const buildShellLines = (text, targetCount, suffixOverride) => {
   const suffix = suffixOverride || (targetCount > 1 ? `broadcast to ${targetCount} panes` : 'sent to focused pane');
@@ -355,8 +369,37 @@ const buildShellLines = (text, targetCount, suffixOverride) => {
 
 const shellOutputFor = (text) => {
   if (text === 'pwd') return [{ text: '/Users/weyl/dev/con' }];
-  if (text === 'ls') return [{ text: 'Cargo.toml  crates  docs  package.json  README.md' }];
-  if (text.startsWith('git status')) return [{ text: 'On branch main' }, { text: 'nothing to commit, working tree clean' }];
+  if (text === 'ls') return [{ text: 'Cargo.toml  crates  docs  assets  README.md  CHANGELOG.md' }];
+  if (text.startsWith('git status')) return [
+    { text: '## main...origin/main' },
+    { text: 'nothing to commit, working tree clean', dim: true },
+  ];
+  if (text.startsWith('rg "Quick Terminal"')) return [
+    { text: 'README.md:76: Show or hide Quick Terminal  ⌘ Backslash', dim: true },
+    { text: 'docs/quick-terminal.md:1:# Quick Terminal' },
+    { text: 'docs/quick-controls.md:12:Quick controls keep terminal and agent focus one shortcut away.' },
+  ];
+  if (text.startsWith('con-cli panes list')) return [
+    { text: 'PANE  SURFACE   CWD          RUNTIME     STATE', dim: true },
+    { text: '1     shell     ~/dev/con    zsh         focused' },
+    { text: '2     logs      ~/dev/con    cargo test  running' },
+  ];
+  if (text.startsWith('con-cli surfaces list')) return [
+    { text: 'SURFACE  PANE  TITLE          OWNER', dim: true },
+    { text: 'shell    1     ~/dev/con      human' },
+    { text: 'agent    1     review notes   agent panel' },
+  ];
+  if (text.startsWith('cargo test')) return [
+    { text: 'running 18 tests', dim: true },
+    { text: 'test workspace::restore_layout ... ok' },
+    { text: 'test workspace::pane_scope_targets ... ok' },
+    { text: 'test result: ok. 18 passed; 0 failed; finished in 0.42s' },
+  ];
+  if (text.startsWith('just dev')) return [
+    { text: 'cargo run -p con-app --features dev', dim: true },
+    { text: 'watching crates/con-app, crates/con-core, assets' },
+    { text: 'app ready · GPU surface attached' },
+  ];
   if (text.startsWith('kubectl')) return [
     { text: 'NAME                       READY   STATUS    RESTARTS   AGE', dim: true },
     { text: 'api-7c4b9d8f5-rxqv         1/1     Running   0          4d' },
@@ -367,70 +410,60 @@ const shellOutputFor = (text) => {
 
 const buildAgentReply = (text, source) => {
   const lower = text.toLowerCase();
-  if (lower.includes('max_tokens') || lower.includes('token')) {
-    return <>I found the config path and would update <code>max_tokens</code> before asking for approval.</>;
+  if (lower.includes('focused pane') || lower.includes('current pane') || lower.includes('workspace')) {
+    return <>The focused pane is a clean <code>zsh</code> session in <code>~/dev/con</code>. A safe next move is <code>git status --short --branch</code>, then inspect <code>README.md</code> or <code>docs/quick-controls.md</code> before changing anything.</>;
+  }
+  if (lower.includes('quick terminal') || lower.includes('shortcut') || lower.includes('control')) {
+    return <>Use quick controls when you want the terminal to stay primary: <code>⌘I</code> toggles focus, <code>⌘L</code> opens the agent panel, and <code>⌘\</code> shows Quick Terminal after it is enabled in Settings.</>;
+  }
+  if (lower.includes('pane') || lower.includes('broadcast') || lower.includes('split')) {
+    return <>Split panes share the same terminal model. In shell mode, pane scope lets you send a command to the focused pane or broadcast it across every visible pane.</>;
   }
   if (looksLikeShell(text)) {
     return source === 'smart mode'
       ? <>That looks like shell input, so smart mode routed it to the focused pane.</>
       : <>That looks like shell input. Switch to shell or smart mode to route it to a pane, or keep discussing it here.</>;
   }
-  return <>Queued from {source}. I can inspect files, propose a patch, or run a shell command from here.</>;
+  return <>I can work from the terminal state you can already see: read the pane, check docs, propose a command, or ask before editing files.</>;
 };
 
 // --------- terminal streams ----------
-const TerminalStreamA = ({ entries, draft, focused }) => (
+const TerminalStreamLiveA = ({ entries, draft, focused }) => (
   <pre className="ts">
-    <Line dim>Last login: Thu Apr 23 14:02 on ttys004</Line>
+    <Line dim>Last login: Mon May 11 16:18 on ttys004</Line>
     <Line/>
-    <Line prompt>neofetch</Line>
-    <div className="neofetch">
-      <pre className="ascii">{`                   'c.
-                ,xNMM.
-              .OMMMMo
-              OMMM0,
-    .;loddo:' loolloddol;.
-  cKMMMMMMMMMMNWMMMMMMMMMM0:
-.KMMMMMMMMMMMMMMMMMMMMMMMWd.
-XMMMMMMMMMMMMMMMMMMMMMMMX.
-;MMMMMMMMMMMMMMMMMMMMMMMM:
-:MMMMMMMMMMMMMMMMMMMMMMMM:
-.MMMMMMMMMMMMMMMMMMMMMMMMX.
-kMMMMMMMMMMMMMMMMMMMMMMMMWd.
-.XMMMMMMMMMMMMMMMMMMMMMMMMMMk
- .XMMMMMMMMMMMMMMMMMMMMMMMMK.
-   kMMMMMMMMMMMMMMMMMMMMMMd
-    ;KMMMMMMMWXXWMMMMMMMk.
-      .cooc,.    .,coo:.`}</pre>
-      <div className="fetch">
-        <div><span className="k">OS:</span> macOS 15.7.2 arm64</div>
-        <div><span className="k">Host:</span> MacBook Pro</div>
-        <div><span className="k">Kernel:</span> 24.6.0</div>
-        <div><span className="k">Shell:</span> zsh 5.9</div>
-        <div><span className="k">Terminal:</span> con 0.1.0-beta</div>
-        <div><span className="k">CPU:</span> Apple M2 Max</div>
-        <div><span className="k">Memory:</span> 16 / 96 GiB</div>
-        <div className="swatch-row">
-          <span style={{background:'#4a4a4a'}}/><span style={{background:'#d64747'}}/><span style={{background:'#74a96b'}}/><span style={{background:'#d4a84b'}}/>
-          <span style={{background:'#5b86d6'}}/><span style={{background:'#a06bd4'}}/><span style={{background:'#5bb6b0'}}/><span style={{background:'#c7c7c7'}}/>
-        </div>
-      </div>
-    </div>
+    <Line prompt>cd ~/dev/con</Line>
+    <Line prompt>git status --short --branch</Line>
+    <Line>## main...origin/main</Line>
+    <Line dim>nothing to commit, working tree clean</Line>
+    <Line/>
+    <Line prompt>rg "Quick Terminal" README.md docs</Line>
+    <Line dim>README.md:76: Show or hide Quick Terminal  Cmd-Backslash</Line>
+    <Line>docs/quick-terminal.md:1:# Quick Terminal</Line>
+    <Line>docs/quick-controls.md:12:Quick controls keep terminal and agent focus one shortcut away.</Line>
+    <Line/>
+    <Line prompt>con-cli panes list</Line>
+    <Line dim>PANE  SURFACE   CWD          RUNTIME  STATE</Line>
+    <Line>1     shell     ~/dev/con    zsh      focused</Line>
     <Line/>
     <TerminalEntries entries={entries} />
     <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
   </pre>
 );
 
-const TerminalStreamB = ({ entries, draft, focused }) => (
+const TerminalStreamLiveB = ({ entries, draft, focused }) => (
   <pre className="ts">
-    <Line dim>Last login: Thu Apr 23 14:08 on ttys005</Line>
+    <Line dim>Split pane · inherited cwd from pane 1</Line>
     <Line/>
-    <Line prompt>kubectl get pods -n prod</Line>
-    <Line dim>NAME                       READY   STATUS    RESTARTS   AGE</Line>
-    <Line>api-7c4b9d8f5-2rxqv         1/1     Running   0          4d</Line>
-    <Line>api-7c4b9d8f5-h8mpz         1/1     Running   0          4d</Line>
-    <Line>worker-9f2c1b6e4-xj4kl      1/1     Running   1          2d</Line>
+    <Line prompt>cargo test -p con-app workspace::pane_scope_targets</Line>
+    <Line dim>running 1 test</Line>
+    <Line>test workspace::pane_scope_targets ... ok</Line>
+    <Line dim>test result: ok. 1 passed; 0 failed; finished in 0.11s</Line>
+    <Line/>
+    <Line prompt>con-cli surfaces list</Line>
+    <Line dim>SURFACE  PANE  TITLE          OWNER</Line>
+    <Line>shell    1     ~/dev/con      human</Line>
+    <Line>logs     2     cargo test     human</Line>
     <Line/>
     <TerminalEntries entries={entries} />
     <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
@@ -458,6 +491,11 @@ const CursorBlink = () => <span className="tl-cursor" />;
 // --------- agent side panel ----------
 const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
   const [draft, setDraft] = React.useState('');
+  const messagesRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!messagesRef.current) return;
+    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  }, [messages.length]);
   const send = () => {
     const text = draft.trim();
     if (!text) return;
@@ -472,12 +510,12 @@ const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
           <button className="icon-btn" title="History"><HistoryGlyph/></button>
         </div>
         <div className="agent-head-right">
-          <Dropdown label="Anthropic" />
-          <Dropdown label="Claude Haiku 4.5" />
+          <Dropdown label="OpenRouter" />
+          <Dropdown label="agent panel" />
         </div>
       </div>
 
-      <div className="agent-messages">
+      <div className="agent-messages" ref={messagesRef}>
         {messages.map((message, i) => <AgentMessage key={i} message={message} />)}
       </div>
 
@@ -497,33 +535,26 @@ const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
 };
 
 const AgentMessage = ({ message }) => {
-  if (message.kind === 'tool-read') {
+  if (message.kind === 'tool-context') {
     return (
       <div className="tool-card done">
         <div className="tool-head">
-          <FileGlyph/>
-          <span className="tool-name">file_read</span>
-          <span className="tool-arg">config.rs</span>
+          <TerminalGlyph/>
+          <span className="tool-name">read_pane</span>
+          <span className="tool-arg">visible output · cwd · git</span>
           <span className="tool-ok">✓</span>
         </div>
       </div>
     );
   }
-  if (message.kind === 'tool-approval') {
+  if (message.kind === 'tool-doc') {
     return (
-      <div className="tool-card approval">
+      <div className="tool-card done">
         <div className="tool-head">
-          <EditGlyph/>
-          <span className="tool-name">edit_file</span>
-          <span className="tool-arg">config.rs · 1 change</span>
-        </div>
-        <pre className="diff">
-          <div className="d-line remove">- max_tokens = 4096</div>
-          <div className="d-line add">+ max_tokens = 8192</div>
-        </pre>
-        <div className="tool-actions">
-          <button className="deny">Deny</button>
-          <button className="allow">Allow</button>
+          <FileGlyph/>
+          <span className="tool-name">read_docs</span>
+          <span className="tool-arg">README.md · quick-controls</span>
+          <span className="tool-ok">✓</span>
         </div>
       </div>
     );
@@ -610,6 +641,9 @@ const HistoryGlyph = () => (
 );
 const FileGlyph = () => (
   <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M4 2 H9.5 L12 4.5 V14 H4 Z M9.5 2 V4.5 H12"/></svg>
+);
+const TerminalGlyph = () => (
+  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="2.5" y="3" width="11" height="10" rx="2"/><path d="M5 6.5 7 8 5 9.5"/><path d="M8.5 10H11"/></svg>
 );
 const EditGlyph = () => (
   <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><path d="M3 13 L3 10.5 L10.5 3 L13 5.5 L5.5 13 Z"/></svg>

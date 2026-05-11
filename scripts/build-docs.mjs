@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { build } from 'esbuild';
 import { marked } from 'marked';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -9,7 +10,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260508d';
+const CSS_VERSION = '20260511a';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -121,14 +122,21 @@ const AGENT_REFERENCE_PATHS = [
   },
 ];
 const STATIC_ENTRIES = [
-  'assets',
-  'components',
+  'assets/os-icons',
+  'assets/provider-icons',
   'index.html',
   'LICENSE',
   'docs-ask.js',
   'docs-command.js',
   'og-image',
   'styles.css',
+];
+const STATIC_ASSETS = [
+  'bg-with-coon.png',
+  'bg-with-coon.webp',
+  'icon_con_192.png',
+  'nowledge-labs-icon.png',
+  'og-con.jpg',
 ];
 
 let DOC_MANIFEST = null;
@@ -270,12 +278,61 @@ async function copyStaticEntry(entry) {
   });
 }
 
+async function copyStaticAsset(fileName) {
+  const source = path.join(ROOT, 'assets', fileName);
+  const target = path.join(OUT_DIR, 'assets', fileName);
+  if (!(await fileExists(source))) return;
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.copyFile(source, target);
+}
+
 async function prepareOutputDirectory() {
   await fs.rm(OUT_DIR, { recursive: true, force: true });
   await fs.mkdir(OUT_DIR, { recursive: true });
   for (const entry of STATIC_ENTRIES) {
     await copyStaticEntry(entry);
   }
+  for (const fileName of STATIC_ASSETS) {
+    await copyStaticAsset(fileName);
+  }
+}
+
+async function buildLandingBundle() {
+  const sources = await Promise.all([
+    fs.readFile(path.join(ROOT, 'components', 'TerminalDemo.jsx'), 'utf8'),
+    fs.readFile(path.join(ROOT, 'components', 'Hero.jsx'), 'utf8'),
+  ]);
+  const mountCode = `
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
+${sources.join('\n\n')}
+
+const CONFIG = {
+  headline: "GPU fast.||Agent || built in||.",
+  bgImage: "/assets/bg-with-coon.webp",
+  showAgent: true,
+  controlMode: "agent",
+};
+
+createRoot(document.getElementById('app')).render(
+  React.createElement(Page, { tweaks: CONFIG })
+);
+`;
+  const result = await build({
+    stdin: {
+      contents: mountCode,
+      loader: 'jsx',
+      resolveDir: ROOT,
+    },
+    bundle: true,
+    write: false,
+    target: 'es2019',
+    format: 'iife',
+    minify: true,
+    legalComments: 'none',
+  });
+  await writeFileEnsured(path.join(OUT_DIR, 'landing.js'), result.outputFiles[0].text);
 }
 
 function escapeHtml(value) {
@@ -342,6 +399,7 @@ function descriptionFromMarkdown(markdown, fallback) {
 
 function descriptionForDoc(markdown, repoPath) {
   const overrides = {
+    'docs/README.md': 'Read con docs for install, quick controls, the built-in agent, AI providers, SSH and tmux workflows, workspace profiles, and con-cli surfaces.',
     'docs/install.md': 'Install con on macOS, Windows, or Linux, then connect the app, CLI, and update path for terminal-first workflows.',
     'docs/con-cli.md': 'Use con-cli and surfaces when scripts, test runners, or external agents need to inspect and drive a running con session.',
     'docs/screenshots.md': 'View con screenshots for the agent panel, terminal context, settings, pane broadcast picker, main window, and demo.',
@@ -780,8 +838,8 @@ ${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="
 <meta name="twitter:description" content="${escapeHtml(pageDescription)}"/>
 <meta name="twitter:image" content="${OG_IMAGE}"/>
 <meta name="theme-color" content="#0b0b0d"/>
-<link rel="icon" href="/assets/icon_con_black.png"/>
-<link rel="apple-touch-icon" href="/assets/icon_con_black.png"/>
+<link rel="icon" href="/assets/icon_con_192.png"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -792,7 +850,7 @@ ${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="
 <header class="static-docs-top">
   <div class="static-docs-nav">
     <a class="static-docs-brand" href="/">
-      <img src="/assets/icon_con_black.png" alt="" width="24" height="24"/>
+      <img src="/assets/icon_con_192.png" alt="" width="24" height="24"/>
       <span>con</span>
     </a>
     <nav class="static-docs-top-links" aria-label="Primary">
@@ -1302,6 +1360,7 @@ LLMS: ${SITE_URL}/llms.txt
 async function main() {
   const manifestSource = await loadManifest();
   await prepareOutputDirectory();
+  await buildLandingBundle();
   await writeFileEnsured(
     path.join(OUT_DIR, 'assets', 'docs-manifest.json'),
     `${JSON.stringify(DOC_MANIFEST, null, 2)}\n`,
