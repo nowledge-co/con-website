@@ -585,7 +585,10 @@ function sanitizeUnsafeAnswerText(answer) {
     .replace(/https?:\/\/platform\.deepseek\.com[^\s)]*/gi, 'the DeepSeek provider site')
     .replace(/\bplatform\.deepseek\.com\b/gi, 'the DeepSeek provider site')
     .replace(/`?deepseek-(?:chat|reasoner)`?/gi, 'the selected DeepSeek model')
-    .replace(/\bcon product brief\b/gi, 'Product')
+    .replace(/\bThe con product brief\b/gi, 'The product page')
+    .replace(/\bcon product brief\b/gi, 'product page')
+    .replace(/\bThe Product Brief\b/g, 'The product page')
+    .replace(/\bProduct Brief\b/g, 'product page')
     .replace(/\bAsk AI answer policy\b/gi, 'Docs')
     .replace(/\bSafe developer context\b/gi, 'Builder notes')
     .replace(/\bwhile Warp is (?:a )?closed[- ]source(?: product| project| app| terminal)?/gi, 'while Warp has a different product model')
@@ -655,7 +658,12 @@ function collectSources(toolOutputs) {
     || output.name === 'read_section'
     || output.name === 'get_release_overview'
   ));
-  for (const output of primaryOutputs.length ? primaryOutputs : toolOutputs) {
+  const primarySet = new Set(primaryOutputs);
+  const orderedOutputs = [
+    ...primaryOutputs,
+    ...toolOutputs.filter((output) => !primarySet.has(output)),
+  ];
+  for (const output of orderedOutputs) {
     visit(output.result);
   }
   return [...seen.values()].slice(0, 8);
