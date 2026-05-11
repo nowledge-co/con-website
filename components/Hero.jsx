@@ -118,8 +118,8 @@ const Page = ({ tweaks }) => {
             <Provider id="openai"        label="OpenAI" />
             <Provider id="gemini-color"  label="Gemini" />
             <Provider id="deepseek-color" label="DeepSeek" />
-            <Provider id="xai-color"     label="xAI" />
-            <Provider id="githubcopilot-color" label="GitHub Copilot" />
+            <Provider id="xai"           label="xAI" />
+            <Provider id="githubcopilot" label="GitHub Copilot" />
             <Provider id="ollama"        label="Ollama" />
             <Provider id="openrouter"    label="OpenRouter" />
             <Provider id="kimi-color"    label="Moonshot" />
