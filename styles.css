@@ -1910,7 +1910,7 @@ body {
 }
 .pane {
   position: relative;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   padding: 16px 22px;
   transition: box-shadow .2s;
@@ -1987,7 +1987,7 @@ body {
 .agent-messages {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   padding: 16px 14px;
   display: flex;

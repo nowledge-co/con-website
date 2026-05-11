@@ -142,6 +142,11 @@ const TerminalDemo = ({ tweaks }) => {
     setFocusedPane(paneIndex);
     e.currentTarget.focus();
   };
+  const passWheelToPage = (e) => {
+    if (e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    e.preventDefault();
+    window.scrollBy({ top: e.deltaY, behavior: 'auto' });
+  };
   const submitCommand = () => {
     const text = command.trim();
     if (!text) return;
@@ -160,7 +165,7 @@ const TerminalDemo = ({ tweaks }) => {
     setScopeOpen(false);
   };
   return (
-    <div className="con-window">
+    <div className="con-window" onWheelCapture={passWheelToPage}>
       {/* Title bar */}
       <div className={`con-titlebar${showTabs ? '' : ' no-tabs'}`}>
         <div className="traffic">
