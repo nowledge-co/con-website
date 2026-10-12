@@ -8,9 +8,9 @@ const INSTALL_CMDS = {
   Linux:   'curl -fsSL https://nowled.ge/con-sh | sh',
 };
 const OS_STATUS = {
-  macOS:   { chip: null,    label: 'Apple Silicon · Intel Metal' },
-  Windows: { chip: 'early', label: 'Windows (early)' },
-  Linux:   { chip: 'early', label: 'Linux x86_64 (early)' },
+  macOS:   { prompt: '$',   note: 'Apple Silicon and Intel' },
+  Windows: { prompt: 'PS>', note: 'Early access' },
+  Linux:   { prompt: '$',   note: 'Early access, x86_64' },
 };
 const WINDOWS_SVG = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23f7f1ea"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>'.replace(/%23/g,'#'))}`;
 const OS_ICONS = {
@@ -76,7 +76,7 @@ const Page = ({ tweaks }) => {
       {/* NAV */}
       <header className="nav">
         <div className="brand">
-          <img src="/assets/icon_con_192.png" alt="con" className="brand-icon" width="24" height="24" />
+          <img src="/assets/icon_con_192.png?v=20261012" alt="con" className="brand-icon" width="24" height="24" />
           <span className="brand-name">con</span>
           <span className="brand-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
         </div>
@@ -109,7 +109,7 @@ const Page = ({ tweaks }) => {
             </p>
           </div>
 
-          <InstallCard detected={detected} osTab={osTab} setOsTab={setOsTab} />
+          <InstallCard osTab={osTab} setOsTab={setOsTab} />
         </div>
 
         {/* vertical breathing room — the raccoon lives in the background image */}
@@ -150,7 +150,7 @@ const Page = ({ tweaks }) => {
         <div className="foot-inner">
           <div className="foot-brand">
             <div className="foot-brand-row">
-              <img src="/assets/icon_con_192.png" alt="" className="foot-icon" width="24" height="24" />
+              <img src="/assets/icon_con_192.png?v=20261012" alt="" className="foot-icon" width="24" height="24" />
               <span className="foot-name">con</span>
               <span className="foot-version" data-live={repoMeta.version ? 'true' : 'false'}>{versionLabel}</span>
             </div>
@@ -204,7 +204,7 @@ const Page = ({ tweaks }) => {
 };
 
 // ---------- Install card ----------
-const InstallCard = ({ detected, osTab, setOsTab }) => {
+const InstallCard = ({ osTab, setOsTab }) => {
   const [copied, setCopied] = React.useState(false);
   const cmd = INSTALL_CMDS[osTab];
   const status = OS_STATUS[osTab];
@@ -219,39 +219,45 @@ const InstallCard = ({ detected, osTab, setOsTab }) => {
     <div className="install-card">
       <div className="install-card-head">
         <span className="label">Install</span>
-        <span className="install-head-right">{status.label}</span>
+        <span className="install-head-right">{status.note}</span>
       </div>
-      <div className="os-tabs">
+      <div className="os-tabs" role="tablist" aria-label="Operating system">
         {['macOS', 'Windows', 'Linux'].map((os) => {
           const isActive = osTab === os;
-          const isDetected = detected === os;
-          const chip = OS_STATUS[os].chip;
           return (
             <button
               key={os}
-              className={`os-tab${isActive ? ' active' : ''}${isDetected ? ' detected' : ''}`}
-              onClick={() => setOsTab(os)}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={`os-tab${isActive ? ' active' : ''}`}
+              onClick={() => { setOsTab(os); setCopied(false); }}
             >
-            <img src={OS_ICONS[os]} alt="" className="os-icon" />
+              <img src={OS_ICONS[os]} alt="" className="os-icon" />
               <span>{os}</span>
-              {chip ? <span className={`os-chip ${chip}`}>{chip}</span> : null}
             </button>
           );
         })}
       </div>
 
-      <div className="install-cmd-row">
-        <span className="dollar">$</span>
-        <code>{cmd}</code>
-        <button className="copy-btn" onClick={copy}>
-          <CopyGlyph/> {copied ? 'copied' : 'copy'}
+      <div className="install-cmd-row" role="tabpanel" aria-label={`${osTab} install command`}>
+        <p className="install-cmd">
+          <span className="dollar" aria-hidden="true">{status.prompt}</span>
+          <code>
+            {cmd.includes(' | ') ? cmd.slice(0, cmd.lastIndexOf(' | ')) : cmd}
+            {cmd.includes(' | ') ? <><wbr />{cmd.slice(cmd.lastIndexOf(' | '))}</> : null}
+          </code>
+        </p>
+        <button type="button" className="copy-btn" onClick={copy} aria-live="polite">
+          <CopyGlyph />
+          <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
       <div className="install-cta-row">
         <a className="cta-primary" href={`https://github.com/${REPO}/releases/latest`} target="_blank" rel="noreferrer">
           Download for {osTab}
         </a>
-        <a className="cta-secondary" href="#terminal">See it in action</a>
+        <a className="cta-secondary" href="#terminal">See the terminal</a>
       </div>
     </div>
   );

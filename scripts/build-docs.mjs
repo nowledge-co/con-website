@@ -9,8 +9,8 @@ const OUT_DIR = path.join(ROOT, 'dist');
 const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
-const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20260504`;
-const CSS_VERSION = '20260511a';
+const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20261012`;
+const CSS_VERSION = '20261012';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -838,8 +838,8 @@ ${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="
 <meta name="twitter:description" content="${escapeHtml(pageDescription)}"/>
 <meta name="twitter:image" content="${OG_IMAGE}"/>
 <meta name="theme-color" content="#0b0b0d"/>
-<link rel="icon" href="/assets/icon_con_192.png"/>
-<link rel="apple-touch-icon" href="/assets/icon_con_192.png"/>
+<link rel="icon" href="/assets/icon_con_192.png?v=20261012"/>
+<link rel="apple-touch-icon" href="/assets/icon_con_192.png?v=20261012"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -850,7 +850,7 @@ ${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="
 <header class="static-docs-top">
   <div class="static-docs-nav">
     <a class="static-docs-brand" href="/">
-      <img src="/assets/icon_con_192.png" alt="" width="24" height="24"/>
+      <img src="/assets/icon_con_192.png?v=20261012" alt="" width="24" height="24"/>
       <span>con</span>
     </a>
     <nav class="static-docs-top-links" aria-label="Primary">
