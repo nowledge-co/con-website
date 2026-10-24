@@ -10,7 +10,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20261012`;
-const CSS_VERSION = '20261012';
+const CSS_VERSION = '20261024e';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -137,6 +137,9 @@ const STATIC_ASSETS = [
   'icon_con_192.png',
   'nowledge-labs-icon.png',
   'og-con.jpg',
+  'input-mode-smart.png',
+  'input-mode-shell.png',
+  'input-mode-agent.png',
 ];
 
 let DOC_MANIFEST = null;
@@ -311,8 +314,8 @@ ${sources.join('\n\n')}
 const CONFIG = {
   headline: "GPU fast.||Agent || built in||.",
   bgImage: "/assets/bg-with-coon.webp",
-  showAgent: true,
-  controlMode: "agent",
+  showAgent: false,
+  controlMode: "smart",
 };
 
 createRoot(document.getElementById('app')).render(
