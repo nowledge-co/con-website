@@ -1,9 +1,8 @@
-// Con terminal demo — mirrors the real product:
-// - Tab bar hidden when there's only one tab
-// - Title-bar actions: split, bottom-bar toggle, agent-panel toggle
-// - Bottom bar carries: mode chip (smart | agent | shell), broadcast scope (shell + multi-pane), input, send
-// - In shell mode with >1 pane, a Pane-scope popover lets the user broadcast input
-// - Agent panel has its own input ONLY when the bottom bar is hidden
+// Con terminal demo — mirrors the current app:
+// - Tab strip stays visible. Titles use the terminal glyph.
+// - Title-bar actions: new tab, left sidebar, input bar, agent panel.
+// - Bottom bar: mode icon, pane scope when more than one pane is open, input, send.
+// - Agent panel has its own input only when the bottom bar is hidden.
 
 const MODES = ['smart', 'agent', 'shell'];
 const MODE_LABEL = { smart: 'Smart mode', agent: 'Agent mode', shell: 'Shell mode' };
@@ -11,6 +10,11 @@ const MODE_PLACEHOLDER = {
   smart: 'Type a command or ask AI…',
   agent: 'Ask anything…',
   shell: 'Run a command…',
+};
+const MODE_ICON = {
+  smart: '/assets/input-mode-smart.png',
+  shell: '/assets/input-mode-shell.png',
+  agent: '/assets/input-mode-agent.png',
 };
 const BASE_AGENT_MESSAGES = [
   { kind: 'user', body: 'What am I looking at in this workspace?' },
@@ -28,22 +32,26 @@ const TerminalDemo = ({ tweaks }) => {
                     : (tweaks.controlMode === 'auto') ? 'smart'
                     : (MODES.includes(tweaks.controlMode) ? tweaks.controlMode : 'smart');
   const [showAgent, setShowAgent] = React.useState(() => (
-    prefersCompactDemo() ? false : (tweaks.showAgent ?? true)
+    prefersCompactDemo() ? false : (tweaks.showAgent ?? false)
   ));
-  const [showBottom, setShowBottom] = React.useState(true);
+  const [showBottom, setShowBottom] = React.useState(false);
+  const [showSidebar, setShowSidebar] = React.useState(false);
   const [mode, setMode] = React.useState(initialMode);
-  const [paneCount, setPaneCount] = React.useState(1);
+  const [paneCount] = React.useState(1);
   const [scope, setScope] = React.useState('all');
   const [focusedPane, setFocusedPane] = React.useState(0);
   const [scopeOpen, setScopeOpen] = React.useState(false);
   const [command, setCommand] = React.useState('');
   const [paneLogs, setPaneLogs] = React.useState([[], []]);
   const [paneDrafts, setPaneDrafts] = React.useState(['', '']);
-  const [agentMessages, setAgentMessages] = React.useState(BASE_AGENT_MESSAGES);
-  const [tabs] = React.useState([{ id: 'zsh', title: 'zsh' }]);
+  const [agentMessages, setAgentMessages] = React.useState([]);
+  const [tabs, setTabs] = React.useState([
+    { id: 'con', title: 'con' },
+  ]);
+  const [activeTab, setActiveTab] = React.useState('con');
 
   React.useEffect(() => {
-    if (!prefersCompactDemo()) setShowAgent(tweaks.showAgent ?? true);
+    if (!prefersCompactDemo()) setShowAgent(tweaks.showAgent ?? false);
   }, [tweaks.showAgent]);
   React.useEffect(() => {
     document.querySelectorAll('.con-window .pane').forEach((pane) => {
@@ -59,15 +67,19 @@ const TerminalDemo = ({ tweaks }) => {
   }, [tweaks.controlMode]);
 
   const cycleMode = () => setMode(m => MODES[(MODES.indexOf(m) + 1) % MODES.length]);
-  const toggleSplit = () => {
-    setPaneCount(c => {
-      const next = c === 1 ? 2 : 1;
-      if (next === 1) setFocusedPane(0);
-      return next;
-    });
+  const addTab = () => {
+    const id = `shell-${tabs.length + 1}`;
+    setTabs(current => [...current, { id, title: 'shell' }]);
+    setActiveTab(id);
   };
-  const showBroadcast = mode === 'shell' && paneCount > 1;
-  const showTabs = tabs.length > 1;
+  const closeTab = (id) => {
+    if (tabs.length < 2) return;
+    const next = tabs.filter(tab => tab.id !== id);
+    setTabs(next);
+    if (activeTab === id) setActiveTab(next[0].id);
+  };
+  const showBroadcast = mode !== 'agent' && paneCount > 1;
+  const raised = paneCount > 1 || showSidebar || showAgent;
   const appendToPanes = (paneIndexes, lines) => {
     setPaneLogs(current => current.map((log, i) => (
       paneIndexes.includes(i) ? [...log, ...lines] : log
@@ -91,7 +103,7 @@ const TerminalDemo = ({ tweaks }) => {
       setPaneLogs(current => current.map((log, i) => (targets.includes(i) ? [] : log)));
       return;
     }
-    appendToPanes(targets, buildShellLines(text, targets.length));
+    appendToPanes(targets, buildShellLines(text));
   };
   const runPaneCommand = (paneIndex) => {
     const text = paneDrafts[paneIndex].trim();
@@ -99,7 +111,7 @@ const TerminalDemo = ({ tweaks }) => {
     if (text === 'clear') {
       setPaneLogs(current => current.map((log, i) => (i === paneIndex ? [] : log)));
     } else {
-      appendToPanes([paneIndex], buildShellLines(text, 1, 'typed in pane'));
+      appendToPanes([paneIndex], buildShellLines(text));
     }
     setPaneDrafts(current => current.map((draft, i) => (i === paneIndex ? '' : draft)));
   };
@@ -167,46 +179,70 @@ const TerminalDemo = ({ tweaks }) => {
   return (
     <div className="con-window" onWheelCapture={passWheelToPage}>
       {/* Title bar */}
-      <div className={`con-titlebar${showTabs ? '' : ' no-tabs'}`}>
-        <div className="traffic">
+      <div className="con-titlebar">
+        <div className="traffic" aria-hidden="true">
           <span className="tl tl-close" />
           <span className="tl tl-min" />
           <span className="tl tl-max" />
         </div>
-        {showTabs ? (
-          <div className="con-tabs">
-            {tabs.map(t => (
-              <div key={t.id} className="con-tab active">
-                <span className="tab-dot" />
-                <span>{t.title}</span>
-                <span className="tab-x">×</span>
-              </div>
-            ))}
-            <button className="tab-new" aria-label="New tab">+</button>
-          </div>
-        ) : (
-          <div className="session-chip" aria-label="Current terminal session">
-            <span className="session-cwd">~/dev/con</span>
-            <span className="session-state">main</span>
-          </div>
-        )}
+        <div className="con-tabs" role="tablist" aria-label="Terminal tabs">
+          {tabs.map(t => (
+            <div
+              key={t.id}
+              className={`con-tab${t.id === activeTab ? ' active' : ''}`}
+              role="tab"
+              aria-selected={t.id === activeTab}
+              tabIndex={0}
+              onClick={() => setActiveTab(t.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveTab(t.id);
+                }
+              }}
+            >
+              <TerminalGlyph/>
+              <span className="tab-title">{t.title}</span>
+              <button
+                type="button"
+                className="tab-x"
+                aria-label={`Close ${t.title}`}
+                onClick={(e) => { e.stopPropagation(); closeTab(t.id); }}
+              >
+                <CloseGlyph/>
+              </button>
+            </div>
+          ))}
+        </div>
         <div className="con-win-actions">
-          <button
-            title={paneCount > 1 ? 'Close split' : 'Split pane'}
-            className={paneCount > 1 ? 'active' : ''}
-            onClick={toggleSplit}
-          >
-            <SplitGlyph/>
+          <button type="button" title="New tab" aria-label="New tab" onClick={addTab}>
+            <PlusGlyph/>
           </button>
           <button
-            title={showBottom ? 'Hide bottom bar' : 'Show bottom bar'}
+            type="button"
+            title={showSidebar ? 'Hide left sidebar' : 'Show left sidebar'}
+            aria-label={showSidebar ? 'Hide left sidebar' : 'Show left sidebar'}
+            aria-pressed={showSidebar}
+            className={showSidebar ? 'active' : ''}
+            onClick={() => setShowSidebar(v => !v)}
+          >
+            <SidebarGlyph/>
+          </button>
+          <button
+            type="button"
+            title={showBottom ? 'Hide input bar' : 'Show input bar'}
+            aria-label={showBottom ? 'Hide input bar' : 'Show input bar'}
+            aria-pressed={showBottom}
             className={showBottom ? 'active' : ''}
             onClick={() => setShowBottom(v => !v)}
           >
-            <BottomPanelGlyph/>
+            <InputBarGlyph/>
           </button>
           <button
+            type="button"
             title={showAgent ? 'Hide agent panel' : 'Show agent panel'}
+            aria-label={showAgent ? 'Hide agent panel' : 'Show agent panel'}
+            aria-pressed={showAgent}
             className={showAgent ? 'active' : ''}
             onClick={() => setShowAgent(v => !v)}
           >
@@ -216,9 +252,18 @@ const TerminalDemo = ({ tweaks }) => {
       </div>
 
       {/* Body */}
-      <div className={`con-body${showAgent ? '' : ' no-agent'}`}>
+      <div className={`con-body${showAgent ? '' : ' no-agent'}${showSidebar ? ' with-sidebar' : ''}${raised ? ' raised' : ''}`}>
+        {showSidebar && (
+          <aside className="con-sidebar" aria-label="Files">
+            <div className="sb-head">Files</div>
+            <div className="sb-item dir">crates</div>
+            <div className="sb-item">README.md</div>
+            <div className="sb-item">Cargo.toml</div>
+            <div className="sb-item dir">docs</div>
+          </aside>
+        )}
         <div className="con-main">
-          <div className={`pane-grid${paneCount > 1 ? ' split' : ''}`}>
+          <div className={`pane-grid${paneCount > 1 ? ' split' : ''}${raised ? ' cards' : ' flush'}`}>
             <div
               className={`pane${focusedPane === 0 ? ' focused' : ''}`}
               onClick={(e) => focusPane(0, e)}
@@ -230,6 +275,7 @@ const TerminalDemo = ({ tweaks }) => {
               aria-label="Terminal pane 1"
               aria-multiline="true"
             >
+              {paneCount > 1 && <PaneHead title="con" />}
               <TerminalStreamLiveA entries={paneLogs[0]} draft={paneDrafts[0]} focused={focusedPane === 0} />
             </div>
             {paneCount > 1 && (
@@ -244,6 +290,7 @@ const TerminalDemo = ({ tweaks }) => {
                 aria-label="Terminal pane 2"
                 aria-multiline="true"
               >
+                <PaneHead title="con" />
                 <TerminalStreamLiveB entries={paneLogs[1]} draft={paneDrafts[1]} focused={focusedPane === 1} />
               </div>
             )}
@@ -253,12 +300,13 @@ const TerminalDemo = ({ tweaks }) => {
             <div className={`con-bottombar mode-${mode}`}>
               <div className="bb-mode-wrap">
                 <button
+                  type="button"
                   className={`bb-mode-btn mode-${mode}`}
                   onClick={cycleMode}
                   title="Cycle mode · ⌘;"
                   aria-label={MODE_LABEL[mode]}
                 >
-                  <ModeIcon mode={mode} />
+                  <img src={MODE_ICON[mode]} alt="" width="22" height="22" />
                 </button>
               </div>
 
@@ -295,7 +343,7 @@ const TerminalDemo = ({ tweaks }) => {
                 />
               </div>
 
-              <button className="bb-send" aria-label="Send" onClick={submitCommand}><ArrowUpGlyph/></button>
+              <button type="button" className={`bb-send${command.trim() ? ' ready' : ''}`} aria-label="Send" onClick={submitCommand}><ArrowUpGlyph/></button>
             </div>
           )}
         </div>
@@ -362,13 +410,11 @@ const PaneScopePopover = ({ scope, setScope, paneCount, focusedPane, setFocusedP
 
 const looksLikeShell = (text) => /^(brew|cargo|cd|clear|con-cli|curl|git|just|kubectl|ls|npm|pnpm|pwd|rg|ssh|vim|yarn)(\s|$)/.test(text.trim());
 
-const buildShellLines = (text, targetCount, suffixOverride) => {
-  const suffix = suffixOverride || (targetCount > 1 ? `broadcast to ${targetCount} panes` : 'sent to focused pane');
+const buildShellLines = (text) => {
   const canned = shellOutputFor(text);
   return [
     { type: 'prompt', text },
     ...canned.map(line => ({ type: line.dim ? 'dim' : 'output', text: line.text })),
-    { type: 'dim', text: `# ${suffix}` },
   ];
 };
 
@@ -433,61 +479,64 @@ const buildAgentReply = (text, source) => {
 };
 
 // --------- terminal streams ----------
+const PaneHead = ({ title }) => (
+  <div className="pane-head">
+    <TerminalGlyph />
+    <span>{title}</span>
+  </div>
+);
+
+const PromptBlock = ({ draft, focused }) => (
+  <>
+    <div className="tl-line prompt-meta">
+      <span className="tl-path">~/dev/con</span>
+      <span className="tl-branch">main</span>
+    </div>
+    <div className="tl-line">
+      <span className="tl-gt">&gt;</span>
+      {draft ? <span className="tl-cmd">{draft}</span> : null}
+      {focused && <CursorBlink/>}
+    </div>
+  </>
+);
+
 const TerminalStreamLiveA = ({ entries, draft, focused }) => (
   <pre className="ts">
-    <Line dim>Last login: Mon May 11 16:18 on ttys004</Line>
-    <Line/>
-    <Line prompt>cd ~/dev/con</Line>
-    <Line prompt>git status --short --branch</Line>
-    <Line>## main...origin/main</Line>
-    <Line dim>nothing to commit, working tree clean</Line>
-    <Line/>
-    <Line prompt>rg "Quick Terminal" README.md docs</Line>
-    <Line dim>README.md:76: Show or hide Quick Terminal  Cmd-Backslash</Line>
-    <Line>docs/quick-terminal.md:1:# Quick Terminal</Line>
-    <Line>docs/quick-controls.md:12:Quick controls keep terminal and agent focus one shortcut away.</Line>
-    <Line/>
-    <Line prompt>con-cli panes list</Line>
-    <Line dim>PANE  SURFACE   CWD          RUNTIME  STATE</Line>
-    <Line>1     shell     ~/dev/con    zsh      focused</Line>
-    <Line/>
     <TerminalEntries entries={entries} />
-    <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
+    <PromptBlock draft={draft} focused={focused} />
   </pre>
 );
 
 const TerminalStreamLiveB = ({ entries, draft, focused }) => (
   <pre className="ts">
-    <Line dim>Split pane · inherited cwd from pane 1</Line>
-    <Line/>
-    <Line prompt>cargo test -p con-app workspace::pane_scope_targets</Line>
-    <Line dim>running 1 test</Line>
-    <Line>test workspace::pane_scope_targets ... ok</Line>
-    <Line dim>test result: ok. 1 passed; 0 failed; finished in 0.11s</Line>
-    <Line/>
-    <Line prompt>con-cli surfaces list</Line>
-    <Line dim>SURFACE  PANE  TITLE          OWNER</Line>
-    <Line>shell    1     ~/dev/con      human</Line>
-    <Line>logs     2     cargo test     human</Line>
-    <Line/>
     <TerminalEntries entries={entries} />
-    <Line prompt>{draft}{focused && <CursorBlink/>}</Line>
+    <PromptBlock draft={draft} focused={focused} />
   </pre>
 );
 
 const TerminalEntries = ({ entries }) => (
   <>
     {entries.map((entry, i) => (
-      <Line key={i} prompt={entry.type === 'prompt'} dim={entry.type === 'dim'}>
-        {entry.text}
-      </Line>
+      entry.type === 'prompt' ? (
+        <React.Fragment key={i}>
+          <div className="tl-line prompt-meta">
+            <span className="tl-path">~/dev/con</span>
+            <span className="tl-branch">main</span>
+          </div>
+          <div className="tl-line">
+            <span className="tl-gt">&gt;</span>
+            <span className="tl-cmd">{entry.text}</span>
+          </div>
+        </React.Fragment>
+      ) : (
+        <Line key={i} dim={entry.type === 'dim'}>{entry.text}</Line>
+      )
     ))}
   </>
 );
 
-const Line = ({ prompt, dim, children }) => (
+const Line = ({ dim, children }) => (
   <div className={`tl-line${dim ? ' dim' : ''}`}>
-    {prompt && <span className="tl-prompt">❯&nbsp;</span>}
     <span>{children}</span>
   </div>
 );
@@ -510,18 +559,17 @@ const AgentPanel = ({ showOwnInput, messages, onSubmit }) => {
   return (
     <aside className={`agent${showOwnInput ? ' with-own-input' : ''}`}>
       <div className="agent-head">
-        <div className="agent-head-left">
-          <button className="icon-btn" title="New chat"><PlusGlyph/></button>
-          <button className="icon-btn" title="History"><HistoryGlyph/></button>
-        </div>
+        <Dropdown label="Agent" />
         <div className="agent-head-right">
-          <Dropdown label="OpenRouter" />
-          <Dropdown label="agent panel" />
+          <button type="button" className="icon-btn" title="History"><HistoryGlyph/></button>
+          <button type="button" className="icon-btn" title="New chat"><PlusGlyph/></button>
         </div>
       </div>
 
       <div className="agent-messages" ref={messagesRef}>
-        {messages.map((message, i) => <AgentMessage key={i} message={message} />)}
+        {messages.length === 0 ? (
+          <p className="agent-empty">Ask anything about your terminal, code, or system. The agent can read files, run commands, and search your workspace.</p>
+        ) : messages.map((message, i) => <AgentMessage key={i} message={message} />)}
       </div>
 
       {showOwnInput && (
@@ -580,66 +628,43 @@ const Dropdown = ({ label }) => (
 );
 const KeyCap = ({ children }) => <span className="keycap">{children}</span>;
 
-// ---- mode icons ----
-const ModeIcon = ({ mode }) => {
-  if (mode === 'smart') return <SmartGlyph/>;
-  if (mode === 'agent') return <AgentModeGlyph/>;
-  return <ShellGlyph/>;
-};
-const SmartGlyph = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 13 L11.5 4.5"/>
-    <path d="M11.5 4.5 L13 3 L13.5 4.5 L13 6 L11.5 4.5 Z" fill="currentColor"/>
-    <path d="M5 4 L5 6 M4 5 L6 5"/>
-    <path d="M13 10 L13 12 M12 11 L14 11"/>
+const PlusGlyph = () => (
+  <svg viewBox="0 0 256 256" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" aria-hidden="true">
+    <line x1="40" y1="128" x2="216" y2="128"/>
+    <line x1="128" y1="40" x2="128" y2="216"/>
   </svg>
 );
-const AgentModeGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round">
-    <rect x="2.5" y="3" width="11" height="10" rx="2"/>
-    <path d="M2.5 5.5 H13.5"/>
-    <circle cx="4.5" cy="4.25" r="0.4" fill="currentColor" stroke="none"/>
-    <circle cx="6"   cy="4.25" r="0.4" fill="currentColor" stroke="none"/>
+const SidebarGlyph = () => (
+  <svg viewBox="0 0 256 256" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="88" y1="48" x2="88" y2="208"/>
+    <rect x="32" y="48" width="192" height="160" rx="8"/>
+    <line x1="32" y1="80" x2="56" y2="80"/>
+    <line x1="32" y1="112" x2="56" y2="112"/>
+    <line x1="32" y1="144" x2="56" y2="144"/>
   </svg>
 );
-const ShellGlyph = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 5 L6.5 8 L3 11"/>
-    <path d="M8 12 H13"/>
-  </svg>
-);
-
-const SplitGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4">
-    <rect x="2" y="3.5" width="12" height="9" rx="1.6"/>
-    <path d="M8 3.5 V12.5"/>
+const InputBarGlyph = () => (
+  <svg viewBox="0 0 256 256" width="13" height="13" aria-hidden="true">
+    <path fill="currentColor" d="M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,16v72H56V56Z"/>
   </svg>
 );
 const AgentPanelGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4">
-    <rect x="2" y="3.5" width="12" height="9" rx="1.6"/>
-    <rect x="9.5" y="3.5" width="4.5" height="9" rx="0" fill="currentColor" opacity="0.35" stroke="none"/>
-    <path d="M9.5 3.5 V12.5"/>
-  </svg>
-);
-const BottomPanelGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4">
-    <rect x="2" y="3.5" width="12" height="9" rx="1.6"/>
-    <rect x="2" y="9.5" width="12" height="3" rx="0" fill="currentColor" opacity="0.35" stroke="none"/>
-    <path d="M2 9.5 H14"/>
+  <svg viewBox="0 0 256 256" width="13" height="13" aria-hidden="true">
+    <path fill="currentColor" d="M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40ZM56,56h72V200H56Z"/>
   </svg>
 );
 const BroadcastGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
-    <circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/>
-    <path d="M5.5 5.5 A3.5 3.5 0 0 0 5.5 10.5"/>
-    <path d="M10.5 5.5 A3.5 3.5 0 0 1 10.5 10.5"/>
-    <path d="M3.6 3.6 A6 6 0 0 0 3.6 12.4"/>
-    <path d="M12.4 3.6 A6 6 0 0 1 12.4 12.4"/>
+  <svg viewBox="0 0 256 256" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" aria-hidden="true">
+    <circle cx="128" cy="128" r="32" fill="currentColor" opacity="0.2" stroke="none"/>
+    <circle cx="128" cy="128" r="32"/>
+    <path d="M181.67,80a71.94,71.94,0,0,1,0,96"/>
+    <path d="M74.33,176a71.94,71.94,0,0,1,0-96"/>
   </svg>
 );
-const PlusGlyph = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M8 3 V13 M3 8 H13"/></svg>
+const CloseGlyph = () => (
+  <svg viewBox="0 0 256 256" width="9" height="9" aria-hidden="true">
+    <path fill="currentColor" d="M202.83,197.17a4,4,0,0,1-5.66,5.66L128,133.66,58.83,202.83a4,4,0,0,1-5.66-5.66L122.34,128,53.17,58.83a4,4,0,0,1,5.66-5.66L128,122.34l69.17-69.17a4,4,0,1,1,5.66,5.66L133.66,128Z"/>
+  </svg>
 );
 const HistoryGlyph = () => (
   <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4"><circle cx="8" cy="8" r="5.5"/><path d="M8 5 V8 L10 9.5"/></svg>
@@ -648,13 +673,14 @@ const FileGlyph = () => (
   <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M4 2 H9.5 L12 4.5 V14 H4 Z M9.5 2 V4.5 H12"/></svg>
 );
 const TerminalGlyph = () => (
-  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="2.5" y="3" width="11" height="10" rx="2"/><path d="M5 6.5 7 8 5 9.5"/><path d="M8.5 10H11"/></svg>
-);
-const EditGlyph = () => (
-  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><path d="M3 13 L3 10.5 L10.5 3 L13 5.5 L5.5 13 Z"/></svg>
+  <svg viewBox="0 0 256 256" width="13" height="13" aria-hidden="true">
+    <path fill="currentColor" d="M117.31,134l-72,64a8,8,0,1,1-10.63-12L100,128,34.69,70A8,8,0,1,1,45.32,58l72,64a8,8,0,0,1,0,12ZM216,184H120a8,8,0,0,0,0,16h96a8,8,0,0,0,0-16Z"/>
+  </svg>
 );
 const ArrowUpGlyph = () => (
-  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 13 V3 M4 7 L8 3 L12 7"/></svg>
+  <svg viewBox="0 0 256 256" width="14" height="14" aria-hidden="true">
+    <path fill="currentColor" d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/>
+  </svg>
 );
 
 window.TerminalDemo = TerminalDemo;
