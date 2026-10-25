@@ -70,6 +70,11 @@ const CODEX_SCENES = {
     task: 'Listing migrations/',
     started: 3,
   },
+  hold: {
+    prompt: 'Add the ceiling hold in src/rollout.rs, and draft the 1.4 note from that behavior.',
+    task: 'Editing src/rollout.rs',
+    started: 9,
+  },
 };
 const BASE_AGENT_MESSAGES = [
   { kind: 'user', body: 'What am I looking at in this workspace?' },
@@ -82,6 +87,7 @@ const iconsForTab = (tab, focusByTab) => {
   const focus = focusByTab[tab.id] ?? 0;
   if (tab.layout === 'harbor') return focus === 0 ? ['terminal', 'file'] : ['file', 'terminal'];
   if (tab.layout === 'fleet') return focus === 2 ? ['monitor', 'terminal'] : ['terminal', 'monitor'];
+  if (tab.layout === 'pair') return focus === 1 ? ['code', 'codex'] : ['codex', 'code'];
   return tab.icons || null;
 };
 
@@ -154,6 +160,7 @@ const TerminalDemo = ({ tweaks }) => {
   }, []);
   const selectTab = (id) => {
     setActiveTab(id);
+    setFocusedPane(focusByTab[id] ?? 0);
     if (prefersCompactDemo()) return;
     setShowAgent(id === 'release');
     setShowSidebar(id === 'harbor');
@@ -184,14 +191,22 @@ const TerminalDemo = ({ tweaks }) => {
   const cycleMode = () => setMode(m => MODES[(MODES.indexOf(m) + 1) % MODES.length]);
   const addTab = () => {
     const presets = [
-      { title: 'codex', icon: 'codex' },
-      { title: 'editor', icon: 'code' },
-      { title: 'shell', icon: 'terminal' },
+      { title: 'Codex', icon: 'codex', layout: 'pair' },
+      { title: 'Editor', icon: 'code', layout: 'editor' },
+      { title: 'shell', icon: 'terminal', layout: 'shell' },
     ];
     const preset = presets.find(item => !tabs.some(tab => tab.title === item.title))
-      || { title: `shell ${tabs.length + 1}`, icon: 'terminal' };
+      || { title: `shell ${tabs.length + 1}`, icon: 'terminal', layout: 'shell' };
     const id = `${preset.icon}-${tabs.length + 1}`;
-    setTabs(current => [...current, { id, ...preset, layout: 'shell' }]);
+    if (quiet) {
+      setTabLayout('horizontal');
+      setShowBottom(true);
+      setShowSidebar(false);
+      setShowAgent(false);
+    }
+    setFocusedPane(0);
+    setFocusByTab(current => ({ ...current, [id]: 0 }));
+    setTabs(current => [...current, { id, ...preset }]);
     selectTab(id);
   };
   const closeTab = (id) => {
@@ -517,7 +532,7 @@ const TerminalDemo = ({ tweaks }) => {
               <pre className="ts quiet-term"><PromptBlock draft="" focused /></pre>
             </div>
           ) : (
-          <div className={`pane-grid${activeSurface.layout === 'harbor' ? ' harbor' : activeSurface.layout === 'fleet' ? ' fleet' : activeSurface.layout === 'agents' ? ' cols-3' : terminalSurface ? splitClass : ''}${raised ? ' cards' : ' flush'}`}>
+          <div className={`pane-grid${activeSurface.layout === 'harbor' ? ' harbor' : activeSurface.layout === 'fleet' ? ' fleet' : activeSurface.layout === 'agents' ? ' cols-3' : activeSurface.layout === 'pair' ? ' pair' : terminalSurface ? splitClass : ''}${raised ? ' cards' : ' flush'}`}>
             {activeSurface.layout === 'harbor' ? (
               <HarborWorkspace
                 doc={editorDoc}
@@ -538,6 +553,14 @@ const TerminalDemo = ({ tweaks }) => {
                 focused={focusedPane === 2}
                 onFocus={(e) => focusPane(2, e)}
               />
+            ) : activeSurface.layout === 'pair' ? (
+              <CodexEditorWorkspace
+                editorFocused={focusedPane === 1}
+                onCodexFocus={(e) => focusPane(0, e)}
+                onEditorFocus={(e) => focusPane(1, e)}
+              />
+            ) : activeSurface.layout === 'editor' ? (
+              <EditorPane doc="note" source focused onFocus={(e) => focusPane(0, e)} />
             ) : terminalSurface ? (
               <>
                 <div
@@ -1062,11 +1085,16 @@ const RUST_DOC = [
   { n: 9, parts: [{ c: 'punct', s: '}' }] },
 ];
 const NOTE_SOURCE = [
-  { n: 1, cursor: 1, parts: [{ c: 'title', s: '# Harbor 1.4' }] },
+  { n: 1, parts: [{ c: 'title', s: '# Harbor 1.4' }] },
   { n: 2, parts: [{ c: 'text', s: '' }] },
   { n: 3, parts: [{ c: 'text', s: 'The window holds the work and the agents doing it.' }] },
   { n: 4, parts: [{ c: 'text', s: '' }] },
-  { n: 5, parts: [{ c: 'text', s: 'Codex drafts the note. Claude checks the voice.' }] },
+  { n: 5, parts: [{ c: 'title', s: '## Canary' }] },
+  { n: 6, parts: [{ c: 'text', s: '' }] },
+  { n: 7, parts: [{ c: 'text', s: 'When p95 crosses the ceiling, the rollout holds.' }] },
+  { n: 8, parts: [{ c: 'text', s: 'A quiet window promotes the weight, 10% to 25%.' }] },
+  { n: 9, parts: [{ c: 'text', s: '' }] },
+  { n: 10, cursor: 36, parts: [{ c: 'text', s: 'Codex is still finishing this sentence' }, { c: 'caret' }] },
 ];
 const UPGRADE_SOURCE = [
   { n: 1, cursor: 1, parts: [{ c: 'title', s: '# From 1.3' }] },
@@ -1091,11 +1119,11 @@ const CodeGlyph = () => (
   </svg>
 );
 
-const EditorPane = ({ doc, focused, onFocus }) => {
+const EditorPane = ({ doc, focused, onFocus, source = false }) => {
   const file = EDITOR_DOCS[doc] || EDITOR_DOCS.rust;
   const markdown = doc !== 'rust';
-  const [preview, setPreview] = React.useState(markdown);
-  React.useEffect(() => { setPreview(doc !== 'rust'); }, [doc]);
+  const [preview, setPreview] = React.useState(markdown && !source);
+  React.useEffect(() => { setPreview(markdown && !source); }, [doc, source]);
   const cursorLine = file.lines.find(line => line.cursor) || file.lines[0];
   return (
     <div className={`pane editor${focused ? ' focused' : ''}`} onClick={onFocus}>
@@ -1134,7 +1162,7 @@ const EditorPane = ({ doc, focused, onFocus }) => {
               <div className="ed-kicker">Release</div>
               <div className="ed-h">Harbor 1.4</div>
               <p>The window holds the work and the agents doing it.</p>
-              <p>Codex drafts the note. Claude checks it against the 1.3 voice. OpenCode writes the way up from 1.3.</p>
+              <p>When p95 crosses the ceiling, the rollout holds. A quiet window promotes the weight, from 10% to 25%.</p>
             </>
           )}
         </div>
@@ -1247,6 +1275,16 @@ const FleetWorkspace = ({ focused, onFocus }) => (
       <PaneHead title="fleet" icon="monitor" />
       <HtopSurface />
     </div>
+  </>
+);
+
+const CodexEditorWorkspace = ({ editorFocused, onCodexFocus, onEditorFocus }) => (
+  <>
+    <div className={`pane${editorFocused ? '' : ' focused'}`} onClick={onCodexFocus}>
+      <PaneHead title="Ceiling hold | harbor" icon="codex" />
+      <CodexSurface scene="hold" />
+    </div>
+    <EditorPane doc="rust" focused={editorFocused} onFocus={onEditorFocus} />
   </>
 );
 
