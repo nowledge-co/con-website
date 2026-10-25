@@ -2094,6 +2094,9 @@ body {
 .pane-grid.cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.pane-grid.pair {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
 .pane.span-rows { grid-row: 1 / span 2; }
 .ed-bar {
   position: relative;
@@ -3508,6 +3511,7 @@ footer.site-foot {
   .pane-grid.split,
   .pane-grid.harbor,
   .pane-grid.fleet,
+  .pane-grid.pair,
   .pane-grid.cols-3 {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
