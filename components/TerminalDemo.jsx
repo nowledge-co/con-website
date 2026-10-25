@@ -134,6 +134,7 @@ const TerminalDemo = ({ tweaks }) => {
   const quiet = tabLayout === 'quiet';
   const verticalTabs = tabLayout === 'vertical' || tabLayout === 'compact';
   const compactTabs = tabLayout === 'compact';
+  const sessionRailCompact = compactTabs || (tabLayout === 'vertical' && showSidebar);
   const chooseLayout = (id) => {
     if (prefersPhoneDemo() && (id === 'vertical' || id === 'compact')) return;
     setTabLayout(id);
@@ -146,7 +147,7 @@ const TerminalDemo = ({ tweaks }) => {
     setShowBottom(true);
     if (prefersCompactDemo()) return;
     setShowAgent(activeTab === 'release');
-    setShowSidebar(activeTab === 'harbor');
+    setShowSidebar(id !== 'compact' && activeTab === 'harbor');
   };
   React.useEffect(() => {
     const mq = window.matchMedia('(max-width: 760px)');
@@ -163,7 +164,7 @@ const TerminalDemo = ({ tweaks }) => {
     setFocusedPane(focusByTab[id] ?? 0);
     if (prefersCompactDemo()) return;
     setShowAgent(id === 'release');
-    setShowSidebar(id === 'harbor');
+    if (tabLayout !== 'compact') setShowSidebar(id === 'harbor');
   };
   const openWorkspaceFile = (path) => {
     setActiveFile(path);
@@ -497,16 +498,23 @@ const TerminalDemo = ({ tweaks }) => {
       </div>
 
       {/* Body */}
-      <div className={`con-body${showAgent ? '' : ' no-agent'}${showSidebar ? ' with-sidebar' : ''}${quiet ? ' quiet' : ''}${verticalTabs ? ' vtabs' : ''}${compactTabs ? ' vtabs-compact' : ''}${raised ? ' raised' : ''}`}>
+      <div className={`con-body${showAgent ? '' : ' no-agent'}${showSidebar ? ' with-sidebar' : ''}${quiet ? ' quiet' : ''}${verticalTabs ? ' vtabs' : ''}${sessionRailCompact ? ' vtabs-compact' : ''}${raised ? ' raised' : ''}`}>
         {verticalTabs && (
           <TabRail
             tabs={tabs}
             activeTab={activeTab}
             focusByTab={focusByTab}
-            compact={compactTabs}
+            compact={sessionRailCompact}
+            toolOpen={tabLayout === 'vertical' && showSidebar}
             filesOn={showSidebar && sidebarSlot === 'files'}
             searchOn={showSidebar && sidebarSlot === 'search'}
-            onLayout={() => setTabLayout(compactTabs ? 'vertical' : 'compact')}
+            onLayout={() => {
+              if (tabLayout === 'vertical' && showSidebar) {
+                setShowSidebar(false);
+                return;
+              }
+              setTabLayout(compactTabs ? 'vertical' : 'compact');
+            }}
             onTool={openTool}
             onNew={addTab}
             onSelect={selectTab}
@@ -722,11 +730,11 @@ const CaretRailGlyph = ({ expand }) => (
   </svg>
 );
 
-const TabRail = ({ tabs, activeTab, focusByTab, compact, filesOn, searchOn, onLayout, onTool, onNew, onSelect, onClose }) => (
+const TabRail = ({ tabs, activeTab, focusByTab, compact, toolOpen, filesOn, searchOn, onLayout, onTool, onNew, onSelect, onClose }) => (
   <aside className={`vtab-rail${compact ? ' compact' : ''}`} aria-label="Tabs">
     <div className="vtab-tools">
-      <button type="button" className="vtab-tool" title={compact ? 'Expand tabs' : 'Compact tabs'} aria-label={compact ? 'Expand tabs' : 'Compact tabs'} onClick={onLayout}>
-        <CaretRailGlyph expand={compact} />
+      <button type="button" className="vtab-tool" title={toolOpen ? 'Show sessions' : compact ? 'Expand tabs' : 'Compact tabs'} aria-label={toolOpen ? 'Show sessions' : compact ? 'Expand tabs' : 'Compact tabs'} onClick={onLayout}>
+        <CaretRailGlyph expand={compact && !toolOpen} />
       </button>
       <span className="vtab-div" />
       <button type="button" className={`vtab-tool${filesOn ? ' on' : ''}`} title="Files" aria-label="Files" aria-pressed={filesOn} onClick={() => onTool('files')}>
