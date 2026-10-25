@@ -17,45 +17,25 @@ const MODE_ICON = {
   agent: '/assets/input-mode-agent.png',
 };
 const FILE_TREE = [
-  { name: 'con', kind: 'dir', children: [
-    { name: 'crates', kind: 'dir', children: [
-      { name: 'con-app', kind: 'dir', children: [
-        { name: 'src', kind: 'dir', children: [
-          { name: 'main.rs', kind: 'rust' },
-          { name: 'agent_panel.rs', kind: 'rust' },
-          { name: 'file_tree_view.rs', kind: 'rust' },
-        ] },
-      ] },
-      { name: 'con-agent', kind: 'dir', children: [
-        { name: 'src', kind: 'dir', children: [
-          { name: 'provider.rs', kind: 'rust' },
-        ] },
-      ] },
-      { name: 'con-core', kind: 'dir', children: [
-        { name: 'src', kind: 'dir', children: [
-          { name: 'lib.rs', kind: 'rust' },
-        ] },
-      ] },
+  { name: 'harbor', kind: 'dir', children: [
+    { name: 'src', kind: 'dir', children: [
+      { name: 'rollout.rs', kind: 'rust' },
+      { name: 'health.rs', kind: 'rust' },
     ] },
-    { name: 'assets', kind: 'dir', children: [
-      { name: 'themes', kind: 'dir', children: [
-        { name: 'con-dark.json', kind: 'json' },
-      ] },
+    { name: 'api', kind: 'dir', children: [
+      { name: 'main.rs', kind: 'rust' },
     ] },
     { name: 'docs', kind: 'dir', children: [
-      { name: 'quick-terminal.md', kind: 'md' },
-      { name: 'quick-controls.md', kind: 'md' },
+      { name: 'release-1.3.md', kind: 'md' },
+      { name: 'release-1.4.md', kind: 'md' },
+      { name: 'upgrade.md', kind: 'md' },
     ] },
-    { name: 'Cargo.toml', kind: 'toml' },
-    { name: 'README.md', kind: 'md' },
   ] },
 ];
 const SEARCH_INDEX = [
-  { file: 'README.md', line: 76, text: 'Show or hide Quick Terminal' },
-  { file: 'docs/quick-terminal.md', line: 1, text: 'Quick Terminal drops a pane over the workspace.' },
-  { file: 'docs/quick-controls.md', line: 12, text: 'Quick controls keep the terminal and the agent one shortcut apart.' },
-  { file: 'crates/con-app/src/workspace/frame.rs', line: 18, text: 'const CARD_GAP: f32 = 5.0;' },
-  { file: 'crates/con-app/src/agent_panel.rs', line: 123, text: 'Ask anything about your terminal, code, or system.' },
+  { file: 'harbor/src/rollout.rs', line: 11, text: 'Hold the canary when p95 crosses the ceiling.' },
+  { file: 'harbor/docs/release-1.4.md', line: 1, text: 'The window holds the work and the agents doing it.' },
+  { file: 'harbor/docs/upgrade.md', line: 1, text: 'From 1.3, the notes move into their own panes.' },
 ];
 const PROVIDERS = [
   { id: 'kimi', label: 'Kimi', icon: '/assets/provider-icons/kimi-color.svg', models: ['kimi-k3.1-pro', 'kimi-k2.5'] },
@@ -64,10 +44,20 @@ const PROVIDERS = [
   { id: 'gemini', label: 'Gemini', icon: '/assets/provider-icons/gemini-color.svg', models: ['gemini-2.5-pro', 'gemini-2.5-flash'] },
 ];
 const SHELL_PATH = '~/dev/harbor';
-const INITIAL_LOG = [
-  { type: 'prompt', text: 'cargo test -p api --quiet' },
+const WATCH_LOG = [
+  { type: 'prompt', text: "cargo watch -x 'test -p harbor rollout --quiet'" },
   { type: 'gap' },
-  { type: 'output', text: 'test result: ok. 12 passed; 0 failed; 0 ignored', tone: 'add' },
+  { type: 'output', text: 'Finished `test` profile in 1.84s', tone: 'add' },
+  { type: 'output', text: 'running 4 tests' },
+  { type: 'output', text: 'test rollout::holds_when_the_tail_slows ... ok', tone: 'add' },
+  { type: 'output', text: 'test rollout::promotes_on_a_quiet_window ... ok', tone: 'add' },
+  { type: 'output', text: 'test result: ok. 4 passed; 0 failed; 0 ignored', tone: 'add' },
+];
+const ORCHESTRA = [
+  { kind: 'user', body: 'Ship the 1.4 notes. Codex drafts them, Claude keeps the voice of the 1.3 note, and OpenCode writes the upgrade path. Watch all three.' },
+  { kind: 'tool-watch' },
+  { kind: 'assistant', body: <>The canary rule in <code>src/rollout.rs</code> now holds when p95 crosses the ceiling. Codex is drafting the note to match that behavior. Claude has both notes open and is comparing the voice. OpenCode is still listing <code>migrations/</code>, so the upgrade page is not written yet.</> },
+  { kind: 'assistant', body: <>Claude flagged one line that still sounds like a changelog. I left that with Codex. OpenCode has the migration list and is writing the 1.3 to 1.4 steps.</> },
 ];
 const CODEX_SCENES = {
   release: {
@@ -100,28 +90,42 @@ const TerminalDemo = ({ tweaks }) => {
     prefersCompactDemo() ? false : (tweaks.showAgent ?? false)
   ));
   const [showBottom, setShowBottom] = React.useState(true);
-  const [showSidebar, setShowSidebar] = React.useState(false);
+  const [showSidebar, setShowSidebar] = React.useState(() => !prefersCompactDemo());
   const [mode, setMode] = React.useState(initialMode);
   const [paneCount, setPaneCount] = React.useState(2);
   const [splitDir, setSplitDir] = React.useState('right');
   const [sidebarSlot, setSidebarSlot] = React.useState('files');
-  const [expanded, setExpanded] = React.useState(() => new Set(['con', 'con/crates', 'con/crates/con-app', 'con/crates/con-app/src']));
-  const [activeFile, setActiveFile] = React.useState('con/crates/con-app/src/agent_panel.rs');
+  const [expanded, setExpanded] = React.useState(() => new Set(['harbor', 'harbor/src', 'harbor/docs']));
+  const [activeFile, setActiveFile] = React.useState('harbor/src/rollout.rs');
+  const [editorDoc, setEditorDoc] = React.useState('rust');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [contextMenu, setContextMenu] = React.useState(null);
   const [scope, setScope] = React.useState('all');
-  const [focusedPane, setFocusedPane] = React.useState(1);
+  const [focusedPane, setFocusedPane] = React.useState(0);
+  const [focusByTab, setFocusByTab] = React.useState({ harbor: 0, monitor: 2 });
   const [scopeOpen, setScopeOpen] = React.useState(false);
   const [command, setCommand] = React.useState('');
-  const [paneLogs, setPaneLogs] = React.useState([INITIAL_LOG, []]);
-  const [paneDrafts, setPaneDrafts] = React.useState(['', '']);
-  const [agentMessages, setAgentMessages] = React.useState([]);
+  const [paneLogs, setPaneLogs] = React.useState([WATCH_LOG, [], []]);
+  const [paneDrafts, setPaneDrafts] = React.useState(['', '', '']);
+  const [threads, setThreads] = React.useState({ release: ORCHESTRA });
   const [tabs, setTabs] = React.useState([
-    { id: 'harbor', title: 'Harbor', icon: 'terminal', icons: ['codex', 'terminal'] },
-    { id: 'codex', title: 'Codex', icon: 'codex', busy: true },
-    { id: 'monitor', title: 'Monitor', icon: 'monitor' },
+    { id: 'harbor', title: 'Harbor', icon: 'terminal', layout: 'harbor' },
+    { id: 'release', title: 'Release', icon: 'codex', icons: ['codex', 'claude', 'opencode'], layout: 'agents' },
+    { id: 'monitor', title: 'Monitor', icon: 'monitor', layout: 'fleet' },
   ]);
   const [activeTab, setActiveTab] = React.useState('harbor');
+  const selectTab = (id) => {
+    setActiveTab(id);
+    if (prefersCompactDemo()) return;
+    setShowAgent(id === 'release');
+    setShowSidebar(id === 'harbor');
+  };
+  const openWorkspaceFile = (path) => {
+    setActiveFile(path);
+    if (path.endsWith('rollout.rs')) setEditorDoc('rust');
+    else if (path.endsWith('upgrade.md')) setEditorDoc('upgrade');
+    else if (path.endsWith('.md')) setEditorDoc('note');
+  };
 
   React.useEffect(() => {
     if (!prefersCompactDemo()) setShowAgent(tweaks.showAgent ?? false);
@@ -149,38 +153,40 @@ const TerminalDemo = ({ tweaks }) => {
     const preset = presets.find(item => !tabs.some(tab => tab.title === item.title))
       || { title: `shell ${tabs.length + 1}`, icon: 'terminal' };
     const id = `${preset.icon}-${tabs.length + 1}`;
-    setTabs(current => [...current, { id, ...preset }]);
-    setActiveTab(id);
+    setTabs(current => [...current, { id, ...preset, layout: 'shell' }]);
+    selectTab(id);
   };
   const closeTab = (id) => {
     if (tabs.length < 2) return;
     const next = tabs.filter(tab => tab.id !== id);
     setTabs(next);
-    if (activeTab === id) setActiveTab(next[0].id);
+    if (activeTab === id) selectTab(next[0].id);
   };
   const activeSurface = tabs.find(tab => tab.id === activeTab) || tabs[0];
   const terminalSurface = activeSurface.icon === 'terminal';
-  const showBroadcast = mode !== 'agent' && paneCount > 1 && terminalSurface;
+  const showBroadcast = mode !== 'agent' && paneCount > 1 && terminalSurface && activeSurface.layout !== 'harbor';
   const raised = paneCount > 1 || showSidebar || showAgent || !terminalSurface;
   const appendToPanes = (paneIndexes, lines) => {
     setPaneLogs(current => current.map((log, i) => (
       paneIndexes.includes(i) ? [...log, ...lines] : log
     )));
   };
+  const agentMessages = threads[activeTab] || [];
   const appendAgentExchange = (text, source = 'agent') => {
     const reply = buildAgentReply(text, source);
-    setAgentMessages(current => [
+    setThreads(current => ({
       ...current,
-      { kind: 'user', body: text },
-      { kind: 'assistant', body: reply },
-    ]);
+      [activeTab]: [...(current[activeTab] || []), { kind: 'user', body: text }, { kind: 'assistant', body: reply }],
+    }));
   };
   const runShellCommand = (raw) => {
     const text = raw.trim();
     if (!text) return;
-    const targets = paneCount > 1 && scope === 'all'
-      ? Array.from({ length: paneCount }, (_, i) => i)
-      : [focusedPane];
+    const targets = activeSurface.layout === 'harbor'
+      ? [0]
+      : paneCount > 1 && scope === 'all'
+        ? Array.from({ length: paneCount }, (_, i) => i)
+        : [focusedPane];
     if (text === 'clear') {
       setPaneLogs(current => current.map((log, i) => (targets.includes(i) ? [] : log)));
       return;
@@ -234,6 +240,7 @@ const TerminalDemo = ({ tweaks }) => {
   };
   const focusPane = (paneIndex, e) => {
     setFocusedPane(paneIndex);
+    setFocusByTab(current => ({ ...current, [activeTab]: paneIndex }));
     e.currentTarget.focus();
   };
   const passWheelToPage = (e) => {
@@ -327,26 +334,35 @@ const TerminalDemo = ({ tweaks }) => {
           <span className="tl tl-max" />
         </div>
         <div className="con-tabs" role="tablist" aria-label="Terminal tabs">
-          {tabs.map(t => (
+          {tabs.map(t => {
+            const focus = focusByTab[t.id] ?? 0;
+            const icons = t.layout === 'harbor'
+              ? (focus === 0 ? ['terminal', 'file'] : ['file', 'terminal'])
+              : t.layout === 'fleet'
+                ? (focus === 2 ? ['monitor', 'terminal'] : ['terminal', 'monitor'])
+                : t.icons;
+            const stacked = icons && icons.length > 1 && !t.busy;
+            const stack3 = icons && icons.length > 2;
+            return (
             <div
               key={t.id}
-              className={`con-tab${t.id === activeTab ? ' active' : ''}${t.icons && t.icons.length > 1 && !t.busy ? ' stacked' : ''}`}
+              className={`con-tab${t.id === activeTab ? ' active' : ''}${stacked ? ' stacked' : ''}${stack3 ? ' stack-3' : ''}`}
               role="tab"
               aria-selected={t.id === activeTab}
               tabIndex={0}
-              onClick={() => setActiveTab(t.id)}
+              onClick={() => selectTab(t.id)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  setActiveTab(t.id);
+                  selectTab(t.id);
                 }
               }}
             >
-              <span className={`tab-icon${t.icons && t.icons.length > 1 && !t.busy ? ' stacked' : ''}`}>
+              <span className={`tab-icon${stacked ? ' stacked' : ''}${stack3 ? ' stack-3' : ''}`}>
                 {t.busy
                   ? <TabSpinner />
-                  : t.icons && t.icons.length > 1
-                    ? <TabStack icons={t.icons} />
+                  : stacked
+                    ? <TabStack icons={icons} />
                     : <TabGlyph icon={t.icon || 'terminal'} />}
               </span>
               <span className="tab-title">{t.title}</span>
@@ -359,7 +375,8 @@ const TerminalDemo = ({ tweaks }) => {
                 <CloseGlyph/>
               </button>
             </div>
-          ))}
+            );
+          })}
         </div>
         <div className="con-win-actions">
           <button type="button" title="New tab" aria-label="New tab" onClick={addTab}>
@@ -408,14 +425,34 @@ const TerminalDemo = ({ tweaks }) => {
             expanded={expanded}
             activeFile={activeFile}
             onToggle={toggleDir}
-            onOpen={setActiveFile}
+            onOpen={openWorkspaceFile}
             query={searchQuery}
             setQuery={setSearchQuery}
           />
         )}
         <div className="con-main">
-          <div className={`pane-grid${terminalSurface ? splitClass : ''}${raised ? ' cards' : ' flush'}`}>
-            {terminalSurface ? (
+          <div className={`pane-grid${activeSurface.layout === 'harbor' ? ' harbor' : activeSurface.layout === 'fleet' ? ' fleet' : activeSurface.layout === 'agents' ? ' cols-3' : terminalSurface ? splitClass : ''}${raised ? ' cards' : ' flush'}`}>
+            {activeSurface.layout === 'harbor' ? (
+              <HarborWorkspace
+                doc={editorDoc}
+                entries={paneLogs[0]}
+                draft={paneDrafts[0]}
+                shellFocused={focusedPane === 0}
+                editorFocused={focusedPane === 1}
+                onShellFocus={(e) => focusPane(0, e)}
+                onEditorFocus={(e) => focusPane(1, e)}
+                onContextMenu={(e) => openPaneMenu(0, e)}
+                onKeyDown={(e) => handlePaneKeyDown(0, e)}
+                onPaste={(e) => handlePanePaste(0, e)}
+              />
+            ) : activeSurface.layout === 'agents' ? (
+              <AgentWorkspace />
+            ) : activeSurface.layout === 'fleet' ? (
+              <FleetWorkspace
+                focused={focusedPane === 2}
+                onFocus={(e) => focusPane(2, e)}
+              />
+            ) : terminalSurface ? (
               <>
                 <div
                   className={`pane${focusedPane === 0 ? ' focused' : ''}`}
@@ -445,14 +482,14 @@ const TerminalDemo = ({ tweaks }) => {
                     aria-label="Terminal pane 2"
                     aria-multiline="true"
                   >
-                    <PaneHead title="Draft the release note | harbor" icon="codex" />
-                    <CodexSurface scene="release" />
+                    <PaneHead title="shell" />
+                    <TerminalStreamLiveB entries={paneLogs[1] || []} draft={paneDrafts[1] || ''} focused={focusedPane === 1} />
                   </div>
                 )}
               </>
             ) : (
               <div className="pane focused" tabIndex={0}>
-                {activeSurface.icon === 'monitor' ? <HtopSurface /> : activeSurface.icon === 'codex' ? <CodexSurface scene="upgrade" /> : <CliSurface kind={activeSurface.icon} title={activeSurface.title} />}
+                {activeSurface.icon === 'monitor' ? <HtopSurface /> : <CliSurface kind={activeSurface.icon} title={activeSurface.title} />}
               </div>
             )}
           </div>
@@ -514,7 +551,7 @@ const TerminalDemo = ({ tweaks }) => {
             showOwnInput={!showBottom}
             messages={agentMessages}
             onSubmit={(text) => appendAgentExchange(text, 'agent panel')}
-            onClear={() => setAgentMessages([])}
+            onClear={() => setThreads(current => ({ ...current, [activeTab]: [] }))}
           />
         )}
       </div>
@@ -670,8 +707,10 @@ const buildAgentReply = (text, source) => {
 const PaneHead = ({ title, icon }) => (
   <div className="pane-head">
     <span className="pane-id">
-      {icon === 'codex'
-        ? <CodexMark />
+      {icon === 'codex' ? <CodexMark />
+        : icon === 'claude' ? <ClaudeMark />
+        : icon === 'opencode' ? <OpenCodeMark />
+        : icon === 'monitor' ? <img src="/assets/tab-monitor.png" alt="" width="12" height="12" />
         : <img src="/assets/tab-terminal-refined.png" alt="" width="12" height="12" />}
     </span>
     <span className="pane-title">{title}</span>
@@ -689,28 +728,52 @@ const PaneHead = ({ title, icon }) => (
 const TabGlyph = ({ icon }) => {
   if (icon === 'claude') return <ClaudeMark />;
   if (icon === 'codex') return <CodexMark />;
+  if (icon === 'opencode') return <OpenCodeMark />;
   const src = icon === 'monitor'
     ? '/assets/tab-monitor.png'
     : icon === 'code'
       ? '/assets/tab-code.png'
-      : '/assets/tab-terminal-refined.png';
+      : icon === 'file'
+        ? '/assets/tab-file.png'
+        : '/assets/tab-terminal-refined.png';
   return <img src={src} alt="" width="16" height="16" />;
 };
 
-const TabStack = ({ icons }) => (
-  <span className="id-stack">
-    {icons.map((icon, index) => (
-      <span className={`id-card${index === 0 ? ' front' : ' back'}`} key={`${icon}-${index}`}>
-        <TabGlyph icon={icon} />
-      </span>
-    ))}
-  </span>
-);
+const TabStack = ({ icons }) => {
+  const shown = icons.slice(0, 3);
+  const size = 16;
+  const step = Math.round(size * 0.22);
+  const width = size + 2 + step * (shown.length - 1);
+  const height = size + 2;
+  return (
+    <span className="id-stack" style={{ width, height }}>
+      {shown.map((icon, index) => {
+        const card = size + (index === 0 ? 2 : 0);
+        return (
+          <span
+            className={`id-card${index === 0 ? ' front' : ' back'}${index !== 0 && ['terminal', 'file', 'monitor', 'code'].includes(icon) ? ' bitmap' : ''}`}
+            key={`${icon}-${index}`}
+            style={{ left: index === 0 ? 0 : step * index + 2, top: (height - card) / 2, width: card, height: card, zIndex: shown.length - index }}
+          >
+            <TabGlyph icon={icon} />
+          </span>
+        );
+      })}
+    </span>
+  );
+};
 
 const TabSpinner = () => (
   <span className="tab-spinner" aria-label="Working">
     <i /><i /><i />
   </span>
+);
+
+const OpenCodeMark = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <path fill="currentColor" fillRule="evenodd" d="M2.4 0h19.2v24H2.4zm4.8 4.8h9.6v14.4H7.2z" />
+    <path fill="currentColor" d="M7.2 9.6h9.6v9.6H7.2z" opacity="0.5" />
+  </svg>
 );
 
 const ClaudeMark = () => (
@@ -725,29 +788,29 @@ const CodexMark = () => (
   </svg>
 );
 
-const HTOP_LEFT = [[98.2, 14], [91.4, 11], [86.0, 9], [72.5, 7], [44.2, 4], [28.6, 3], [12.4, 1], [6.1, 0]];
-const HTOP_RIGHT = [[81.3, 10], [63.0, 6], [22.8, 2], [11.5, 1], [5.2, 0], [2.4, 0], [1.1, 0], [0.4, 0]];
+const HTOP_LEFT = [[46.2, 4], [31.8, 3], [18.4, 2], [12.6, 1], [8.1, 1], [4.4, 0], [2.1, 0], [0.8, 0]];
+const HTOP_RIGHT = [[22.4, 2], [14.0, 1], [9.2, 1], [5.5, 0], [3.1, 0], [1.4, 0], [0.6, 0], [0.2, 0]];
 const HTOP_ROWS = [
-  ['41220', 'dev', '20', '0', '8124M', '842M', 'R', '186.4', '1.3', '0:18.22', 'cargo test -p api --quiet'],
-  ['41288', 'dev', '20', '0', '6402M', '1104M', 'R', '142.1', '1.7', '0:11.04', 'rustc --crate-name harbor_api'],
-  ['41804', 'dev', '20', '0', '2488M', '186M', 'S', '6.4', '0.3', '0:08.11', 'target/debug/harbor'],
-  ['55102', 'dev', '20', '0', '1932M', '412M', 'S', '4.8', '0.6', '1:02.40', 'codex'],
-  ['22011', 'dev', '20', '0', '1820M', '96M', 'S', '1.2', '0.1', '4:14.02', 'node vite'],
-  ['902', 'dev', '17', '0', '96M', '28M', 'S', '0.8', '0.0', '12:03.11', 'con'],
+  ['41804', 'dev', '20', '0', '2488M', '186M', 'S', '6.4', '0.3', '14:08:11', 'harbor-api --canary 1.4'],
+  ['41880', 'dev', '20', '0', '612M', '84M', 'S', '2.8', '0.1', '14:08:11', 'rollout'],
+  ['41902', 'dev', '20', '0', '248M', '42M', 'S', '1.1', '0.1', '6:22:40', 'probe --regions 3'],
+  ['902', 'dev', '17', '0', '96M', '28M', 'S', '0.8', '0.0', '12:03:11', 'con'],
   ['331', 'root', '20', '0', '612M', '84M', 'S', '0.6', '0.1', '6:41:02', 'WindowServer'],
   ['1', 'root', '20', '0', '240M', '14M', 'S', '0.4', '0.0', '18:12:44', 'kernel_task'],
-  ['640', 'dev', '20', '0', '210M', '36M', 'S', '0.2', '0.0', '2:18.55', 'mds_stores'],
-  ['88', 'dev', '20', '0', '18M', '4096K', 'S', '0.1', '0.0', '0:01.04', 'zsh'],
-  ['1204', 'dev', '20', '0', '84M', '12M', 'S', '0.0', '0.0', '0:00.31', 'git'],
-  ['77', 'root', '20', '0', '42M', '8192K', 'S', '0.0', '0.0', '1:04:18', 'logd'],
-  ['204', 'dev', '20', '0', '156M', '22M', 'S', '0.0', '0.0', '0:44.02', 'coreaudiod'],
-  ['3188', 'dev', '20', '0', '64M', '9M', 'S', '0.0', '0.0', '0:02.16', 'rg'],
-  ['4410', 'dev', '20', '0', '980M', '140M', 'S', '0.0', '0.2', '8:22.10', 'Cursor'],
+  ['640', 'dev', '20', '0', '210M', '36M', 'S', '0.2', '0.0', '2:18:55', 'mds_stores'],
+  ['77', 'root', '20', '0', '42M', '8192K', 'S', '0.1', '0.0', '1:04:18', 'logd'],
+  ['88', 'dev', '20', '0', '18M', '4096K', 'S', '0.1', '0.0', '0:01:04', 'zsh'],
   ['512', 'root', '20', '0', '48M', '6M', 'S', '0.0', '0.0', '3:11:40', 'launchd'],
-  ['880', 'dev', '20', '0', '320M', '54M', 'S', '0.0', '0.1', '0:19.44', 'node'],
-  ['2290', 'dev', '20', '0', '72M', '11M', 'S', '0.0', '0.0', '0:00.08', 'zsh'],
+  ['1204', 'dev', '20', '0', '84M', '12M', 'S', '0.0', '0.0', '0:00:31', 'git'],
+  ['204', 'dev', '20', '0', '156M', '22M', 'S', '0.0', '0.0', '0:44:02', 'coreaudiod'],
+  ['3188', 'dev', '20', '0', '64M', '9M', 'S', '0.0', '0.0', '0:02:16', 'rg'],
   ['1602', 'dev', '20', '0', '188M', '27M', 'S', '0.0', '0.0', '1:02:33', 'distnoted'],
-  ['2744', 'dev', '20', '0', '54M', '7M', 'S', '0.0', '0.0', '0:00.02', 'sleep'],
+  ['2290', 'dev', '20', '0', '72M', '11M', 'S', '0.0', '0.0', '0:00:08', 'zsh'],
+  ['2744', 'dev', '20', '0', '54M', '7M', 'S', '0.0', '0.0', '0:00:02', 'sleep'],
+  ['880', 'dev', '20', '0', '320M', '54M', 'S', '0.0', '0.1', '0:19:44', 'node'],
+  ['4410', 'dev', '20', '0', '980M', '140M', 'S', '0.0', '0.2', '8:22:10', 'ssh'],
+  ['1501', 'root', '20', '0', '36M', '5M', 'S', '0.0', '0.0', '4:02:18', 'syslogd'],
+  ['2660', 'dev', '20', '0', '128M', '18M', 'S', '0.0', '0.0', '0:12:44', 'distnoted'],
 ];
 const Meter = ({ pct, sys = 0 }) => (
   <span className="ht-meter" aria-hidden="true">
@@ -768,12 +831,12 @@ const HtopSurface = () => (
       </div>
       <div className="ht-mem">
         <div className="ht-mems">
-          <div className="ht-memline"><span className="ht-k">Mem[</span><Meter pct={38.4} /><span>24.6G/64G]</span></div>
+          <div className="ht-memline"><span className="ht-k">Mem[</span><Meter pct={28.8} /><span>18.4G/64G]</span></div>
           <div className="ht-memline"><span className="ht-k">Swp[</span><Meter pct={5} /><span>0.2G/4.0G]</span></div>
         </div>
         <div className="ht-load">
-          <div>Tasks: 214, 980 thr; <span className="ht-g">6 running</span></div>
-          <div>Load average: <span className="ht-g">9.40</span> 6.12 3.85</div>
+          <div>Tasks: 186, 640 thr; <span className="ht-g">2 running</span></div>
+          <div>Load average: <span className="ht-g">1.84</span> 1.52 1.21</div>
           <div>Uptime: 6 days, 04:12:09</div>
         </div>
       </div>
@@ -800,6 +863,271 @@ const CpuMeter = ({ n, pct, sys }) => (
     <span className="ht-id">{n}</span>
     <Meter pct={pct} sys={sys} />
     <span className="ht-pct">{pct.toFixed(1)}%</span>
+  </div>
+);
+
+const RUST_DOC = [
+  { n: 1, parts: [{ c: 'kw', s: 'fn ' }, { c: 'fn', s: 'advance' }, { c: 'punct', s: '(canary: &' }, { c: 'ty', s: 'Canary' }, { c: 'punct', s: ', health: &' }, { c: 'ty', s: 'Health' }, { c: 'punct', s: ') -> ' }, { c: 'ty', s: 'Step' }, { c: 'punct', s: ' {' }] },
+  { n: 2, parts: [{ c: 'kw', s: '    if ' }, { c: 'text', s: 'health.errors > canary.budget {' }] },
+  { n: 3, parts: [{ c: 'kw', s: '        return ' }, { c: 'ty', s: 'Step' }, { c: 'punct', s: '::' }, { c: 'ty', s: 'Hold' }, { c: 'punct', s: ';' }] },
+  { n: 4, parts: [{ c: 'punct', s: '    }' }] },
+  { n: 5, added: true, cursor: 44, parts: [{ c: 'kw', s: '    if ' }, { c: 'text', s: 'health.p95_ms > canary.ceiling_ms' }, { c: 'caret' }, { c: 'text', s: ' {' }] },
+  { n: 6, added: true, parts: [{ c: 'kw', s: '        return ' }, { c: 'ty', s: 'Step' }, { c: 'punct', s: '::' }, { c: 'ty', s: 'Hold' }, { c: 'punct', s: ';' }] },
+  { n: 7, parts: [{ c: 'punct', s: '    }' }] },
+  { n: 8, parts: [{ c: 'ty', s: '    Step' }, { c: 'punct', s: '::' }, { c: 'ty', s: 'Promote' }, { c: 'punct', s: ' { weight: canary.weight + ' }, { c: 'num', s: '15' }, { c: 'punct', s: ' }' }] },
+  { n: 9, parts: [{ c: 'punct', s: '}' }] },
+];
+const NOTE_SOURCE = [
+  { n: 1, cursor: 1, parts: [{ c: 'title', s: '# Harbor 1.4' }] },
+  { n: 2, parts: [{ c: 'text', s: '' }] },
+  { n: 3, parts: [{ c: 'text', s: 'The window holds the work and the agents doing it.' }] },
+  { n: 4, parts: [{ c: 'text', s: '' }] },
+  { n: 5, parts: [{ c: 'text', s: 'Codex drafts the note. Claude checks the voice.' }] },
+];
+const UPGRADE_SOURCE = [
+  { n: 1, cursor: 1, parts: [{ c: 'title', s: '# From 1.3' }] },
+  { n: 2, parts: [{ c: 'text', s: '' }] },
+  { n: 3, parts: [{ c: 'text', s: 'The 1.3 note stays where it was.' }] },
+  { n: 4, parts: [{ c: 'text', s: 'The 1.4 note is the one still being finished.' }] },
+];
+const EDITOR_DOCS = {
+  rust: { name: 'rollout.rs', path: 'src/rollout.rs', lines: RUST_DOC },
+  note: { name: 'release-1.4.md', path: 'docs/release-1.4.md', lines: NOTE_SOURCE },
+  upgrade: { name: 'upgrade.md', path: 'docs/upgrade.md', lines: UPGRADE_SOURCE },
+};
+
+const EyeGlyph = () => (
+  <svg viewBox="0 0 256 256" width="12" height="12" aria-hidden="true">
+    <path fill="currentColor" d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/>
+  </svg>
+);
+const CodeGlyph = () => (
+  <svg viewBox="0 0 256 256" width="12" height="12" aria-hidden="true">
+    <path fill="currentColor" d="M69.12,94.15,28.5,128l40.62,33.85a8,8,0,1,1-10.24,12.29l-48-40a8,8,0,0,1,0-12.29l48-40a8,8,0,0,1,10.24,12.3Zm176,27.7-48-40a8,8,0,1,0-10.24,12.3L227.5,128l-40.62,33.85a8,8,0,1,0,10.24,12.29l48-40a8,8,0,0,0,0-12.29ZM162.73,32.48a8,8,0,0,0-10.25,4.79l-64,176a8,8,0,0,0,4.79,10.26A8.14,8.14,0,0,0,96,224a8,8,0,0,0,7.52-5.27l64-176A8,8,0,0,0,162.73,32.48Z"/>
+  </svg>
+);
+
+const EditorPane = ({ doc, focused, onFocus }) => {
+  const file = EDITOR_DOCS[doc] || EDITOR_DOCS.rust;
+  const markdown = doc !== 'rust';
+  const [preview, setPreview] = React.useState(markdown);
+  React.useEffect(() => { setPreview(doc !== 'rust'); }, [doc]);
+  const cursorLine = file.lines.find(line => line.cursor) || file.lines[0];
+  return (
+    <div className={`pane editor${focused ? ' focused' : ''}`} onClick={onFocus}>
+      <div className="ed-bar">
+        <div className="ed-tab">
+          <FileGlyph />
+          <span>{file.name}</span>
+          <span className="ed-x" aria-hidden="true"><CloseGlyph /></span>
+        </div>
+        {markdown && (
+          <button
+            type="button"
+            className="pane-act ed-mode"
+            title={preview ? 'Edit Markdown' : 'Preview Markdown'}
+            aria-label={preview ? 'Edit Markdown' : 'Preview Markdown'}
+            onClick={(e) => { e.stopPropagation(); setPreview(value => !value); }}
+          >
+            {preview ? <CodeGlyph /> : <EyeGlyph />}
+          </button>
+        )}
+        <span className="pane-head-actions">
+          <button type="button" className="pane-act" title="Zoom pane" aria-label="Zoom pane"><CornersGlyph /></button>
+          <button type="button" className="pane-act" title="Close pane" aria-label="Close pane"><PaneCloseGlyph /></button>
+        </span>
+      </div>
+      {markdown && preview ? (
+        <div className="ed-read">
+          {doc === 'upgrade' ? (
+            <>
+              <div className="ed-kicker">Upgrade</div>
+              <div className="ed-h">From 1.3</div>
+              <p>The 1.3 note stays where it was. The 1.4 note is the one the agents are still finishing.</p>
+            </>
+          ) : (
+            <>
+              <div className="ed-kicker">Release</div>
+              <div className="ed-h">Harbor 1.4</div>
+              <p>The window holds the work and the agents doing it.</p>
+              <p>Codex drafts the note. Claude checks it against the 1.3 voice. OpenCode writes the way up from 1.3.</p>
+            </>
+          )}
+        </div>
+      ) : (
+        <div className="ed-body">
+          {file.lines.map(line => (
+            <div className={`ed-line${line.added ? ' added' : ''}${line.cursor ? ' here' : ''}`} key={line.n}>
+              <span className="ed-ln">{line.n}</span>
+              <span className="ed-code">
+                {line.parts.map((part, index) => (
+                  part.c === 'caret' ? <span className="ed-caret" key={index} /> : <span className={`ed-${part.c}`} key={index}>{part.s}</span>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="ed-status">
+        <span>{file.path}</span>
+        <span>Ln {cursorLine.n}, Col {cursorLine.cursor || 1}</span>
+      </div>
+    </div>
+  );
+};
+
+const RUNTIME_LOG = [
+  ['10:41:02', 'hold', 'p95 64ms', 'weight 10%'],
+  ['10:41:18', 'quiet', 'p95 41ms', 'window open'],
+  ['10:41:36', 'promote', '10% → 25%', 'ceiling clear'],
+];
+
+const HarborWorkspace = ({ doc, entries, draft, shellFocused, editorFocused, onShellFocus, onEditorFocus, onContextMenu, onKeyDown, onPaste }) => (
+  <>
+    <div
+      className={`pane${shellFocused ? ' focused' : ''}`}
+      onClick={onShellFocus}
+      onContextMenu={onContextMenu}
+      onKeyDown={onKeyDown}
+      onPaste={onPaste}
+      tabIndex={0}
+      role="textbox"
+      aria-label="Test pane"
+      aria-multiline="true"
+    >
+      <PaneHead title="watch" />
+      <pre className="ts devlog">
+        <TerminalEntries entries={entries} />
+        <PromptBlock draft={draft} focused={shellFocused} />
+      </pre>
+    </div>
+    <EditorPane doc={doc} focused={editorFocused} onFocus={onEditorFocus} />
+    <div className="pane span-rows">
+      <PaneHead title="rollout" />
+      <pre className="ts devlog">
+        <div className="tl-line dim"><span>harbor-rollout  applying src/rollout.rs</span></div>
+        <div className="tl-line"><span> </span></div>
+        {RUNTIME_LOG.map(row => (
+          <div className="tl-line" key={row[0]}>
+            <span className="dim">{row[0]}</span>
+            <span className={row[1] === 'hold' ? 'tone-mod' : row[1] === 'promote' ? 'tone-add' : 'tone-quiet'}>{row[1]}</span>
+            <span>{row[2]}</span>
+            <span className="dim">{row[3]}</span>
+          </div>
+        ))}
+        <div className="tl-line"><CursorBlink /></div>
+      </pre>
+    </div>
+  </>
+);
+
+const PROBES = [
+  ['us-east', '38ms', '0.02%', 'ok'],
+  ['eu-west', '44ms', '0.04%', 'ok'],
+  ['ap-south', '51ms', '0.03%', 'ok'],
+];
+const JOURNAL = [
+  ['10:41:02', 'hold', 'p95 64ms above 60ms'],
+  ['10:41:18', 'quiet', 'p95 41ms, window open'],
+  ['10:41:36', 'promote', 'us-east 10% → 25%'],
+  ['10:42:01', 'quiet', 'errors inside budget'],
+];
+
+const FleetWorkspace = ({ focused, onFocus }) => (
+  <>
+    <div className="pane">
+      <PaneHead title="probe" />
+      <div className="ts board">
+        <div className="probe-row head"><span>region</span><span>p95</span><span>err</span><span></span></div>
+        {PROBES.map(row => (
+          <div className="probe-row" key={row[0]}>
+            <span>{row[0]}</span><span>{row[1]}</span><span className="dim">{row[2]}</span><span className="tone-add">{row[3]}</span>
+          </div>
+        ))}
+        <div className="board-note"><span className="tone-quiet">canary 1.4</span><span className="dim">25% of us-east · quiet</span></div>
+      </div>
+    </div>
+    <div className="pane">
+      <PaneHead title="journal" />
+      <div className="ts board">
+        {JOURNAL.map(row => (
+          <div className="jr-row" key={row[0]}>
+            <span className="dim">{row[0]}</span>
+            <span className={row[1] === 'hold' ? 'tone-mod' : row[1] === 'promote' ? 'tone-add' : 'tone-quiet'}>{row[1]}</span>
+            <span>{row[2]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className={`pane span-rows${focused ? ' focused' : ''}`} onClick={onFocus}>
+      <PaneHead title="fleet" icon="monitor" />
+      <HtopSurface />
+    </div>
+  </>
+);
+
+const AgentWorkspace = () => (
+  <>
+    <div className="pane">
+      <PaneHead title="Draft the 1.4 note | harbor" icon="codex" />
+      <CodexSurface scene="release" />
+    </div>
+    <div className="pane focused">
+      <PaneHead title="Compare the voice | harbor" icon="claude" />
+      <ClaudeSurface />
+    </div>
+    <div className="pane">
+      <PaneHead title="Write the upgrade | harbor" icon="opencode" />
+      <OpenCodeSurface />
+    </div>
+  </>
+);
+
+const ClaudeSurface = () => {
+  const frames = ['✶', '✻', '✳', '✢'];
+  const [frame, setFrame] = React.useState(0);
+  const [seconds, setSeconds] = React.useState(8);
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      setFrame(value => (value + 1) % frames.length);
+      setSeconds(value => (value >= 24 ? 8 : value + 1));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [frames.length]);
+  return (
+    <div className="tui claude">
+      <div className="cc-thread">
+        <div className="cc-user"><span>❯</span><span>Check the 1.4 note against the voice of the 1.3 note.</span></div>
+        <div className="cc-tool">Read docs/release-1.3.md</div>
+        <div className="cc-out">⎿  42 lines</div>
+        <div className="cc-tool">Read docs/release-1.4.md</div>
+        <div className="cc-out">⎿  one line still sounds like a changelog</div>
+        <div className="cc-spin"><span>{frames[frame]}</span> Comparing… ({seconds}s)</div>
+      </div>
+      <div className="cc-rule" />
+      <div className="cc-prompt"><span>❯</span></div>
+      <div className="cc-rule" />
+      <div className="cc-status">[Sonnet 4.6] │ harbor git:(main)</div>
+      <div className="cc-mode">⏵⏵ accept edits on</div>
+    </div>
+  );
+};
+
+const OpenCodeSurface = () => (
+  <div className="tui opencode">
+    <div className="oc-word" aria-hidden="true"><span>open</span>code</div>
+    <div className="oc-thread">
+      <div className="oc-msg">Write the 1.3 → 1.4 upgrade notes.</div>
+      <div className="oc-reply">I’ll list migrations/ and draft docs/upgrade.md in the same order as the 1.3 page.</div>
+      <div className="oc-tool">Read migrations/001_sessions.sql</div>
+      <div className="oc-tool">Read docs/upgrade-1.3.md</div>
+    </div>
+    <div className="oc-box">
+      <div className="oc-ask"><span className="oc-caret" />Ask anything…</div>
+      <div className="oc-agent"><b>Build</b> Claude Sonnet 4.5</div>
+    </div>
+    <div className="oc-hints"><span><b>ctrl+t</b> variants</span><span><b>tab</b> agents</span></div>
+    <div className="oc-foot"><span>~/dev/harbor</span><span className="oc-mcp"><i />7 MCP</span></div>
   </div>
 );
 
@@ -1047,6 +1375,18 @@ const AgentPanel = ({ showOwnInput, messages, onSubmit, onClear }) => {
 };
 
 const AgentMessage = ({ message }) => {
+  if (message.kind === 'tool-watch') {
+    return (
+      <div className="tool-card done">
+        <div className="tool-head">
+          <TerminalGlyph/>
+          <span className="tool-name">read_pane</span>
+          <span className="tool-arg">Codex · Claude · OpenCode</span>
+          <span className="tool-ok">✓</span>
+        </div>
+      </div>
+    );
+  }
   if (message.kind === 'tool-context') {
     return (
       <div className="tool-card done">
