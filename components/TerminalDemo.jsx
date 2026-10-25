@@ -147,7 +147,7 @@ const TerminalDemo = ({ tweaks }) => {
     setShowBottom(true);
     if (prefersCompactDemo()) return;
     setShowAgent(activeTab === 'release');
-    setShowSidebar(activeTab === 'harbor');
+    setShowSidebar(id !== 'compact' && activeTab === 'harbor');
   };
   React.useEffect(() => {
     const mq = window.matchMedia('(max-width: 760px)');
@@ -164,7 +164,7 @@ const TerminalDemo = ({ tweaks }) => {
     setFocusedPane(focusByTab[id] ?? 0);
     if (prefersCompactDemo()) return;
     setShowAgent(id === 'release');
-    setShowSidebar(id === 'harbor');
+    if (tabLayout !== 'compact') setShowSidebar(id === 'harbor');
   };
   const openWorkspaceFile = (path) => {
     setActiveFile(path);
