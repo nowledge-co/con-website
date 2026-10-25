@@ -26,6 +26,14 @@ function formatStars(count) {
     : String(count);
 }
 
+function isAgentContributor(login) {
+  const name = String(login || '').toLowerCase().replace(/\[bot\]$/, '');
+  return name === 'claude'
+    || name.startsWith('claude-')
+    || name.startsWith('cursor')
+    || name.includes('codex');
+}
+
 function detectOS() {
   if (typeof navigator === 'undefined') return 'macOS';
   const p = (navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || '').toLowerCase();
@@ -41,6 +49,7 @@ const Page = ({ tweaks }) => {
   const [detected] = React.useState(() => detectOS());
   const [osTab, setOsTab] = React.useState(detected);
   const [repoMeta, setRepoMeta] = React.useState({ stars: null, version: null });
+  const [contributors, setContributors] = React.useState([]);
   const versionLabel = repoMeta.version || 'Beta';
 
   React.useEffect(() => {
@@ -65,6 +74,26 @@ const Page = ({ tweaks }) => {
           setRepoMeta((current) => ({ ...current, ...next }));
         }
       } catch (e) { /* keep fallback */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contributors?per_page=100`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!Array.isArray(data) || cancelled) return;
+        setContributors(data.filter(person => (
+          person
+          && person.type !== 'Bot'
+          && person.login
+          && person.avatar_url
+          && !isAgentContributor(person.login)
+        )));
+      } catch (e) { /* the section stays hidden */ }
     })();
     return () => { cancelled = true; };
   }, []);
@@ -145,6 +174,35 @@ const Page = ({ tweaks }) => {
         <p className="section-sub">Then an agent that understands where you are.</p>
         <TerminalDemo tweaks={tweaks} />
       </section>
+
+      {contributors.length > 0 && (
+        <section className="contributors" id="contributors" aria-label="Contributors">
+          <div className="section-eyebrow">Contributors</div>
+          <h2 className="section-title contributors-title">
+            <span>The people</span>
+            <em>who built it.</em>
+          </h2>
+          <ul className="contrib-faces">
+            {contributors.map(person => (
+              <li key={person.id || person.login}>
+                <a
+                  className="contrib-face"
+                  href={person.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${person.login} on GitHub`}
+                >
+                  <img src={person.avatar_url} alt="" width="48" height="48" loading="lazy" decoding="async" />
+                  <span>{person.login}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a className="contrib-more" href={`https://github.com/${REPO}/blob/main/HACKING.md`} target="_blank" rel="noreferrer">
+            How to contribute
+          </a>
+        </section>
+      )}
 
       <footer className="site-foot" id="footer">
         <div className="foot-inner">
