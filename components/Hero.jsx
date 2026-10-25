@@ -82,17 +82,11 @@ const Page = ({ tweaks }) => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contributors?per_page=100`);
+        const res = await fetch('/assets/contributors.json');
         if (!res.ok) return;
         const data = await res.json();
         if (!Array.isArray(data) || cancelled) return;
-        setContributors(data.filter(person => (
-          person
-          && person.type !== 'Bot'
-          && person.login
-          && person.avatar_url
-          && !isAgentContributor(person.login)
-        )));
+        setContributors(data.filter(person => person?.login && !isAgentContributor(person.login)));
       } catch (e) { /* the section stays hidden */ }
     })();
     return () => { cancelled = true; };
@@ -112,6 +106,7 @@ const Page = ({ tweaks }) => {
         <nav className="nav-links">
           <a className="nav-link-btn" href="/docs/">Docs</a>
           <a className="nav-link-btn" href="/changelog/">Changelog</a>
+          <a className="nav-link-btn" href="#contributors">Contributors</a>
         </nav>
         <a className="gh-pill" href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">
           <GitHubGlyph />
@@ -187,12 +182,13 @@ const Page = ({ tweaks }) => {
               <li key={person.id || person.login}>
                 <a
                   className="contrib-face"
-                  href={person.html_url}
+                  href={person.url}
                   target="_blank"
                   rel="noreferrer"
                   aria-label={`${person.login} on GitHub`}
                 >
-                  <img src={person.avatar_url} alt="" width="48" height="48" loading="lazy" decoding="async" />
+                  {person.avatar ? <img src={person.avatar} alt="" width="48" height="48" decoding="async" onError={(event) => event.currentTarget.remove()} /> : null}
+                  <b className="contrib-fallback" aria-hidden="true">{person.login.slice(0, 1).toUpperCase()}</b>
                   <span>{person.login}</span>
                 </a>
               </li>
@@ -231,6 +227,7 @@ const Page = ({ tweaks }) => {
             <div className="foot-col">
               <div className="foot-col-label">Source</div>
               <a href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">GitHub</a>
+              <a href="#contributors">Contributors</a>
               <a href={`https://github.com/${REPO}/issues/new/choose`} target="_blank" rel="noreferrer">Report a bug</a>
               <a href={`https://github.com/${REPO}/blob/main/HACKING.md`} target="_blank" rel="noreferrer">Contribute</a>
               <a href={`https://github.com/${REPO}/blob/main/LICENSE`} target="_blank" rel="noreferrer">License</a>

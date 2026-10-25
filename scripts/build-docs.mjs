@@ -10,7 +10,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20261012`;
-const CSS_VERSION = '20261025l';
+const CSS_VERSION = '20261025n';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -470,6 +470,7 @@ function renderMarkdown(markdown, currentPath) {
   const usedIds = new Map();
   const renderer = new marked.Renderer();
   const isChangelog = currentPath === 'CHANGELOG.md';
+  const releaseAuthors = isChangelog ? authorsInChangelog(markdown) : new Map();
   let openRelease = false;
   let releaseIndex = 0;
   let skippedChangelogIntro = 0;
@@ -493,10 +494,14 @@ function renderMarkdown(markdown, currentPath) {
         const currentClass = releaseIndex === 0 ? ' release-card-current' : '';
         openRelease = true;
         releaseIndex += 1;
+        const authors = renderReleaseAuthors(releaseAuthors.get(version));
         return `${close}<section class="release-card${currentClass}" id="${id}">
           <div class="release-card-meta">
             <span>Release</span>
-            ${date ? `<time datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
+            <div class="release-card-aside">
+              ${authors}
+              ${date ? `<time datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
+            </div>
           </div>
           <h2><a class="release-version-link" href="#${id}">${escapeHtml(version)}</a><a class="heading-anchor" href="#${id}" aria-hidden="true" aria-label="Link to ${escapeHtml(plain)}"></a></h2>`;
       }
@@ -548,7 +553,7 @@ function renderMarkdown(markdown, currentPath) {
 
   let html = rewriteRawHtmlLinks(marked.parse(markdown, { renderer, gfm: true }), currentPath);
   if (isChangelog && openRelease) html += '</section>';
-  return { html, toc };
+  return { html, toc, releaseAuthors };
 }
 
 async function fetchText(url) {
@@ -669,6 +674,100 @@ function parseReleaseLabel(text) {
   };
 }
 
+let contributorAvatars = new Map();
+
+function isAgentLogin(login) {
+  const name = String(login || '').toLowerCase().replace(/\[bot\]$/, '');
+  return name === 'claude'
+    || name.startsWith('claude-')
+    || name.startsWith('cursor')
+    || name.includes('codex');
+}
+
+function avatarExtension(bytes) {
+  if (bytes[0] === 0x89 && bytes[1] === 0x50) return 'png';
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return 'jpg';
+  if (bytes[0] === 0x52 && bytes[1] === 0x49) return 'webp';
+  return 'img';
+}
+
+async function downloadAvatar(person) {
+  const source = person.avatar.includes('?') ? `${person.avatar}&s=96` : `${person.avatar}?s=96`;
+  const response = await fetch(source, { headers: { 'User-Agent': 'con-website-docs-build' } });
+  if (!response.ok) return '';
+  const bytes = Buffer.from(await response.arrayBuffer());
+  if (bytes.length < 32) return '';
+  const file = `${person.login}.${avatarExtension(bytes)}`;
+  const dir = path.join(OUT_DIR, 'assets', 'avatars');
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(path.join(dir, file), bytes);
+  return `/assets/avatars/${file}?v=${CSS_VERSION}`;
+}
+
+async function fetchContributorAvatars() {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${REPO}/contributors?per_page=100`, {
+      headers: {
+        'User-Agent': 'con-website-docs-build',
+        Accept: 'application/vnd.github+json',
+      },
+    });
+    if (!response.ok) return new Map();
+    const data = await response.json();
+    if (!Array.isArray(data)) return new Map();
+    const remote = data.filter((person) => (
+      person?.login && person.avatar_url && person.type !== 'Bot' && !isAgentLogin(person.login)
+    ));
+    const saved = await Promise.all(remote.map(async (person) => {
+      const record = {
+        login: person.login,
+        avatar: '',
+        url: person.html_url || `https://github.com/${person.login}`,
+      };
+      try {
+        record.avatar = await downloadAvatar({ login: person.login, avatar: person.avatar_url });
+      } catch { /* the letter stays in place of the picture */ }
+      return record;
+    }));
+    return new Map(saved.map((person) => [person.login.toLowerCase(), person]));
+  } catch {
+    return new Map();
+  }
+}
+
+function authorsInChangelog(markdown) {
+  const authors = new Map();
+  for (const part of markdown.split(/^## /m).slice(1)) {
+    const lineBreak = part.indexOf('\n');
+    const title = lineBreak === -1 ? part : part.slice(0, lineBreak);
+    const version = (title.match(/`([^`]+)`/) || title.match(/^(\S+)/))?.[1];
+    if (!version) continue;
+    const seen = [];
+    for (const match of part.matchAll(/@([A-Za-z0-9-]+)/g)) {
+      const person = contributorAvatars.get(match[1].toLowerCase());
+      if (!person || seen.some((item) => item.login === person.login)) continue;
+      seen.push(person);
+    }
+    authors.set(version, seen);
+  }
+  return authors;
+}
+
+function renderReleaseAuthors(people) {
+  if (!people?.length) return '';
+  const shown = people.slice(0, 5);
+  const extra = people.length - shown.length;
+  const faces = shown.map((person) => {
+    const letter = escapeHtml(person.login.slice(0, 1).toUpperCase());
+    const image = person.avatar
+      ? `<img src="${escapeHtml(person.avatar)}" alt="" width="22" height="22" decoding="async" onerror="this.remove()"/>`
+      : '';
+    return `<a class="release-author" href="${escapeHtml(person.url)}" target="_blank" rel="noreferrer" title="${escapeHtml(person.login)}" aria-label="${escapeHtml(person.login)}">${image}<span class="release-author-fallback" aria-hidden="true">${letter}</span></a>`;
+  }).join('');
+  const more = extra > 0 ? `<span class="release-author more" aria-label="${extra} more authors">+${extra}</span>` : '';
+  return `<div class="release-authors">${faces}${more}</div>`;
+}
+
 function renderHumanDate(date) {
   const match = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!match) return '';
@@ -677,10 +776,11 @@ function renderHumanDate(date) {
   return `${month} ${Number(match[3])}, ${match[1]}`;
 }
 
-function renderChangelogOverview(toc) {
+function renderChangelogOverview(toc, authors) {
   const releases = releaseEntriesFromToc(toc);
   const latest = releases[0];
   const latestInfo = parseReleaseLabel(latest?.text || '');
+  const latestAuthors = renderReleaseAuthors(authors?.get(latestInfo.version));
   const latestDate = renderHumanDate(latestInfo.date) || latestInfo.date;
   const archiveLabel = releases.length === 1 ? '1 release' : `${releases.length} releases`;
   return `
@@ -695,6 +795,7 @@ function renderChangelogOverview(toc) {
         <span>Latest beta</span>
         ${latest ? `<a href="#${escapeHtml(latest.id)}">${escapeHtml(latestInfo.version)}</a>` : '<strong>Current beta</strong>'}
         ${latestDate ? `<time datetime="${escapeHtml(latestInfo.date)}">${escapeHtml(latestDate)}</time>` : ''}
+        ${latestAuthors}
       </aside>
       <dl class="changelog-signals" aria-label="Release signals">
         <div>
@@ -733,7 +834,7 @@ function renderChangelogSidebar(toc) {
   `;
 }
 
-function renderPage({ repoPath, title, description, html, toc }) {
+function renderPage({ repoPath, title, description, html, toc, releaseAuthors }) {
   const urlPath = pageUrlForDoc(repoPath);
   const canonical = `${SITE_URL}${urlPath}`;
   const markdownUrl = `${SITE_URL}${markdownUrlForDoc(repoPath)}`;
@@ -747,7 +848,7 @@ function renderPage({ repoPath, title, description, html, toc }) {
   const changelogCurrent = isChangelogPage ? ' class="active" aria-current="page"' : '';
   const bodyClass = isChangelogPage ? 'static-docs-page changelog-page' : 'static-docs-page';
   const mainClass = isChangelogPage ? 'static-docs-layout changelog-layout' : 'static-docs-layout';
-  const articleIntro = isChangelogPage ? renderChangelogOverview(toc) : '';
+  const articleIntro = isChangelogPage ? renderChangelogOverview(toc, releaseAuthors) : '';
   const keywords = keywordsForDoc(repoPath);
   const organization = {
     '@type': 'Organization',
@@ -864,6 +965,7 @@ ${isChangelogPage ? '' : keywords.slice(0, 8).map((keyword) => `<meta property="
     <nav class="static-docs-top-links" aria-label="Primary">
       <a href="/docs/"${docsCurrent}>Docs</a>
       <a href="/changelog/"${changelogCurrent}>Changelog</a>
+      <a href="/#contributors">Contributors</a>
       <a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">GitHub</a>
     </nav>
     <div class="static-docs-actions">
@@ -890,6 +992,7 @@ ${renderAskAiPanel()}
     ${articleIntro}
     ${html}
     <footer class="static-docs-source">
+      <a href="/#contributors">Contributors</a>
       <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noreferrer">Edit this page on GitHub</a>
     </footer>
   </article>
@@ -1372,6 +1475,12 @@ async function main() {
   await writeFileEnsured(
     path.join(OUT_DIR, 'assets', 'docs-manifest.json'),
     `${JSON.stringify(DOC_MANIFEST, null, 2)}\n`,
+  );
+
+  contributorAvatars = await fetchContributorAvatars();
+  await writeFileEnsured(
+    path.join(OUT_DIR, 'assets', 'contributors.json'),
+    `${JSON.stringify([...contributorAvatars.values()])}\n`,
   );
 
   const pages = [];
