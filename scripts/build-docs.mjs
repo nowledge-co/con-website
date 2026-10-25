@@ -10,7 +10,7 @@ const REPO = 'nowledge-co/con-terminal';
 const BRANCH = process.env.CON_TERMINAL_REF || 'main';
 const SITE_URL = 'https://con.nowledge.co';
 const OG_IMAGE = `${SITE_URL}/assets/og-con.jpg?v=20261012`;
-const CSS_VERSION = '20261024e';
+const CSS_VERSION = '20261025f';
 const CORE_KEYWORDS = [
   'terminal emulator',
   'AI terminal',
@@ -140,6 +140,10 @@ const STATIC_ASSETS = [
   'input-mode-smart.png',
   'input-mode-shell.png',
   'input-mode-agent.png',
+  'IoskeleyMono-Regular.woff',
+  'tab-terminal-refined.png',
+  'tab-monitor.png',
+  'tab-code.png',
 ];
 
 let DOC_MANIFEST = null;
