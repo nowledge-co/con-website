@@ -78,8 +78,18 @@ const BASE_AGENT_MESSAGES = [
   { kind: 'tool-doc' },
   { kind: 'assistant', body: <>Quick controls are active: <code>⌘I</code> moves focus, <code>⌘L</code> shows the agent panel, and shell mode can target one pane or every split pane.</> },
 ];
+const iconsForTab = (tab, focusByTab) => {
+  const focus = focusByTab[tab.id] ?? 0;
+  if (tab.layout === 'harbor') return focus === 0 ? ['terminal', 'file'] : ['file', 'terminal'];
+  if (tab.layout === 'fleet') return focus === 2 ? ['monitor', 'terminal'] : ['terminal', 'monitor'];
+  return tab.icons || null;
+};
+
 const prefersCompactDemo = () => (
   typeof window !== 'undefined' && window.matchMedia('(max-width: 560px)').matches
+);
+const prefersPhoneDemo = () => (
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
 );
 
 const TerminalDemo = ({ tweaks }) => {
@@ -89,8 +99,8 @@ const TerminalDemo = ({ tweaks }) => {
   const [showAgent, setShowAgent] = React.useState(() => (
     prefersCompactDemo() ? false : (tweaks.showAgent ?? false)
   ));
-  const [showBottom, setShowBottom] = React.useState(true);
-  const [showSidebar, setShowSidebar] = React.useState(() => !prefersCompactDemo());
+  const [showBottom, setShowBottom] = React.useState(false);
+  const [showSidebar, setShowSidebar] = React.useState(false);
   const [mode, setMode] = React.useState(initialMode);
   const [paneCount, setPaneCount] = React.useState(2);
   const [splitDir, setSplitDir] = React.useState('right');
@@ -114,6 +124,34 @@ const TerminalDemo = ({ tweaks }) => {
     { id: 'monitor', title: 'Monitor', icon: 'monitor', layout: 'fleet' },
   ]);
   const [activeTab, setActiveTab] = React.useState('harbor');
+  const [tabLayout, setTabLayout] = React.useState('quiet');
+  const quiet = tabLayout === 'quiet';
+  const verticalTabs = tabLayout === 'vertical' || tabLayout === 'compact';
+  const compactTabs = tabLayout === 'compact';
+  const chooseLayout = (id) => {
+    if (prefersPhoneDemo() && (id === 'vertical' || id === 'compact')) return;
+    setTabLayout(id);
+    if (id === 'quiet') {
+      setShowSidebar(false);
+      setShowAgent(false);
+      setShowBottom(false);
+      return;
+    }
+    setShowBottom(true);
+    if (prefersCompactDemo()) return;
+    setShowAgent(activeTab === 'release');
+    setShowSidebar(activeTab === 'harbor');
+  };
+  React.useEffect(() => {
+    const mq = window.matchMedia('(max-width: 760px)');
+    const snap = () => {
+      if (!mq.matches) return;
+      setTabLayout((cur) => (cur === 'vertical' || cur === 'compact' ? 'quiet' : cur));
+    };
+    snap();
+    mq.addEventListener('change', snap);
+    return () => mq.removeEventListener('change', snap);
+  }, []);
   const selectTab = (id) => {
     setActiveTab(id);
     if (prefersCompactDemo()) return;
@@ -165,7 +203,7 @@ const TerminalDemo = ({ tweaks }) => {
   const activeSurface = tabs.find(tab => tab.id === activeTab) || tabs[0];
   const terminalSurface = activeSurface.icon === 'terminal';
   const showBroadcast = mode !== 'agent' && paneCount > 1 && terminalSurface && activeSurface.layout !== 'harbor';
-  const raised = paneCount > 1 || showSidebar || showAgent || !terminalSurface;
+  const raised = !quiet && (paneCount > 1 || showSidebar || showAgent || !terminalSurface);
   const appendToPanes = (paneIndexes, lines) => {
     setPaneLogs(current => current.map((log, i) => (
       paneIndexes.includes(i) ? [...log, ...lines] : log
@@ -324,8 +362,39 @@ const TerminalDemo = ({ tweaks }) => {
     setCommand('');
     setScopeOpen(false);
   };
+  const openTool = (slot) => {
+    if (showSidebar && sidebarSlot === slot) setShowSidebar(false);
+    else {
+      setSidebarSlot(slot);
+      setShowSidebar(true);
+    }
+  };
   return (
-    <div className="con-window" onWheelCapture={passWheelToPage}>
+    <div className="demo-stage">
+    <div className="layout-switch" role="radiogroup" aria-label="Tab layout">
+      <div className="layout-tray">
+        {[
+          ['quiet', 'Single pane', <QuietLayoutGlyph key="q" />, false],
+          ['horizontal', 'Horizontal tabs', <HorizontalLayoutGlyph key="h" />, false],
+          ['vertical', 'Vertical tabs', <VerticalLayoutGlyph key="v" />, true],
+          ['compact', 'Compact tabs', <CompactLayoutGlyph key="c" />, true],
+        ].map(([id, label, glyph, desk]) => (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={tabLayout === id}
+            title={label}
+            aria-label={label}
+            className={`${tabLayout === id ? 'on' : ''}${desk ? ' desk' : ''}`}
+            onClick={() => chooseLayout(id)}
+          >
+            {glyph}
+          </button>
+        ))}
+      </div>
+    </div>
+    <div className={`con-window${verticalTabs ? ' vtabs' : ''}`} onWheelCapture={passWheelToPage}>
       {/* Title bar */}
       <div className="con-titlebar">
         <div className="traffic" aria-hidden="true">
@@ -333,14 +402,10 @@ const TerminalDemo = ({ tweaks }) => {
           <span className="tl tl-min" />
           <span className="tl tl-max" />
         </div>
+        {quiet || verticalTabs ? <div className="titlebar-spacer" /> : (
         <div className="con-tabs" role="tablist" aria-label="Terminal tabs">
           {tabs.map(t => {
-            const focus = focusByTab[t.id] ?? 0;
-            const icons = t.layout === 'harbor'
-              ? (focus === 0 ? ['terminal', 'file'] : ['file', 'terminal'])
-              : t.layout === 'fleet'
-                ? (focus === 2 ? ['monitor', 'terminal'] : ['terminal', 'monitor'])
-                : t.icons;
+            const icons = iconsForTab(t, focusByTab);
             const stacked = icons && icons.length > 1 && !t.busy;
             const stack3 = icons && icons.length > 2;
             return (
@@ -378,6 +443,7 @@ const TerminalDemo = ({ tweaks }) => {
             );
           })}
         </div>
+        )}
         <div className="con-win-actions">
           <button type="button" title="New tab" aria-label="New tab" onClick={addTab}>
             <PlusGlyph/>
@@ -416,7 +482,22 @@ const TerminalDemo = ({ tweaks }) => {
       </div>
 
       {/* Body */}
-      <div className={`con-body${showAgent ? '' : ' no-agent'}${showSidebar ? ' with-sidebar' : ''}${raised ? ' raised' : ''}`}>
+      <div className={`con-body${showAgent ? '' : ' no-agent'}${showSidebar ? ' with-sidebar' : ''}${quiet ? ' quiet' : ''}${verticalTabs ? ' vtabs' : ''}${compactTabs ? ' vtabs-compact' : ''}${raised ? ' raised' : ''}`}>
+        {verticalTabs && (
+          <TabRail
+            tabs={tabs}
+            activeTab={activeTab}
+            focusByTab={focusByTab}
+            compact={compactTabs}
+            filesOn={showSidebar && sidebarSlot === 'files'}
+            searchOn={showSidebar && sidebarSlot === 'search'}
+            onLayout={() => setTabLayout(compactTabs ? 'vertical' : 'compact')}
+            onTool={openTool}
+            onNew={addTab}
+            onSelect={selectTab}
+            onClose={closeTab}
+          />
+        )}
         {showSidebar && (
           <Sidebar
             slot={sidebarSlot}
@@ -431,6 +512,11 @@ const TerminalDemo = ({ tweaks }) => {
           />
         )}
         <div className="con-main">
+          {quiet ? (
+            <div className="quiet-shell">
+              <pre className="ts quiet-term"><PromptBlock draft="" focused /></pre>
+            </div>
+          ) : (
           <div className={`pane-grid${activeSurface.layout === 'harbor' ? ' harbor' : activeSurface.layout === 'fleet' ? ' fleet' : activeSurface.layout === 'agents' ? ' cols-3' : terminalSurface ? splitClass : ''}${raised ? ' cards' : ' flush'}`}>
             {activeSurface.layout === 'harbor' ? (
               <HarborWorkspace
@@ -493,6 +579,7 @@ const TerminalDemo = ({ tweaks }) => {
               </div>
             )}
           </div>
+          )}
 
           {showBottom && (
             <div className={`con-bottombar mode-${mode}`}>
@@ -566,8 +653,105 @@ const TerminalDemo = ({ tweaks }) => {
         </div>
       )}
     </div>
+    </div>
   );
 };
+
+const QuietLayoutGlyph = () => (
+  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+    <rect x="1.5" y="3" width="13" height="10" rx="2" fill="currentColor" />
+  </svg>
+);
+const HorizontalLayoutGlyph = () => (
+  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+    <rect x="1" y="4.5" width="4.2" height="7" rx="1.4" fill="currentColor" />
+    <rect x="5.9" y="4.5" width="4.2" height="7" rx="1.4" fill="currentColor" />
+    <rect x="10.8" y="4.5" width="4.2" height="7" rx="1.4" fill="currentColor" />
+  </svg>
+);
+const VerticalLayoutGlyph = () => (
+  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+    <rect x="1" y="1.5" width="3.2" height="3.2" rx="0.8" fill="currentColor" />
+    <rect x="5.4" y="2.2" width="9.2" height="1.8" rx="0.9" fill="currentColor" />
+    <rect x="1" y="6.4" width="3.2" height="3.2" rx="0.8" fill="currentColor" />
+    <rect x="5.4" y="7.1" width="9.2" height="1.8" rx="0.9" fill="currentColor" />
+    <rect x="1" y="11.3" width="3.2" height="3.2" rx="0.8" fill="currentColor" />
+    <rect x="5.4" y="12" width="6.4" height="1.8" rx="0.9" fill="currentColor" />
+  </svg>
+);
+const CompactLayoutGlyph = () => (
+  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+    <rect x="5" y="1" width="6" height="3.6" rx="1.1" fill="currentColor" />
+    <rect x="5" y="6.2" width="6" height="3.6" rx="1.1" fill="currentColor" />
+    <rect x="5" y="11.4" width="6" height="3.6" rx="1.1" fill="currentColor" />
+  </svg>
+);
+const CaretRailGlyph = ({ expand }) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+    <path
+      d={expand ? 'M6 3.2 L10.2 8 L6 12.8' : 'M10 3.2 L5.8 8 L10 12.8'}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const TabRail = ({ tabs, activeTab, focusByTab, compact, filesOn, searchOn, onLayout, onTool, onNew, onSelect, onClose }) => (
+  <aside className={`vtab-rail${compact ? ' compact' : ''}`} aria-label="Tabs">
+    <div className="vtab-tools">
+      <button type="button" className="vtab-tool" title={compact ? 'Expand tabs' : 'Compact tabs'} aria-label={compact ? 'Expand tabs' : 'Compact tabs'} onClick={onLayout}>
+        <CaretRailGlyph expand={compact} />
+      </button>
+      <span className="vtab-div" />
+      <button type="button" className={`vtab-tool${filesOn ? ' on' : ''}`} title="Files" aria-label="Files" aria-pressed={filesOn} onClick={() => onTool('files')}>
+        <FolderGlyph />
+      </button>
+      <button type="button" className={`vtab-tool${searchOn ? ' on' : ''}`} title="Search" aria-label="Search" aria-pressed={searchOn} onClick={() => onTool('search')}>
+        <SearchGlyph />
+      </button>
+      <span className="vtab-div" />
+      <button type="button" className="vtab-tool" title="New tab" aria-label="New tab" onClick={onNew}>
+        <PlusGlyph />
+      </button>
+    </div>
+    <div className="vtab-list" role="tablist">
+      {tabs.map(tab => {
+        const icons = iconsForTab(tab, focusByTab);
+        const stacked = icons && icons.length > 1 && !tab.busy;
+        return (
+          <div
+            key={tab.id}
+            className={`vtab-row${tab.id === activeTab ? ' on' : ''}`}
+            role="tab"
+            aria-selected={tab.id === activeTab}
+            tabIndex={0}
+            onClick={() => onSelect(tab.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelect(tab.id);
+              }
+            }}
+          >
+            <span className="vtab-hit" aria-hidden="true" />
+            <span className="vtab-brand">
+              {tab.busy ? <TabSpinner /> : stacked ? <TabStack icons={icons} /> : <TabGlyph icon={tab.icon || 'terminal'} />}
+            </span>
+            {!compact && <span className="vtab-name">{tab.title}</span>}
+            {!compact && (
+              <button type="button" className="vtab-x" aria-label={`Close ${tab.title}`} onClick={(e) => { e.stopPropagation(); onClose(tab.id); }}>
+                <CloseGlyph />
+              </button>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </aside>
+);
 
 // ---------- pane scope popover ----------
 const PaneScopePopover = ({ scope, setScope, paneCount, focusedPane, setFocusedPane, onClose }) => {
