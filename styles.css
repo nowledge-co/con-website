@@ -1956,13 +1956,13 @@ body {
   .section-title { animation-delay: 60ms; }
   .section-sub { animation-delay: 120ms; }
 
-  .con-window {
+  .con-window-motion {
     animation: demo-window-in 760ms var(--ease-out-expo) both;
     will-change: transform, opacity;
   }
 
   @supports (animation-timeline: view()) {
-    .con-window {
+    .con-window-motion {
       animation-name: demo-window-scroll;
       animation-duration: 1ms;
       animation-timing-function: linear;
@@ -1981,12 +1981,15 @@ body {
   font-style: normal;
   font-display: swap;
 }
+.con-window-motion {
+  transform-origin: center top;
+}
 .con-window {
   position: relative;
   max-width: 1160px;
   margin: 0 auto;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: clip;
   background: #100F0F;
   border: 1px solid rgba(206,205,195,0.08);
   box-shadow:
@@ -1996,7 +1999,6 @@ body {
   color: #CECDC3;
   font-family: 'Geist', sans-serif;
   text-align: left;
-  transform-origin: center top;
 }
 
 .con-titlebar {
@@ -2201,7 +2203,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   height: 540px;
-  overflow: hidden;
+  overflow: clip;
   background: #100F0F;
   transition: grid-template-columns 340ms var(--ease-out-quint);
 }
@@ -2212,7 +2214,7 @@ body {
   display: flex; flex-direction: column;
   background: transparent;
   position: relative;
-  overflow: hidden;
+  overflow: clip;
   min-width: 0;
   min-height: 0;
 }
@@ -2220,7 +2222,7 @@ body {
 .pane-grid {
   display: grid;
   flex: 1;
-  overflow: hidden;
+  overflow: clip;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
   padding: 0;
@@ -2364,7 +2366,6 @@ body {
   cursor: text;
   outline: none;
   scrollbar-width: none;
-  overscroll-behavior: contain;
 }
 .pane::-webkit-scrollbar { display: none; }
 .pane:focus-visible { outline: none; }
@@ -2429,7 +2430,7 @@ body {
 .ts {
   margin: 0;
   max-width: 100%;
-  overflow: hidden;
+  overflow: clip;
   padding: 4px 12px 12px;
   font-family: 'Ioskeley Mono', 'JetBrains Mono', ui-monospace, monospace;
   font-size: 14px;
@@ -2988,7 +2989,7 @@ body {
   background: transparent;
   display: flex; flex-direction: column;
   font-family: 'Geist', sans-serif;
-  overflow: hidden;
+  overflow: clip;
   animation: con-agent-in 300ms var(--ease-out-quint) both;
   transform-origin: right center;
 }
@@ -3047,7 +3048,6 @@ body {
   font-size: 13px;
   line-height: 1.5;
   scrollbar-width: none;
-  overscroll-behavior: contain;
 }
 .agent-messages::-webkit-scrollbar { display: none; }
 .agent-empty {
