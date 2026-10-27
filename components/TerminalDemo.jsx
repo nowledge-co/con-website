@@ -297,17 +297,6 @@ const TerminalDemo = ({ tweaks }) => {
     setFocusByTab(current => ({ ...current, [activeTab]: paneIndex }));
     e.currentTarget.focus();
   };
-  const passWheelToPage = (e) => {
-    if (e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-    const scroller = e.target.closest?.('.agent-messages, .sb-scroll, .pane');
-    if (scroller && scroller.scrollHeight > scroller.clientHeight + 1) {
-      const atTop = scroller.scrollTop <= 0 && e.deltaY < 0;
-      const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1 && e.deltaY > 0;
-      if (!atTop && !atBottom) return;
-    }
-    e.preventDefault();
-    window.scrollBy({ top: e.deltaY, behavior: 'auto' });
-  };
   const openPaneMenu = (paneIndex, e) => {
     e.preventDefault();
     const host = e.currentTarget.closest('.con-window');
@@ -410,7 +399,8 @@ const TerminalDemo = ({ tweaks }) => {
         ))}
       </div>
     </div>
-    <div className={`con-window${verticalTabs ? ' vtabs' : ''}`} onWheelCapture={passWheelToPage}>
+    <div className="con-window-motion">
+    <div className={`con-window${verticalTabs ? ' vtabs' : ''}`}>
       {/* Title bar */}
       <div className="con-titlebar">
         <div className="traffic" aria-hidden="true">
@@ -683,6 +673,7 @@ const TerminalDemo = ({ tweaks }) => {
           <button type="button" onClick={() => closePane(contextMenu.pane)} disabled={paneCount < 2}>Close Pane</button>
         </div>
       )}
+    </div>
     </div>
     </div>
   );
